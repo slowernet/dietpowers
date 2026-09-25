@@ -73,7 +73,7 @@ Tests (new block):
 - `finish-branch SKILL.md does not contain git apply --cached` — fails if the per-task split survives.
 - `update-spec SKILL.md contains "even though the code change is committed"` — fails if the new held-back rule for spec edits is dropped (the phrase is absent today).
 
-### - [ ] Task 3: Shared detail file `skills/review/trackers.md`
+### - [x] Task 3: Shared detail file `skills/review/trackers.md`
 
 Files: create `skills/review/trackers.md` (imitate `skills/find-root-cause/root-cause-tracing.md`: a detail file with headings, no frontmatter); modify `tests/skills/check-skills.sh`.
 

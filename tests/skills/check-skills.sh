@@ -72,6 +72,17 @@ grep -qF "git apply --cached" "$SKILLS_DIR/finish-branch/SKILL.md" && fail "fini
 grep -qF "even though the code change is committed" "$SKILLS_DIR/update-spec/SKILL.md" \
   || fail "update-spec: no held-back rule for spec edits beside committed code"
 
+# Shared tracker file for review and brainstorm.
+T="$SKILLS_DIR/review/trackers.md"
+if [ -f "$T" ]; then
+  for want in ".gitignore" "Resuming" "pause" "Resuming <tracker file> at item <N>" \
+    "## Working directory" "## Tracker format" "## Replies" "## Resuming"; do
+    grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
+  done
+else
+  fail "skills/review/trackers.md missing"
+fi
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
