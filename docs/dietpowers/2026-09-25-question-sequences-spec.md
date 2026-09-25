@@ -39,7 +39,9 @@ The shared paragraph in every `SKILL.md` ("Ask your partner questions one at a t
 
 The code steps always commit on the feature branch: `execute-plan` (one commit per task), `tdd`, `find-root-cause`, `handle-feedback`, and fixes in a code review. They never commit to `main` or `master`. In these skills the shared commit paragraph becomes: if you are on `main`, `master` or the plan's `Base:` branch, ask once to create the feature branch (`I'll create branch <name> for this work. Reply with yes or no.`); otherwise commit as you go. A partner who declines gets no code work until a branch is agreed.
 
-The commit question and held-back mode stay for documents only: `brainstorm`, `write-plan`, `update-spec`, and fixes in a spec or plan review. The plan's `Commits:` line now covers the spec and plan only. `prove-done` makes no commits of its own: its commit paragraph and step 3's commit clause are removed, and code it fixes goes through `tdd`. `finish-branch` step 3's commit proposal shrinks to the spec and plan, when they were held back; the per-task patch splitting goes. When document commits are held back, `update-spec` leaves spec and plan edits on disk even though the code change is committed; otherwise it commits them with the code change. `review`'s commit paragraph and its step 2 say: fixes in a code review follow the code-step rule; fixes in a spec or plan review follow the document rule.
+The commit question and held-back mode stay for documents only: `brainstorm`, `write-plan`, `update-spec`, and fixes in a spec or plan review. Whatever the answer, the work moves to the named feature branch; declining holds back commits only. The plan's `Commits:` line now covers the spec and plan only. `prove-done` makes no commits of its own: its commit paragraph and step 3's commit clause are removed, and code it fixes goes through `tdd`. `finish-branch` step 3's commit proposal shrinks to the spec and plan, when they were held back; the per-task patch splitting goes. When document commits are held back, `update-spec` leaves spec and plan edits on disk even though the code change is committed; otherwise it commits them with the code change. `review`'s commit paragraph and its step 2 say: fixes in a code review follow the code-step rule; fixes in a spec or plan review follow the document rule.
+
+> **Changed 2026-09-25:** declining the commit question now still moves the work to the feature branch (from: the answer did not say whether a branch was created). Why: review trackers recorded `main` when documents were held back, so the PR record and resume missed them. Approved by the partner in plan review (finding 7).
 
 ### Shared detail file: `skills/review/trackers.md`
 
@@ -84,7 +86,9 @@ Holds the formats shared by review and brainstorm. Review points to it as `${CLA
 
 ### Other files
 
-- `README.md`: bring every description of the old loop in line (the flow-diagram lines ending `fix; one re-review`, the bullet containing `One re-review checks only the fixes`, the change notes `Runs one scoped re-review, then stops.` and the one beginning `Reports outcome first and appends rejected findings`, including its `(one fresh review of the revision)`; the bullet `Questions come one at a time,` which says multiple choice; the sentence beginning `Every skill that asks you anything gained the same rule`, and the sentence beginning `Every skill that commits asks once`), and add change notes for plain-text questions, trackers, pause and resume, the PR record, and commits in the code steps.
+- `README.md`: bring every description of the old loop in line (the flow-diagram lines ending `fix; one re-review`, the bullet containing `One re-review checks only the fixes`, the change notes `Runs one scoped re-review, then stops.` and the one beginning `Reports outcome first and appends rejected findings`, including its `(one fresh review of the revision)`; the bullet `Questions come one at a time,` which says multiple choice; the sentence beginning `Every skill that asks you anything gained the same rule`, the sentence beginning `Every skill that commits asks once`, the sentence beginning `Committing needs your approval once per piece of work`, finish-branch's change note `(spec and plan, then one per plan task, splitting shared files by task)`, and its PR-description change note mentioning review findings),
+
+> **Changed 2026-09-25:** three more README passages added (from the earlier list). Why: the commit change makes them false. Approved by the partner in plan review (finding 8). and add change notes for plain-text questions, trackers, pause and resume, the PR record, and commits in the code steps.
 - `tests/skills/check-skills.sh`: the assertions under Success criteria.
 
 ## Inputs and failure behavior
@@ -101,7 +105,7 @@ Holds the formats shared by review and brainstorm. Review points to it as `${CLA
 ## Success criteria
 
 1. `bash tests/skills/check-skills.sh` exits 0, and asserts:
-   - no file under `skills/` contains `AskUserQuestion` or `Review notes`;
+   - no file under `skills/` contains `with the AskUserQuestion tool:` (the old paragraph) or `Review notes`;
    - every `SKILL.md` contains `Reply with`;
    - `skills/review/trackers.md` exists and contains `.gitignore`, `Resuming` and `pause`;
    - `skills/review/SKILL.md` and `skills/brainstorm/SKILL.md` have a `Depth:` line naming `trackers.md`, and the brainstorm path resolves;
@@ -109,6 +113,8 @@ Holds the formats shared by review and brainstorm. Review points to it as `${CLA
    - `README.md` contains none of `one re-review`, `section in the spec or plan`, `multiple choice`;
    - no file under `skills/` contains `Which option?`;
    - `execute-plan`, `tdd`, `find-root-cause`, `handle-feedback` and `prove-done` SKILL.md do not contain `if commits are approved`, `review` SKILL.md contains `code-step rule`, and `finish-branch` SKILL.md does not contain `git apply --cached`.
+> **Changed 2026-09-25:** criterion 1 bans the old paragraph's text, not the tool name (from: any mention of `AskUserQuestion`). Why: the new paragraph names the tool it forbids, so the old test could never pass. Approved by the partner in plan review (finding 1).
+
 2. Manual trial on cells with the dev companion, results logged in its problems.md. Precondition: the old 3d-tunnel review is finished, or its old `_pause.md` and tracker are moved into `.claude/dietpowers/trackers/_old/` by hand with the partner's go-ahead. Checks: questions arrive as plain text ending in `Reply with`; each blocker and major is asked before any fix; `pause` stops the sequence; "resume" in a fresh session re-asks the item verbatim with the lead-in; the fix check runs only after every item is decided; afterwards `git check-ignore -v` on a tracker path names `.claude/dietpowers/.gitignore`, and `git status --porcelain --untracked-files=all` lists nothing under `.claude/dietpowers/`.
 
 ## Assumptions
