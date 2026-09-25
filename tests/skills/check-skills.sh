@@ -76,7 +76,7 @@ grep -qF "even though the code change is committed" "$SKILLS_DIR/update-spec/SKI
 T="$SKILLS_DIR/review/trackers.md"
 if [ -f "$T" ]; then
   for want in ".gitignore" "Resuming" "pause" "Resuming <tracker file> at item <N>" \
-    "## Working directory" "## Tracker format" "## Replies" "## Resuming"; do
+    "## Working directory" "## Tracker format" "## Replies" "## Resuming" "### N. [open|answered]"; do
     grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
   done
 else
@@ -95,17 +95,17 @@ grep -qF "git diff [FIX_BASE] HEAD" "$SKILLS_DIR/review/code-reviewer.md" || fai
 
 # Review: tracker, pause, fix check; no Review notes append or old consultation rule.
 R="$SKILLS_DIR/review/SKILL.md"
-for want in "pause" "## Tracker format" "Depth: trackers.md" "Second pass"; do
+for want in ", or pause." "## Tracker format" "Depth: trackers.md" "Second pass" "if it has none"; do
   grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
 done
 grep -rqF "Review notes" "$SKILLS_DIR" && fail "a skill still appends Review notes"
-for gone in "a notice, not a question" "Dispatch no third review"; do
+for gone in "a notice, not a question" "Dispatch no third review" "as in steps 4 to 6"; do
   grep -qF "$gone" "$R" && fail "review SKILL.md: old text '$gone'"
 done
 
 # Brainstorm: tracker, pause and a pointer to the shared file that resolves.
 B="$SKILLS_DIR/brainstorm/SKILL.md"
-for want in "pause" "## Tracker format" "Depth: ../review/trackers.md"; do
+for want in ", or pause." "## Tracker format" "Depth: ../review/trackers.md"; do
   grep -qF "$want" "$B" || fail "brainstorm SKILL.md: missing '$want'"
 done
 [ -f "$SKILLS_DIR/brainstorm/../review/trackers.md" ] || fail "brainstorm: ../review/trackers.md does not resolve"
