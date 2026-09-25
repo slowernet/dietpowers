@@ -53,7 +53,7 @@ Ordered by how far each departs from what Superpowers users may expect.
 - **Spec, plan and code each get a hostile review.** A `review` skill reviews the spec, the plan and the code, each with its own checklist. The reviewer is a fresh subagent on the same model, which has not seen the conversation.
 - **Code is reviewed once, over the whole branch**, with a test-suite run and a check for tests that cannot fail.
 - **Fixes are checked once more, then the loop stops.** Code fixes start with a failing test. One re-review checks only the fixes, and anything still open goes to you. In subagent-driven mode, Superpowers allows up to five fix rounds per task.
-- **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer.
+- **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer. Committing needs your approval once per piece of work; pushing and merging always ask.
 - **Brainstorming aims for the simplest well-grounded spec.** It looks up how the problem is usually solved, always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time,** as multiple choice with a recommended option and a reason.
@@ -86,7 +86,7 @@ claude --plugin-dir /path/to/dietpowers
 
 ## What changed in each skill
 
-Compared with superpowers-slim. Every skill that asks you anything gained the same rule: one question at a time, multiple choice, recommended option first with a reason. Most also gained a line asking for short messages that lead with the question or outcome.
+Compared with superpowers-slim. Every skill that asks you anything gained the same rule: one question at a time, multiple choice, recommended option first with a reason. Most also gained a line asking for short messages that lead with the question or outcome. Every skill that commits asks once per piece of work before its first commit, to create the branch and commit to it; nothing is pushed or merged without asking, and nothing is committed to `main` or `master`.
 
 - **`brainstorm`** (was `brainstorming`)
   - Description says only when to use it; "You MUST" and the summary of steps are gone.

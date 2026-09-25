@@ -9,6 +9,8 @@ The spec is what the plan, the reviewers and prove-done check against, so when s
 
 Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
+Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+
 1. State the change in one sentence and name the spec sections it touches. If it alters the goal or adds a feature, stop and invoke the `brainstorm` skill instead.
 2. Get your partner's approval, recommending an option with a reason. If the change came from your partner, confirm your one-sentence reading of it. If your partner declines, edit nothing, and have the calling skill drop the change; in a review, record the finding as rejected by your partner.
 3. Edit only the affected sections and keep them consistent: Constraints, Inputs and failure behavior, Success criteria, References. If there is a plan, update its Global Constraints and References where they copy what you changed, and the matching tasks and their Tests.

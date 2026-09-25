@@ -7,6 +7,8 @@ description: Use when implementing any feature or bugfix, before writing impleme
 
 A test written before the code states what the code should do; a test written after tends to restate what the code happens to do. Write each test first.
 
+Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+
 1. Write one small test for one behaviour. Name it after the behaviour, not the function. Inside a plan, the task's Tests are the starting set; add a test when you find a behaviour they miss.
 2. Run it. Confirm it fails, and that it fails because the feature is missing rather than from a typo or a broken setup. A test that passes at this point is testing something that already works; fix the test.
 3. Write the simplest code that makes it pass and works for every valid input, not only the test's. No extra options, no unrelated cleanup, nothing the test does not ask for.

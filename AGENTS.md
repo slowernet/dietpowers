@@ -7,7 +7,7 @@
 - Skill text changes how the model behaves. An edit that reads well can still make behaviour worse, so test skill changes by running them, and do not rely on reading them.
 - Claude Code loads a `SKILL.md` in full when the skill is invoked. It loads other files in the skill's directory only when the model follows a pointer to them. Put detail in a separate file and point to it.
 - A skill's `description` says when to use the skill. It must not summarise the steps: the model treats a summary as a shortcut and skips the body. No script checks this.
-- Every `SKILL.md` has the same parts: title, an optional short opening (why the step matters, how to ask questions), numbered steps, a terminal-state line naming the next skill, and pointers to detail files.
+- Every `SKILL.md` has the same parts: title, an optional short opening (why the step matters, how to ask questions, the commit approval rule), numbered steps, a terminal-state line naming the next skill, and pointers to detail files.
 
 ## Testing
 
