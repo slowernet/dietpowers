@@ -191,7 +191,7 @@ Each skill lists what grounds its changes. Sources, strongest first:
 
 ## Contributing
 
-See `AGENTS.md`. Run `bash tests/skills/check-skills.sh` after any skill edit.
+See `AGENTS.md`. Run `bash tests/skills/check-skills.sh` after any skill edit. To trial the flow, also load `dev/` (`--plugin-dir /path/to/dietpowers/dev`), which logs problems with the skills to `.claude/dietpowers/problems.md` in the project you are working on.
 
 ## License
 

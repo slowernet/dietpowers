@@ -1,0 +1,9 @@
+{
+	"name": "dietpowers-dev",
+	"description": "Development-only companion for dietpowers: records problems with the flow to a local log. Not published.",
+	"version": "0.1.0",
+	"author": {
+		"name": "slowernet"
+	},
+	"license": "MIT"
+}
