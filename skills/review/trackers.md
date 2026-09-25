@@ -66,7 +66,7 @@ Example review item:
 Offer `pause` only on tracker items: brainstorm's questions and review's finding questions. The commit, menu and terminal questions do not offer it.
 
 - An option, or your partner's own alternative, is an answer. Record it as the item's Decision and move on.
-- A question, an aside or a complaint is not an answer. Respond to it, then ask the same item again.
+- A question, an aside or a complaint is not an answer. Respond to it, then ask the same item again, keeping the problem statement in the question; if you reword it, record the new wording as the item's Question.
 - An empty or unclear reply is not an answer either. Ask again.
 - `pause` stops the sequence. The item stays `open` with its Question recorded. Say `Paused at item <N>. Say "resume" any time.` and stop.
 
@@ -78,8 +78,8 @@ Resume only when your partner asks.
 
 1. A review tracker is unfinished while it has an `open` or `fix` item, or `Second pass: pending`. A brainstorm tracker is unfinished while its `Spec:` line is empty.
 2. Look only at your own stages: brainstorm resumes `brainstorm` trackers; review resumes `spec-review`, `plan-review` and `code-review` trackers.
-3. Take the most recently modified unfinished tracker whose `Branch:` is the current branch. Say which one, and list any other unfinished ones on this branch. If there is none on this branch, say so, change nothing, and give the number of unfinished trackers on other branches.
+3. Take the most recently modified unfinished tracker whose `Branch:` is the current branch. Say which one, and list any other unfinished ones on this branch, before the lead-in in step 5. If there is none on this branch, say so, change nothing, and give the number of unfinished trackers on other branches.
 4. If the tracker cannot be read or is missing a field, say which, and ask whether to continue with what is readable or leave the tracker.
-5. Find the first `open` item. In a review tracker, an item with no Verified line was never checked: check it now, as in the first pass (a minor finding with one reasonable fix gets a notice; the rest are asked). Otherwise, show any text the item points to, then say `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.` and ask its recorded Question verbatim.
+5. Find the first `open` item. In a review tracker, an item with no Verified line was never checked: check it now, as in the first pass (a minor finding with one reasonable fix gets a notice; the rest are asked). Otherwise, say `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.` exactly, with nothing inserted, then give one line of the item's Finding and any text the item points to, and ask its recorded Question verbatim.
 6. If the reply describes a change to the design, route it through the `dietpowers:update-spec` skill (in a brainstorm, fold it into the design instead), and set back to `open` any earlier item it affects.
 7. Then carry on. In a review: the remaining `open` items, then the `fix` items, then the second pass if it is still `pending`. In a brainstorm: the remaining `open` items; with none open, resume at the earliest unfinished brainstorm step, judged from the tracker: more questions if the coverage in brainstorm step 3 is incomplete, then the approaches, the design, its approval, and the spec.
