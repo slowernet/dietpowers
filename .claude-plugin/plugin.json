@@ -1,7 +1,6 @@
 {
 	"name": "dietpowers",
 	"description": "A linear, test-first development flow for Claude Code: spec, adversarial review, plan, adversarial review, TDD, adversarial review, PR",
-	"version": "0.1.0",
 	"author": {
 		"name": "slowernet"
 	},
