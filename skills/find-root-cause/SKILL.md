@@ -9,7 +9,7 @@ Fixes made before the cause is known tend to move a bug rather than remove it, a
 
 Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
-Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+Before your first commit for this piece of work, unless your partner has already answered, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, create the branch but commit nothing: wherever a step says to commit, leave the work on disk instead, and the `finish-branch` skill proposes the commits at the end.
 
 ## Find the root cause
 
@@ -41,6 +41,6 @@ Before your first commit for this piece of work, unless your partner has already
 
 If investigation shows the cause is genuinely environmental, timing-dependent, or external, document what you ruled out, add appropriate handling and monitoring, and say so explicitly.
 
-Terminal state: if another skill invoked you, return to it and continue where it stopped. Otherwise, commit the change and its tests, then invoke the `review` skill on the code.
+Terminal state: if another skill invoked you, return to it and continue where it stopped. Otherwise, commit the change and its tests if commits are approved, then invoke the `review` skill on the code.
 
 Depth: root-cause-tracing.md, guards-after-a-fix.md, condition-based-waiting.md
