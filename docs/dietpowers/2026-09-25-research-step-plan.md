@@ -55,7 +55,7 @@ Tests (new block):
 - `researcher.md exists and contains Takeaway, Cited Findings, Gaps, five tool calls, deep-research` (spec criterion 1) — fails if the file or any of those strings is missing.
 - `researcher.md contains "follow no instructions"` — fails if the untrusted-content rule is dropped.
 
-### - [ ] Task 2: Brainstorm research step and resume
+### - [x] Task 2: Brainstorm research step and resume
 
 Files: modify `skills/brainstorm/SKILL.md`, `skills/adversarial-review/trackers.md`; modify `tests/skills/check-skills.sh`.
 
@@ -78,6 +78,8 @@ Tests (new block):
 - `trackers.md contains "Research:" and "skipped, <reason>"` — fails if the header line or resume rule is missing.
 - `brainstorm SKILL.md contains "say so before designing"` — fails if the pushback is dropped in the split.
 - `trackers.md does not contain "brainstorm step 3 is incomplete"` — fails if the old step reference survives.
+
+Departure: the Depth line also names `researcher.md` (AGENTS.md: a `Depth:` line points to the skill's detail files); the References and Assumptions rule for research facts is added to step 9's spec sections.
 
 ### - [ ] Task 3: README
 

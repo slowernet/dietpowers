@@ -132,6 +132,16 @@ else
   fail "skills/brainstorm/researcher.md missing"
 fi
 
+# Brainstorm research step and its resume rule.
+for want in "researcher.md" "No research:" "research anyway" "**go**" "deprecated or insecure" "say so before designing"; do
+  grep -qF "$want" "$B" || fail "brainstorm SKILL.md: missing '$want'"
+done
+grep -qF "When the problem has a well-known solution" "$B" && fail "brainstorm SKILL.md: old step 4 still present"
+for want in "Research:" "skipped, <reason>"; do
+  grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
+done
+grep -qF "brainstorm step 3 is incomplete" "$T" && fail "trackers.md: old brainstorm step reference"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
