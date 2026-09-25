@@ -38,38 +38,28 @@ Each skill hands on to the next and asks before each new stage. Other steps can 
 /dietpowers:find-root-cause the export test fails on empty reports
 ```
 
-## Why dietpowers
+## How dietpowers differs from its upstreams
 
-- **Superpowers' process outgrew current models.** It added capitalised instructions in every session, a subagent per task with a ledger of briefs and review packages, and up to five review rounds per task. Opus 5 "verifies its own work without being told to" ([Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5#task-scope-and-over-verification)), and frontier models have "gotten better at executing work inline" ([Superpowers 6.4](https://blog.fsck.com/2026/09/21/superpowers-6.4/)). The extra structure repeats or fights that work, so features take longer and cost more ([issue #2017](https://github.com/obra/superpowers/issues/2017)).
-- **Anthropic reached the same conclusion** for Claude Code itself, removing over 80% of its system prompt because "we were overconstraining Claude Code, both through our system prompt and in our CLAUDE.md files and skills" ([post](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)).
-- **A better working experience.** The flow should keep you focused and moving: short messages that lead with the decision, one question at a time with a recommendation, the agent carrying on without check-ins it doesn't need, and design steps that suggest simpler and more creative options instead of only executing the request.
-- **Keeps:** a spec agreed before any code, test-first implementation, and review by a fresh reviewer that has not seen the conversation.
-- **Drops:** always-on instructions, per-task subagents and ledgers, emphatic rules, and code written into plans.
-- **Aims for:** one linear flow biased toward simplicity and correctness, without parallel agents.
+Ordered by how far each departs from what Superpowers users may expect.
 
-## What dietpowers changes from superpowers-slim
-
-Ordered by impact, and by how far each departs from what Superpowers users expect.
-
+- **Imperative skill names.** `brainstorm`, `write-plan`, `execute-plan`, `tdd`, `review`, `prove-done`, `finish-branch`, `find-root-cause` and `handle-feedback` replace Superpowers' gerund-based naming convention.
+- **The spec stays the source of truth.** Any change to specified behavior, whether it comes up in planning, execution, review, debugging, PR feedback or from you, goes through one `update-spec` skill, which the other skills invoke once the spec is approved: you approve the change, only the affected sections change, a dated note under each changed section records what changed, why, and who approved it, and the spec is committed with the code. A new goal or feature goes back to `brainstorm` instead. Before finishing, `prove-done` pairs each success criterion with the test that shows it and lists every change since approval, so you see drift in one place.
 - **Plan files carry no implementation code.** Superpowers writes every line into the plan, for an executor with "zero context for our codebase and questionable taste." Each task in the plan includes paths, signatures, behaviors and tests, and names the code change that would make each test fail. Our rationale:
   - Superpowers plan code is written without being run, then rewritten during execution.
   - Opus 5.5 is "strongest on multistep work in a real repository, such as carrying a change through a large code base until its tests pass" ([Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5)).
   - Plan defects are often missing decisions, such as an ignored error-handling convention. Paths, interfaces, behaviors and tests capture those; code review catches code bugs later.
   - Shorter plans are faster to read and approve.
   - The trade-off: less is fixed before you approve, and tests are written during execution. Code review checks for tests that could never fail.
-- **Every stage gets a hostile review in a clean context.** A `review` skill reviews the spec, the plan and the code, each with its own checklist. The reviewer is a fresh subagent on the same model, which has not seen the conversation. Superpowers dropped its spec and plan reviewers in 5.0.6 and, in subagent-driven mode, reviews code task by task.
-- **Code is reviewed once, over the whole branch**, with the prompt from [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run and a check for tests that cannot fail. superpowers-slim reviewed the last commit with a general "senior reviewer" prompt.
+- **Spec, plan and code each get a hostile review.** A `review` skill reviews the spec, the plan and the code, each with its own checklist. The reviewer is a fresh subagent on the same model, which has not seen the conversation.
+- **Code is reviewed once, over the whole branch**, with a test-suite run and a check for tests that cannot fail.
 - **Fixes are checked once more, then the loop stops.** Code fixes start with a failing test. One re-review checks only the fixes, and anything still open goes to you. In subagent-driven mode, Superpowers allows up to five fix rounds per task.
 - **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer.
 - **Brainstorming aims for the simplest well-grounded spec.** It looks up how the problem is usually solved, always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
-- **The spec stays the source of truth.** Any change to specified behavior, whether it comes up in planning, execution, review, debugging, PR feedback or from you, goes through one `update-spec` skill: you approve it, only the affected sections change, a dated note under each changed section records what changed, why, and who approved it, and the spec is committed with the code. A new goal or feature goes back to `brainstorm` instead. Before finishing, `prove-done` pairs each success criterion with the test that shows it and lists every change since approval, so you see drift in one place.
 - **Questions come one at a time,** as multiple choice with a recommended option and a reason.
-- **Prompts tuned for Opus 5.5.** The skill and reviewer prompts are being revised, one file at a time, against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill).
-- **One order and one folder.** All tasks are executed, then the branch is reviewed, then the work is finished; superpowers-slim's skills disagreed about when review happens. Specs and plans sit side by side in `docs/dietpowers/` as `YYYY-MM-DD-<topic>-spec.md` and `-plan.md`.
-- **Imperative skill names.** `brainstorm`, `write-plan`, `execute-plan`, `tdd`, `review`, `prove-done`, `finish-branch`, `find-root-cause` and `handle-feedback` replace Superpowers' gerund-based naming convention.
+- **Prompts tuned for Opus 5.5.** Skill and reviewer prompts were grounded against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill).
 
-## What superpowers-slim changed from superpowers
+### What superpowers-slim changed from superpowers
 
 Taken from the [superpowers-slim README](https://github.com/tim-hub/superpowers-slim). It largely based these changes on Anthropic's post [The new rules of context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models) (July 2026).
 
