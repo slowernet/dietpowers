@@ -1,206 +1,124 @@
-# Question sequences: consultation, pause and resume, second review pass
+# Question sequences: plain-text questions, review consultation, pause and resume
 
-Source: first user feedback, `/Users/eliot/code/cells/.claude/dietpowers/problems.md` (three entries dated 2026-09-25, session 7643b94c).
+Source: first user feedback, `/Users/eliot/code/cells/.claude/dietpowers/problems.md` (three entries dated 2026-09-25, session 7643b94c), and the partner's notes in `tmp/notes.txt` (2026-09-25).
+
+> **Changed 2026-09-25:** simplified after two spec reviews and a plan review had grown the design to 206 lines. Dropped: the `Pause here` option and the question tool, `_pause.md`, git snapshots and the 10% full re-review threshold, cross-tracker duplicate matching, `recheck`, stale-pause and branch checks, and the merge-message rule. Questions become plain text; the tracker is the pause point; the second pass is always a fix check. Why: the partner judged the deferral support overcomplicated and preferred plain-text questions after using them in this session. Approved by the partner ("simplify").
 
 ## Goal
 
-Make the question sequences in `dietpowers:review` and `dietpowers:brainstorm` safe to step away from and hard to shortcut:
-
-1. Review puts every blocker and major finding to the partner one at a time. A pause, rejection or unclear answer never licenses the model to decide the rest.
-2. Every sequence question offers a pause. A paused sequence can be resumed on request, from disk alone, in a fresh session.
-3. The second review pass happens only after every first-pass item is decided. It is scoped to the fixes, runs at most once, and review ends when no blocker or major finding is open.
-4. Review history leaves the spec and plan and goes to the pull request.
+1. Every skill asks its questions in plain text, so the explanation, asides, clarifying questions and the partner's own alternatives all fit in one exchange.
+2. Review puts every blocker and major finding to the partner, one at a time. No reply licenses the model to decide the rest itself.
+3. A review or brainstorm can be paused with a one-word reply and resumed later, in a fresh session, from a tracker file on disk.
+4. The second review pass runs once, after every first-pass item is decided, and checks only the fixes.
+5. Review history goes to the pull request, not into the spec or plan.
 
 ## Constraints
 
 Later steps copy these values exactly.
 
-- Pause option label: `Pause here`. Its description: `You can resume any time.` It is always the last option.
-- When a question needs four real options, `Pause here` is dropped, and the question text ends with ` (type pause in Other to step out)`.
-- Resume lead-in: `Resuming at <item>. If anything changed while you were away, say so in Other.`
-- Working directory: `.claude/dietpowers/` at the project root (the root of the git work tree). When the model creates it, it also writes `.claude/dietpowers/.gitignore` containing the single line `*`. If the directory already exists without that file, the model writes the file.
-- Tracker path: `.claude/dietpowers/trackers/YYYY-MM-DD-<topic>-<stage>.md`. `<stage>` is one of `brainstorm`, `spec-review`, `plan-review`, `code-review`. `<topic>` is the kebab-case topic of the spec (for a spec or plan review, the `<topic>` in the spec's filename; for a code review with no spec, the current branch name with `/` replaced by `-`). The date is the day the tracker was created. Each review run gets its own tracker; when the name is taken, append `-2`, `-3` and so on to the topic.
-- Pause file path: `.claude/dietpowers/trackers/_pause.md`. There is at most one. Files in `trackers/` whose names start with `_` are never trackers.
+- Question ending: every question ends with a line of the form `Reply with <a>, <b>, or pause.` (for skills with no tracker: `Reply with <a> or <b>.`).
+- Resume lead-in: `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.`
+- Working directory: `.claude/dietpowers/` at the root of the git work tree. When the model creates it, it writes `.claude/dietpowers/.gitignore` containing the single line `*`, and writes that file if the directory exists without it.
+- Tracker path: `.claude/dietpowers/trackers/YYYY-MM-DD-<topic>-<stage>.md`. `<stage>` is `brainstorm`, `spec-review`, `plan-review` or `code-review`. `<topic>` is the topic in the spec's filename; for a code review with no spec, the branch name with `/` replaced by `-`. If the name is taken, append `-2`, `-3` and so on to the topic. Every run of a stage gets a new tracker.
 - Severity grades: `blocker`, `major`, `minor`. Yardstick for specs and plans: "Would the plan or the code go wrong, or have to guess, if this stayed?" Yes means blocker or major; no means minor. Code reviewer mapping: CRITICAL and HIGH → blocker, MEDIUM → major, LOW → minor.
-- Review item statuses: `open`, `fix`, `fixed`, `deferred`, `won't fix`, `rejected`, `duplicate of <tracker file>#N`, `recheck`. `open` and `recheck` await a decision; `fix` is decided and awaits fixing. Brainstorm question statuses: `open`, `answered`.
-- Second pass header values: `pending`, `fix check done (N findings)`, `full re-review done (N findings)`, `not run (<reason>)`.
-- Snapshot: a git tree object of the work tree, tracked and untracked files alike (ignored files excluded), made without touching HEAD, refs, the index or the working tree:
-  ```bash
-  tmp=$(mktemp) && cp "$(git rev-parse --git-path index)" "$tmp" \
-    && GIT_INDEX_FILE="$tmp" git add -A && GIT_INDEX_FILE="$tmp" git write-tree; rm -f "$tmp"
-  ```
-  It prints the tree id. If it prints no id, or a recorded snapshot later cannot be read (`git cat-file -e <id>` fails), the fix diff is unknown and the second pass is the full re-review. FIX_BASE is a snapshot taken just before the first fix; FIX_HEAD is one taken just after the last fix of the pass. Snapshots need no cleanup: nothing references them, so `git gc` prunes them once they are older than `gc.pruneExpire` (two weeks by default).
-- Full re-review threshold: the fix diff changes more than 10% of the reviewed material. All counts come from `git diff --numstat`. For a spec or plan: (added + deleted lines in `git diff --numstat FIX_BASE FIX_HEAD -- <file>`) / (the file's line count in FIX_BASE, from `git show FIX_BASE:<file> | wc -l`). For code: (added + deleted lines in `git diff --numstat FIX_BASE FIX_HEAD`) / (added + deleted lines in `git diff --numstat <BASE_SHA> FIX_BASE`).
-- Reviewer dispatches per review run: at most two (the first review, then one fix check or one full re-review).
+- Review item statuses: `open` (awaiting a decision), `fix` (decided, awaiting the fix), `fixed`, `deferred`, `won't fix`, `rejected`, `duplicate of N`. Brainstorm item statuses: `open`, `answered`.
+- `Second pass:` values: `pending`, `done (N findings)`, `not run (<reason>)`.
+- Reviewer dispatches per review run: at most two (the first review and one fix check).
 - The published plugin stays hook-free.
 
 ## Design
 
+### Plain-text questions (all skills)
+
+The shared paragraph in every `SKILL.md` ("Ask your partner questions one at a time with the AskUserQuestion tool...") is replaced by one that says: ask one question at a time, in plain text, in a single message. State the problem and why it matters, give the options with the recommended one first and a one-line reason each, and end with the question ending. Do not use the AskUserQuestion tool; some clients show only the question and drop the text around it. The partner may reply with an option, their own alternative, a question, or an aside.
+
+`finish-branch`'s integration menu is printed as written (its "Without the question tool" clause goes).
+
 ### Shared detail file: `skills/review/trackers.md`
 
-A new detail file holds the formats and rules shared by review and brainstorm: the working directory and its `.gitignore`, tracker format, statuses, pause handling, `_pause.md` format and resume procedure. `skills/review/SKILL.md` points to it as `${CLAUDE_SKILL_DIR}/trackers.md`. `skills/brainstorm/SKILL.md` points to it as `${CLAUDE_SKILL_DIR}/../review/trackers.md`. The steps that use these rules stay in each SKILL.md; the detail file holds formats, not steps.
+Holds the formats shared by review and brainstorm. Review points to it as `${CLAUDE_SKILL_DIR}/trackers.md`; brainstorm as `${CLAUDE_SKILL_DIR}/../review/trackers.md`. Both SKILL.md files end with a `Depth:` line naming it. Sections:
 
-**Tracker format.** The tracker must stand on its own: a fresh session with no conversation must be able to resume from it and the repo alone. The header names:
-
-- the stage and the reviewed document (for brainstorm, the request, and the spec path once written);
-- the branch, and for a code review the base commit;
-- every value passed to the first reviewer: the prompt file, and whichever of `SPEC_FILE_PATH`, `PLAN_FILE_PATH`, `SPEC_AND_PLAN_PATHS`, `REQUIREMENTS` (verbatim) and `BASE_SHA` apply. The second pass reuses them;
-- the commit reviewed (or `uncommitted`), FIX_BASE, FIX_HEAD and the fix commits;
-- `Second pass:` with one of the second pass header values, updated when it changes.
-
-Each review item holds:
-
-- a heading `### N. [status] <title> (<severity>, review <1|2>, issue <k>)`, where review 1 is the first review of the run and review 2 its second pass;
-- Finding: the failure scenario and the proposed fix, in the reviewer's substance, not a one-line label;
-- Verified: file:line, or the calculation;
-- Options: the options put to the partner, or `notice only` for a minor finding fixed without asking;
-- Decision: a dated list, appended to and never overwritten, of each choice with its reason (the partner's, or the model's for a minor fix);
-- Fix: the section or file changed, and the commit (or `uncommitted`);
-- Depends on: other items whose change should reopen this one, if any.
-
-Each brainstorm item holds the question, its options exactly as asked, and the answer. Before asking a question that refers to text presented to the partner (the approaches and trade-offs, the design for approval), the model writes that text into the tracker as presented, and the item points to it.
-
-The model updates the tracker after each answer and after each fix. A run is unfinished while any item is `open`, `recheck` or `fix`, or while `Second pass:` is `pending` and no review-2 item exists. Every run of a stage, including a rerun on the same document, starts a new tracker; an unfinished run continues only when the partner names it in a resume request.
-
-Duplicates: in both passes, a finding that matches an item in this tracker, or a closed item in any earlier tracker for the same document (for a code review, the same branch), is marked `duplicate of <tracker file>#N` and not asked. It goes to the partner only when it brings evidence the earlier item did not have, and then with the earlier decision and reason shown. Brainstorm has no duplicate matching.
-
-**Answers during a sequence.** Nothing short of an answer to the current item moves the sequence on, and nothing licenses deciding the remaining items.
-
-- A listed option, or an Other with a usable answer (for example "Zou-He, but only at the outlet"), is an answer.
-- `Pause here`, or an Other that says `pause`, pauses.
-- A rejected question call pauses with reason `rejected`. The model writes `_pause.md` and stops, with no follow-up question.
-- An Other that asks a question back (for example "what is this for?") is not a pause. The model answers it, then asks the same item again.
-- An Other that is a complaint, unclear or empty gets one clarifying question, which carries `Pause here`. If the reply still does not answer the item, the model writes `_pause.md` and stops.
-
-**Pausing** writes `_pause.md` with:
-
-- the tracker path, branch, stage (and the skill and document), date and item;
-- the item's own question and its options, exactly as asked (never a clarifying question);
-- the partner's reason, or `none given`;
-- the resume instruction: re-ask the question verbatim with the resume lead-in.
-
-It makes no guess about what the aside affects. When a sequence answers the item `_pause.md` points to, by any route, `_pause.md` is deleted. If `_pause.md` already exists, the new pause overwrites it. The model's message confirming the pause names the pause it replaced (stage and item). The replaced sequence's tracker stays on disk with its open items. After writing the file, the model stops the sequence and tells the partner they can say "resume" at any time.
-
-**Resuming** happens only when the partner asks to resume. No skill checks for `_pause.md` otherwise.
-
-1. If `_pause.md` does not exist, change nothing and report that there is no pause point, with a suggestion: list the trackers on the current branch that are unfinished (as defined above), newest first, which the partner can name to resume. Mention unfinished trackers on other branches by count only. A tracker the partner names is resumed from step 5, at its first unfinished item.
-2. Read `_pause.md`. If a field is missing or unreadable, say which and treat it as no pause point (step 1). If the tracker it names is missing, say so and ask whether to drop the pause (delete `_pause.md`). If its stage belongs to the other skill (brainstorm vs the three review stages), invoke that skill to resume.
-3. Stale check. If the paused item is no longer `open` or `recheck` in its tracker, or a newer tracker exists for the same document, say the pause is stale and why, and ask: resume the old item anyway, or drop the pause.
-4. Branch check. If the recorded branch is not checked out, ask: check it out (recommended), resume on the current branch, or cancel. If the branch no longer exists, say so, and ask whether to resume on the current branch or drop the pause. If a checkout fails, report git's message, change nothing, and ask again without the checkout option.
-5. If the item points to presented text in a brainstorm tracker, show that text. Re-ask the recorded question verbatim, led by the resume lead-in.
-   - A normal answer continues the pass.
-   - An Other that describes a change to the design goes through `dietpowers:update-spec` when a spec exists (for brainstorm, it is folded into the design in progress). The earlier items it touches are marked `recheck`, and the paused question is then asked again.
-   - Answers otherwise follow "Answers during a sequence"; `Pause here` pauses again (rewrite `_pause.md`).
-6. After an answer, delete `_pause.md` and continue the run: first the `open` and `recheck` items, then the `fix` items, then the second pass if `Second pass: pending`.
+- **Working directory**: the directory and its `.gitignore`. If it cannot be written, report it and carry on without a tracker; pausing is then unavailable, and the partner is told.
+- **Tracker format**. The tracker must let a fresh session with no conversation continue the run. Header: stage; the reviewed document (brainstorm: the request, then the spec path once written); branch; every value passed to the first reviewer (prompt file, and whichever of `SPEC_FILE_PATH`, `PLAN_FILE_PATH`, `SPEC_AND_PLAN_PATHS`, `REQUIREMENTS` verbatim, `BASE_SHA` apply); `Second pass:`. Paths are relative to the repository root. Each review item: a heading `### N. [status] <title> (<severity>, review <1|2>)`; Finding (the failure scenario and proposed fix, not a label); Verified (file:line or the calculation); Question (the question as asked, kept while the item is `open`; `notice only` for a minor fixed without asking); Decision (the choice and its reason, dated); Fix (what changed, and the commit or `uncommitted`). Each brainstorm item: the question as asked and the answer. Text the partner is asked to approve (approaches, the design) is written into the tracker before the question about it.
+- **Replies**. An option or the partner's own alternative is an answer. A question, an aside or a complaint is not: respond to it, then ask the same item again. `pause` stops the sequence: the item stays `open` with its Question, the model says `Paused at item <N>. Say "resume" any time.`, and stops. Nothing but an answer to the current item moves the sequence on, and nothing licenses deciding the remaining items.
+- **Resuming**, only when the partner asks. A tracker is unfinished while it has an `open` or `fix` item, or `Second pass: pending` with no review-2 item. Take the newest unfinished tracker whose header names the current branch; say which, and list any other unfinished ones on this branch. With none on this branch, say so, change nothing, and give the count of unfinished trackers on other branches. Show any text the item refers to, then re-ask its recorded Question verbatim after the resume lead-in. If the reply describes a design change, route it through `dietpowers:update-spec` (in brainstorm, fold it into the design) and set back to `open` any earlier item it affects. Then continue: `open` items, then `fix` items, then the second pass if it is still due.
 
 ### Review (`skills/review/SKILL.md`)
 
-Opening paragraph: drop the "One round of fixes and one re-review" rationale sentence and replace it with the exit rule's rationale in one sentence: a review ends when nothing blocking is open, because a reviewer will always find something.
-
-Description: add "or to resume a paused review" to the trigger clause.
-
-Steps, replacing today's steps 4 to 7 (steps 1 to 3 are unchanged except as noted):
-
-- Step 0 (before step 1): if the partner asked to resume, follow the resume procedure in `${CLAUDE_SKILL_DIR}/trackers.md` and skip to where it leads.
-- Step 1 adds: the reviewer grades each finding with the severity grades.
-- New step after dispatch: create the tracker, set `Second pass: pending`, then check each finding against the files. Record each one, with its substance and evidence, as an item.
-  - A minor finding that holds and has one reasonable fix is marked `fix`. The partner gets a one-line notice per finding (the finding and why it holds) without waiting.
-  - Every blocker and major finding goes to the partner one at a time, most severe first, with the recommendation first. So does any finding the model wants to reject, downgrade, or fix in more than one reasonable way, and any fix that changes the approved spec (in a spec review, the approved design). Options are chosen from fix as proposed, an alternative fix, defer, won't fix and reject, at most three plus `Pause here`.
-  - The model may raise a grade on its own. It lowers one only by asking.
-- Fixing starts only when no item is `open` or `recheck`. Before the first fix, take the FIX_BASE snapshot and record it in the tracker. Fix `fix` items most severe first. A `recheck` item that was already fixed and is now decided differently goes back to `fix`; its fix undoes or replaces the earlier change with a new commit on top, never by rewriting history. Code fixes start with a failing test that reproduces the finding. When a fix to a plan or code would alter behavior the approved spec describes, invoke `dietpowers:update-spec` first. Commit if commits are approved. Mark each item `fixed` with its fix location and commit. If a fix cannot be made (for example, its failing test cannot be made to pass), the item goes back to `open` with the evidence (what was tried, the failing output) and is put to the partner like any other item. After the last fix, take the FIX_HEAD snapshot and record it.
-- Second pass, only if anything was fixed; otherwise set `Second pass: not run (nothing fixed)`.
-  - Compute the full re-review threshold. At or below it, dispatch a fix check: the same prompt file with FINDINGS (the fixed items' substance), FIX_BASE and FIX_HEAD. Above it, dispatch a full review of the whole target with none of these. When the report arrives, first write its findings to the tracker as `open` review-2 items, then update `Second pass:`.
-  - The second reviewer never receives the tracker.
-  - Triage the review-2 items as in the first pass, duplicates included.
-  - In a fix check, a finding outside the fix diff is recorded as out of scope and put to the partner as an ordinary item, with the reviewer's grade, and defer recommended unless it is a blocker.
-  - Decide and fix these items as in the first pass. Dispatch no further review. A severe problem found in a fix is an item for the partner.
-- Report, leading with the outcome: what was fixed, deferred, won't-fixed and rejected, with reasons, and anything open. Nothing is appended to the spec or plan.
-
-Terminal state: review is done when no blocker or major item is `open`, `recheck` or `fix`. Recommend continuing only when no blocker or major item is `deferred` either. The continue, revise and stop menus are otherwise unchanged. A revise run is a new run with a new tracker.
+- Description adds "or to resume a paused review".
+- Opening: replace the "One round of fixes and one re-review..." sentence with: review ends when nothing blocking is open, because a reviewer will always find something.
+- First step: if the partner asked to resume, follow Resuming in the tracker file.
+- Steps 1 to 3 as today; step 1 adds that the reviewer grades each finding.
+- After the report: create the tracker with `Second pass: pending`, check each finding against the files, and record it.
+  - A minor finding that holds and has one reasonable fix is marked `fix`, with a one-line notice to the partner (the finding and why it holds). No wait.
+  - Blocker and major findings, and any finding the model wants to reject, downgrade or fix more than one way, or whose fix changes the approved spec, go to the partner one at a time, most severe first. Options come from fix as proposed, another fix, defer, won't fix and reject. The model may raise a grade on its own and lowers one only by asking.
+- Fixing starts when no item is `open`. Fix `fix` items most severe first; code fixes start with a failing test; a fix that alters specified behavior goes through `dietpowers:update-spec` first. Commit if approved. A fix that cannot be made goes back to `open` with the evidence (what was tried, the failing output) and is asked like any item.
+- Second pass, if anything was fixed (otherwise `not run (nothing fixed)`): dispatch one fix check the same way as the first review, adding `FINDINGS` (the fixed items' substance). The reviewer never receives the tracker. Write its findings to the tracker as `open` review-2 items before setting `Second pass: done (N findings)`. A finding that matches an item in this tracker is marked `duplicate of N` and not asked unless it brings new evidence, and then with the earlier decision shown. Findings outside the fixes come with the reviewer's grade; recommend defer unless it is a blocker. Decide and fix review-2 items as in the first pass. If the fix check fails or returns nothing usable, report it and set `not run (<reason>)`. Never dispatch again.
+- Report, leading with the outcome: fixed, deferred, won't fix and rejected, with reasons, and anything open. Nothing is appended to the spec or plan.
+- Terminal state: done when no blocker or major item is `open` or `fix`. Recommend continuing only when none is `deferred` either. Menus otherwise unchanged; a revise run is a new run with a new tracker.
 
 ### Reviewer prompts
 
-- `spec-reviewer.md` and `plan-reviewer.md` each add a `Severity: [blocker|major|minor]` line to the finding format, with the yardstick sentence and "Name the failure scenario that justifies the grade."
-- `code-reviewer.md` keeps its CRITICAL/HIGH/MEDIUM/LOW scale. The mapping to blocker/major/minor is applied by the review skill, and recorded in `trackers.md`.
-- In all three, the sentence "If it also supplied FINDINGS, this is a re-review: check only whether each of those findings is fixed, and whether the fixes broke anything." is replaced by a fix-check mode. If FINDINGS, FIX_BASE and FIX_HEAD are supplied, read `git diff [FIX_BASE] [FIX_HEAD]`, which includes files that were untracked. Check only whether each finding is fixed and whether the diff broke anything it touches. Report anything noticed outside the diff under a separate `Out of scope` heading, not as an ISSUE, with the same severity line (for code, the same severity scale) as an ISSUE. The code fix check still runs the full test suite once and reports failures as ISSUEs.
+- `spec-reviewer.md` and `plan-reviewer.md` add `Severity: [blocker|major|minor]` after `Check:`, with the yardstick and "Name the failure scenario that justifies the grade."
+- All three: the FINDINGS sentence becomes a fix check. Check only whether each finding is fixed and whether its fix broke anything it touches. Report anything else under `Out of scope`, graded like a finding.
+- `code-reviewer.md`: in a fix check, the scope in "What to Review" and Process step 1 is replaced by the files the fixes touched; the test suite still runs once, and a failure is a `BUG`. The Severity Guide is unchanged.
 
 ### Brainstorm (`skills/brainstorm/SKILL.md`)
 
-- Description: add "or to resume a paused brainstorm".
-- New first step: if the partner asked to resume, follow the resume procedure in `${CLAUDE_SKILL_DIR}/../review/trackers.md`.
-- Before the first question, create the tracker (stage `brainstorm`, topic chosen now and reused for the spec filename). Every question in the sequence ends with `Pause here`, and answers and pauses follow `trackers.md`. The tracker records each question, its options and the answer, and the approaches and the design as presented, before the questions that refer to them.
-- The commit-approval question and the design-approval question also carry `Pause here`.
-- Both review and brainstorm SKILL.md end with a `Depth:` line naming the tracker file (`trackers.md` in review, `../review/trackers.md` in brainstorm), as `AGENTS.md` requires for detail files.
+- Description adds "or to resume a paused brainstorm".
+- First step: if the partner asked to resume, follow Resuming in `${CLAUDE_SKILL_DIR}/../review/trackers.md`.
+- Before the first question, create the tracker (stage `brainstorm`; the topic chosen now is reused for the spec filename). Record each question and answer, and the approaches and design before asking about them. Replies follow the tracker file.
 
 ### Finish branch (`skills/finish-branch/SKILL.md`)
 
-- Step 6's "review findings fixed, and findings rejected with the reason" bullet becomes: from the review trackers in `.claude/dietpowers/trackers/` (skip `_` files) whose header names this branch's spec or plan (from the plan's `Spec:` line and the plan's path), plus code-review trackers that name this branch: each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
-- Local merge: the merge commit message stays an ordinary summary. It mentions the review process only for items whose Decision list has more than one entry.
+- Step 6's review bullet becomes: from the trackers in `.claude/dietpowers/trackers/` whose header names this branch, each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
 - Trackers are never deleted by any skill.
-
-> **Changed 2026-09-25:** code-review trackers are selected by branch name only (from "this branch and its base commit"). Why: the base commit changes on every rebase, which would drop the branch's own findings; a reused branch name pulling in an old feature's trackers is an accepted edge case. Approved by the partner in plan review (finding 2): "do the thing least overengineered toward edge cases".
 
 ### Other files
 
-- `README.md`: update the change notes for review, brainstorm and finish-branch, and note trackers and pausing. Also bring every description of the old loop in line with the second-pass rule: the three flow-diagram lines ending `hostile review; fix; one re-review` (and `hostile review of the branch; fix; one re-review`), the bullet containing `One re-review checks only the fixes`, and the change note `Runs one scoped re-review, then stops.`
-- `tests/skills/check-skills.sh`: add the assertions listed under Success criteria.
+- `README.md`: bring every description of the old loop in line (the flow-diagram lines ending `fix; one re-review`, the bullet containing `One re-review checks only the fixes`, the change notes `Runs one scoped re-review, then stops.` and the one beginning `Reports outcome first and appends rejected findings`), and add change notes for plain-text questions, trackers, pause and resume, and the PR record.
+- `tests/skills/check-skills.sh`: the assertions under Success criteria.
 
 ## Inputs and failure behavior
 
-- **Partner answers**: a listed option, Other text, or a rejected call. Handled as in "Answers during a sequence".
-- **Resume with no `_pause.md`, or a malformed one**: resume steps 1 and 2; nothing changes on disk.
-- **Tracker referenced by `_pause.md` missing**: resume step 2.
-- **Stale pause**: resume step 3.
-- **Recorded branch missing, not checked out, or checkout fails**: resume step 4. The model never checks out a branch without the partner choosing it.
-- **Untracked files** (commits held back): snapshots include them, so the fix diff and the threshold see them.
-- **Snapshot fails or is gone** (no id printed, for example in a repo with no index yet; or pruned by `git gc` before a late resume): report it and dispatch the full re-review, since the fix diff is unknown.
-- **Topic collision** (a tracker with the same name for a different document or run): append `-2`, `-3` and so on.
-- **Writing `.claude/dietpowers/` fails** (read-only filesystem): report it and continue the sequence without a tracker. Pause then has nowhere to go, so `Pause here` is left off, and the partner is told why.
-- **Second reviewer fails or returns nothing usable**: report it. The first-pass decisions stand, and review ends with `Second pass: not run (<reason>)`.
-- **Session dies mid-run without a pause**: the tracker shows the run is unfinished; resume step 1 lists it, and naming it in a resume request continues it.
+- **Partner replies**: as in Replies. An empty or unclear reply is not an answer: ask again.
+- **Resume with no unfinished tracker on this branch**: no-op with a report, as in Resuming.
+- **Tracker unreadable or missing fields**: say which field, and ask whether to continue with what is readable or leave the tracker.
+- **Working directory not writable**: as in Working directory.
+- **Fix cannot be made**: back to `open` with evidence.
+- **Fix check fails**: `Second pass: not run (<reason>)`, first-pass decisions stand.
+- **Session dies mid-run**: the tracker shows the run unfinished; "resume" continues it.
 
 ## Success criteria
 
-1. `bash tests/skills/check-skills.sh` exits 0.
-2. `check-skills.sh` asserts, and passes on the result:
-   - `skills/review/SKILL.md`, `skills/brainstorm/SKILL.md` and `skills/review/trackers.md` contain `Pause here`;
-   - no file under `skills/` contains `Review notes`;
-   - `skills/review/spec-reviewer.md` and `plan-reviewer.md` contain `Severity: [blocker|major|minor]`;
-   - `skills/review/trackers.md` exists and contains `_pause.md`, `.gitignore` and `Resuming at`;
-   - all three reviewer prompts contain `FIX_BASE` and `FIX_HEAD`, and none contains `this is a re-review`;
-   - `skills/review/SKILL.md` and `skills/brainstorm/SKILL.md` each have a `Depth:` line naming `trackers.md`.
-3. Manual trial on the cells repo with the dev companion, recorded as problems.md entries or their absence.
-   - Precondition: the partner has finished the old 3d-tunnel review, or its old-format `_pause.md` and tracker have been moved into `.claude/dietpowers/trackers/_old/` by hand with the partner's go-ahead. No skill does this.
-   - A spec review with at least one blocker or major finding asks each one before any fix. Choosing `Pause here` writes `_pause.md`. A fresh session asked to "resume" re-asks the question verbatim with the lead-in. The second pass runs only after every item is decided.
-   - Afterwards, `git check-ignore -v` on a tracker path names the rule in `.claude/dietpowers/.gitignore`, and `git status --porcelain --untracked-files=all` lists nothing under `.claude/dietpowers/`. Before the change, both fail in cells.
+1. `bash tests/skills/check-skills.sh` exits 0, and asserts:
+   - no file under `skills/` contains `AskUserQuestion` or `Review notes`;
+   - every `SKILL.md` contains `Reply with`;
+   - `skills/review/trackers.md` exists and contains `.gitignore`, `Resuming` and `pause`;
+   - `skills/review/SKILL.md` and `skills/brainstorm/SKILL.md` have a `Depth:` line naming `trackers.md`, and the brainstorm path resolves;
+   - `spec-reviewer.md` and `plan-reviewer.md` contain `Severity: [blocker|major|minor]`; all three prompts contain `Out of scope`;
+   - `README.md` contains neither `one re-review` nor `section in the spec or plan`.
+2. Manual trial on cells with the dev companion, results logged in its problems.md. Precondition: the old 3d-tunnel review is finished, or its old `_pause.md` and tracker are moved into `.claude/dietpowers/trackers/_old/` by hand with the partner's go-ahead. Checks: questions arrive as plain text ending in `Reply with`; each blocker and major is asked before any fix; `pause` stops the sequence; "resume" in a fresh session re-asks the item verbatim with the lead-in; the fix check runs only after every item is decided; afterwards `git check-ignore -v` on a tracker path names `.claude/dietpowers/.gitignore`, and `git status --porcelain --untracked-files=all` lists nothing under `.claude/dietpowers/`.
 
 ## Assumptions
 
-- Only brainstorm and review run question sequences. Other skills' one-off questions don't get `Pause here`.
-- `${CLAUDE_SKILL_DIR}/../review/trackers.md` resolves in an installed plugin, because skills sit side by side under the plugin's `skills/` directory.
-- Severity mapping for code: CRITICAL and HIGH → blocker, MEDIUM → major, LOW → minor.
-- Deferring a blocker or major is allowed, but the terminal state then doesn't recommend continuing.
-- Resuming from a named tracker without `_pause.md` asks the first unfinished item from its recorded options, or fresh if none were recorded.
-- Fixes for minor findings run with the rest, after every item is decided.
-- A fix check dispatches a `general-purpose` subagent on the same model, the same way as the first review.
+- The plain-text rule applies to all ten skills; only review and brainstorm keep trackers and offer `pause`.
+- `${CLAUDE_SKILL_DIR}/../review/trackers.md` resolves in an installed plugin: skills sit side by side, and `skills/tdd/SKILL.md` already points to `../find-root-cause/`.
+- Deferring a blocker or major is allowed; the terminal state then doesn't recommend continuing.
+- Held-back commits need nothing special: the fix check reads the files, not a diff.
 
 ## References
 
-- `/Users/eliot/code/cells/.claude/dietpowers/problems.md`: the partner's agreed points 1 to 6 (pause option, trackers, gitignore, PR record, self-contained trackers, single `_pause.md`) and the model's re-review proposals.
-- `skills/review/SKILL.md` steps 4 to 7 (commit 995ca81): the "notice, not a question" rule, the single re-review with FINDINGS, and the `Review notes` append being replaced.
-- `skills/review/spec-reviewer.md`, `plan-reviewer.md`, `code-reviewer.md`: the FINDINGS re-review sentence. `code-reviewer.md` Severity Guide: the CRITICAL/HIGH/MEDIUM/LOW definitions.
-- `skills/finish-branch/SKILL.md` step 6: the PR description bullets.
-- `AGENTS.md`: detail goes in separate files that SKILL.md points to; `${CLAUDE_SKILL_DIR}` usage; the published plugin has no hook.
-- git-write-tree(1): writes a tree object from the index named by `GIT_INDEX_FILE`; git(1): `GIT_INDEX_FILE` selects an alternate index file. `git rev-parse --git-path index` gives the real index's path, also in worktrees.
-- git-gc(1) and `gc.pruneExpire` (git-config(1)): unreachable objects older than the expiry (default `2.weeks.ago`) are pruned.
-- `git stash create` was considered and rejected: it ignores untracked files and prints nothing on a tree whose only changes are untracked.
-- Self-ignoring directory: a `.gitignore` containing `*` inside the directory, as pytest writes in `.pytest_cache/` and `python -m venv` writes in the venv since Python 3.13.
-- Google engineering practices, "The Standard of Code Review": approve once a change definitely improves overall code health, even if it isn't perfect. https://google.github.io/eng-practices/review/reviewer/standard.html
-- IEEE 1028 and Fagan inspection: rework is verified by the moderator; re-inspection happens only when rework is large. The 5 to 10% threshold is commonly cited but not from a single primary source.
+- `/Users/eliot/code/cells/.claude/dietpowers/problems.md`: the partner's points 1 to 6 and the re-review proposals. Points 1 (pause option), 2 and 6 (`_pause.md`) are superseded by this design.
+- `tmp/notes.txt`: plain-text questions over the question tool; concern about deferral complexity.
+- `skills/review/SKILL.md` at 995ca81: steps 4 to 7 being replaced, including the `Review notes` append.
+- Reviewer prompts: the FINDINGS sentence at the top of each; `code-reviewer.md` "What to Review", Process step 1, `### BUG N` format and Severity Guide.
+- `skills/finish-branch/SKILL.md` step 4 (menu, question-tool clause) and step 6 (PR bullets).
+- `AGENTS.md`: SKILL.md anatomy including `Depth:`; detail in separate files; `${CLAUDE_SKILL_DIR}`; hook-free published plugin.
+- Self-ignoring directory: a `.gitignore` containing `*` inside the directory, as pytest writes in `.pytest_cache/` and `python -m venv` writes since Python 3.13.
+- Google engineering practices, "The Standard of Code Review": approve once a change definitely improves overall code health. https://google.github.io/eng-practices/review/reviewer/standard.html
 
 ## Out of scope
 
 - A SessionStart hook in the published plugin.
-- Pause support in skills other than brainstorm and review, including handle-feedback's single question.
-- Changing the code reviewer's own severity scale.
-- Follow-up: a behavioral test harness that can answer AskUserQuestion, so criterion 3 can be automated.
+- Follow-ups, each its own spec: rename `review` to `adversarial-review`; a research-and-ground step in brainstorm; an express path for changes small enough to do in one pass; a behavioral test harness for criterion 2.
