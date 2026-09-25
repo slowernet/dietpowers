@@ -103,6 +103,13 @@ for gone in "a notice, not a question" "Dispatch no third review"; do
   grep -qF "$gone" "$R" && fail "review SKILL.md: old text '$gone'"
 done
 
+# Brainstorm: tracker, pause and a pointer to the shared file that resolves.
+B="$SKILLS_DIR/brainstorm/SKILL.md"
+for want in "pause" "## Tracker format" "Depth: ../review/trackers.md"; do
+  grep -qF "$want" "$B" || fail "brainstorm SKILL.md: missing '$want'"
+done
+[ -f "$SKILLS_DIR/brainstorm/../review/trackers.md" ] || fail "brainstorm: ../review/trackers.md does not resolve"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

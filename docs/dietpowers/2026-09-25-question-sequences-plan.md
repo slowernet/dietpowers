@@ -129,7 +129,7 @@ Tests (new block):
 - `no file under skills/ contains Review notes`.
 - `review SKILL.md contains Second pass and does not contain "a notice, not a question" or "Dispatch no third review"` — fails if old steps 4 or 6 survive.
 
-### - [ ] Task 6: Brainstorm skill
+### - [x] Task 6: Brainstorm skill
 
 Files: modify `skills/brainstorm/SKILL.md`; modify `tests/skills/check-skills.sh`.
 
