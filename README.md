@@ -2,11 +2,25 @@
 
 **Work in progress.** 
 
-A linear, test-first development flow tuned for `claude-opus-5-5`.
+An opinionated, test-first development flow tuned for latest Opus models (`claude-opus-5-5` at time of writing).
 
 dietpowers is a fork of [tim-hub/superpowers-slim](https://github.com/tim-hub/superpowers-slim) by [Tim Bai](https://tim.bai.uno/), itself a cut-down fork of [obra/superpowers](https://github.com/obra/superpowers) by [Jesse Vincent](https://blog.fsck.com) and [Prime Radiant](https://primeradiant.com/). 
 
-## The flow
+## Motivation
+
+I've been a happy and grateful Superpowers user in Claude Code, but over time I developed a sense that the workflow had lost efficiency. My naive read was that the capabilities Opus has gained are eating the scaffold, or at least fighting against it somehow. Late 2025 models often felt like pair programming with an enthusiastic puppy, but the baseline has improved and different guardrails now make more sense to me. Most of all, I wanted to have a more thoughtful, focused conversation with the agent. Specific shortcomings I noticed:
+
+- **No enforced path through the flow.** Nothing made the agent move from one skill to the next in order, so steps would get missed.
+- **Subagent-driven development wasn't worth its cost.** 
+- **Prompts written to support every coding agent diluted efficiency.** Supporting many agent tools meant the prompts and workflows were not tuned for the newest Opus models and harnesses. See below for details.
+- **Spec drift.** Decisions made after the spec was written did not  make it back into the spec.
+- **No required review of specs and plans.** Mistakes in a spec or plan passed straight into the code: garbage in, garbage out.
+- **Breaks between questions.** Gaps in the questioning broke my focus on intricate problems.
+- **No room to think inside a question.** Multiple-choice prompts left no natural place to digress, ask a follow-up or step away. dietpowers asks for one decision at a time, in plain text with the reasoning alongside, so I can explore a tangent, question the options, propose my own, or pause and pick up later.
+
+I started from superpowers-slim because it had already done part of this work. 
+
+## The skill flow
 
 ```
 brainstorm        design, one question at a time; spec written
@@ -108,7 +122,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Reports outcome first and appends rejected findings with their reasons to a `Review notes` section in the spec or plan, then asks whether to continue, revise (one fresh review of the revision) or stop.
   - `spec-reviewer.md` (was `brainstorming/spec-document-reviewer-prompt.md`, which nothing used): rewritten as a hostile review with nine checks, including input limits, failure behavior, over-complex designs, reference facts, and security and data access (untrusted input, permissions, unbounded reads, missing transactions, deprecated or insecure practices).
   - `plan-reviewer.md` (was `writing-plans/plan-document-reviewer-prompt.md`, also unused): rewritten as a hostile review with eight checks, including tests that cannot fail, missing task context, and security and data access (N+1 queries, unbounded reads, skipped permission checks, deprecated APIs).
-  - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in the plan, a check for deprecated or insecure practices, and a read-only rule. It reviews every change since the base branch, committed or not, instead of the last commit.
+  - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in the plan, a check of the seams between plan tasks, a check for deprecated or insecure practices, and a read-only rule. It reviews every change since the base branch, committed or not, instead of the last commit.
 - **`write-plan`** (was `writing-plans`)
   - No implementation code and no TDD micro-steps.
   - Header: `Spec: <path> @ <commit>` marking the approved spec (or `@ uncommitted`), `Base:` branch, `Commits:` approved or held back, then goal, architecture, Global Constraints and shared References.

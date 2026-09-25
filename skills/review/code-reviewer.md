@@ -26,7 +26,7 @@ Scope: every change since the base, committed or not. Behavior the spec or plan 
 
 Run `git diff [BASE_SHA]` for tracked changes and `git status --porcelain` for new untracked files. Read the full file for every changed or new file, not only the changed lines. Bugs hide in how new code interacts with the code around it.
 
-If a plan was supplied, read the `Departure:` lines under each of its tasks. The builder records there each place it departed from the plan; check each departure.
+If a plan was supplied, read the `Departure:` lines under each of its tasks. The builder records there each place it departed from the plan; check each departure. Then check each seam between tasks: wherever one task's output feeds another task's input, confirm the two actually fit, since each task can look right on its own while the join is wrong.
 
 Run the project's test suite once. A failing test, or an error or warning in its output, is a finding.
 
