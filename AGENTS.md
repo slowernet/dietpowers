@@ -1,13 +1,15 @@
 # dietpowers
 
-10 skills for Claude Code, forked from [tim-hub/superpowers-slim](https://github.com/tim-hub/superpowers-slim), which was reduced from [obra/superpowers](https://github.com/obra/superpowers). The repo holds skills only: no session-start hook, and no support for other agent tools.
+10 skills for Claude Code, forked from [tim-hub/superpowers-slim](https://github.com/tim-hub/superpowers-slim), which was reduced from [obra/superpowers](https://github.com/obra/superpowers). The published plugin holds skills only: no session-start hook (the dev-only `dev/` companion has one) and no support for other agent tools.
 
 ## Working on the skills
 
 - Skill text changes how the model behaves. An edit that reads well can still make behaviour worse, so test skill changes by running them, and do not rely on reading them.
 - Claude Code loads a `SKILL.md` in full when the skill is invoked. It loads other files in the skill's directory only when the model follows a pointer to them. Put detail in a separate file and point to it.
-- A skill's `description` says when to use the skill. It must not summarise the steps: the model treats a summary as a shortcut and skips the body. No script checks this.
-- Every `SKILL.md` has the same parts: title, an optional short opening (why the step matters, how to ask questions, the commit approval rule), numbered steps, a terminal-state line naming the next skill, and pointers to detail files.
+- A skill's `description` says what the skill produces and when to use it, with the words a user would say. It must not summarise the steps: the model treats a summary as a shortcut and skips the body. No script checks this.
+- Every `SKILL.md` has the same parts: title; an optional short opening (why the step matters, how to ask questions, the commit approval rule); numbered steps, optionally grouped under headings and followed by short notes or a table; a terminal-state line naming the next skill or the skill to return to; and, where detail files exist, a `Depth:` line pointing to them.
+- Name other skills in full, as `dietpowers:<name>`. Bare names can collide with other commands, such as Claude Code's built-in `/review`.
+- Refer to files in a skill's own directory as `${CLAUDE_SKILL_DIR}/<file>`; Claude Code replaces it with the absolute path when the skill loads.
 
 ## Testing
 
@@ -15,9 +17,11 @@ Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the 
 
 `docs/testing.md` explains the behavioral tests and how to read their results.
 
-To try the flow on a real project, load the dev companion plugin as well: `claude --plugin-dir /path/to/dietpowers --plugin-dir /path/to/dietpowers/dev`. Its session-start hook tells the agent to record problems with the skills (unclear or conflicting instructions, skipped steps, wrong hand-offs, loops, frustration) in `.claude/dietpowers/problems.md` at the project root. Bring those entries back here. The dev plugin is never published.
+To try the flow on a real project, load the dev companion plugin as well: `claude --plugin-dir /path/to/dietpowers --plugin-dir /path/to/dietpowers/dev`. Its session-start hook asks the agent to record problems with the skills (unclear or conflicting instructions, skipped steps, wrong hand-offs, loops, frustration) in `.claude/dietpowers/problems.md` at the project root. Bring those entries back here. The dev plugin is never published.
 
 ## Communication and writing style
+
+These rules apply to docs and reports. Skill and reviewer prompts follow current prompting guidance for the target model instead (see the README's sources).
 
 ### Reading level and plainness
 - Write for a smart non-specialist. Short, plain sentences.
