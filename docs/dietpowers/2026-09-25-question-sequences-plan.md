@@ -93,7 +93,7 @@ Tests (new block):
 
 ### - [ ] Task 4: Reviewer prompts
 
-Files: modify `skills/review/spec-reviewer.md`, `skills/review/plan-reviewer.md`, `skills/review/code-reviewer.md` (see Working-tree note); modify `tests/skills/check-skills.sh`.
+Files: modify `skills/review/spec-reviewer.md`, `skills/review/plan-reviewer.md`, `skills/review/code-reviewer.md`; modify `tests/skills/check-skills.sh`.
 
 Interfaces: consumes `FINDINGS` and, for code, `FIX_BASE` (a commit), supplied by Task 5.
 
@@ -164,7 +164,7 @@ Tests (new block):
 
 ### - [ ] Task 8: README
 
-Files: modify `README.md` (see Working-tree note); modify `tests/skills/check-skills.sh`.
+Files: modify `README.md`; modify `tests/skills/check-skills.sh`.
 
 Context: spec "Other files".
 
