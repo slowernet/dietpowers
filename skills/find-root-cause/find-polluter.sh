@@ -41,7 +41,8 @@ if [ -e "$POLLUTION_CHECK" ]; then
 fi
 
 COUNT=0
-for TEST_FILE in $TEST_FILES; do
+while IFS= read -r TEST_FILE; do
+  [ -n "$TEST_FILE" ] || continue
   COUNT=$((COUNT + 1))
 
   # Skip if pollution already exists
@@ -71,7 +72,7 @@ for TEST_FILE in $TEST_FILES; do
     echo "  cat $TEST_FILE         # Review test code"
     exit 1
   fi
-done
+done <<< "$TEST_FILES"
 
 echo ""
 echo "✅ No polluter found - all tests clean!"

@@ -19,7 +19,7 @@ WORKTREE_PATH=$(git rev-parse --show-toplevel)
 ```
 
 3. Establish the base branch from the plan, the conversation, or the branch's upstream. If it is not already known, ask — merging into the wrong base is expensive to undo.
-4. If the branch already has an open pull request, skip the menu: push the new commits and report the URL. Otherwise, present the menu below as one question, recommending "Push and create a Pull Request" unless your partner has said otherwise, then wait. Without the question tool, print it exactly as written. The integration decision is your partner's.
+4. If the branch already has an open pull request, skip the menu: push the new commits, report the URL, and if another skill invoked you, return to it. Otherwise, present the menu below as one question, recommending "Push and create a Pull Request" unless your partner has said otherwise, then wait. Without the question tool, print it exactly as written. The integration decision is your partner's.
 
 Normal repo, or a worktree on a named branch:
 

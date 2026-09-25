@@ -39,6 +39,6 @@ Ask your partner questions one at a time with the AskUserQuestion tool: multiple
 
 If investigation shows the cause is genuinely environmental, timing-dependent, or external, document what you ruled out, add appropriate handling and monitoring, and say so explicitly.
 
-Terminal state: inside a plan, return to the `execute-plan` skill and continue the task. Otherwise, commit the fix and its test, then invoke the `review` skill on the code.
+Terminal state: if another skill invoked you, return to it and continue where it stopped. Otherwise, commit the change and its tests, then invoke the `review` skill on the code.
 
 Depth: root-cause-tracing.md, guards-after-a-fix.md, condition-based-waiting.md

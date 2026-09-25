@@ -13,7 +13,7 @@ Ask your partner questions one at a time with the AskUserQuestion tool: multiple
 2. Commit everything. The reviewer reads files and commits, never this conversation.
 3. Dispatch a `general-purpose` subagent whose whole prompt is: "Read `<absolute path to the prompt file>` and follow it," then the placeholder values. Run it on the same model as this session, in the foreground, and wait for its report before doing anything else. Send nothing else: never your session history, never a pasted diff.
 4. Check each finding against the files. Reject any that does not hold, and keep the evidence.
-5. Note the current commit as `FIX_BASE`. Fix every finding that holds, most severe first. For code, start each fix with a test that reproduces the finding and fails, then make it pass. When a fix would alter behavior the spec describes, invoke the `update-spec` skill before making it. Commit.
+5. Note the current commit as `FIX_BASE`. Fix every finding that holds, most severe first. For code, start each fix with a test that reproduces the finding and fails, then make it pass. A spec or plan under review is edited directly. When a fix to a plan or code would alter behavior the approved spec describes, invoke the `update-spec` skill before making it. Commit.
 6. If you fixed anything, dispatch one re-review the same way, adding `FINDINGS`: the findings you fixed. For code, set `BASE_SHA` to `FIX_BASE`. Fix what holds the same way. Dispatch no third review.
 7. Report to your partner, leading with the outcome: what you fixed, what you rejected and why, and anything still open.
 
