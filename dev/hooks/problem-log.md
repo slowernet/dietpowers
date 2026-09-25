@@ -1,9 +1,7 @@
-dietpowers development session. While following any dietpowers skill, watch for problems with the skills themselves: an instruction that is unclear, contradicts another, or does not fit the situation; a step you skipped or could not follow; a hand-off to the wrong skill or none; a loop or a stall; a question to your partner that should not have been needed; or your partner seeming frustrated or correcting the flow. When you notice one, append a short entry to `.claude/dietpowers/problems.md` at the repository root, creating the file and folder if needed and never committing them:
+This is a dietpowers development session. The dietpowers skills are being tested, and problems with the skills themselves are logged to `.claude/dietpowers/problems.md` at the repository root (created when first needed, never committed). A problem is: an instruction that is unclear, contradicts another, or does not fit the situation; a step skipped or impossible to follow; a hand-off to the wrong skill or none; a loop or a stall; a question to the partner that should not have been needed; or the partner seeming frustrated or correcting the flow. Normal progress is not logged. Each problem gets one entry, and the task continues afterwards:
 
 ## <YYYY-MM-DD HH:MM> <skill> step <n>
-- Model: your exact model ID. Session: SESSION_ID.
+- Model: MODEL_ID. Session: SESSION_ID.
 - What happened: one or two sentences.
-- How you noticed: self-diagnosed, or what your partner said.
-- What you did about it.
-
-Write an entry only when something went wrong; do not log normal progress. Keep going with the task after writing it.
+- How it was noticed: self-diagnosed, or what the partner said.
+- What was done about it.
