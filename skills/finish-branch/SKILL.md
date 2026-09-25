@@ -46,17 +46,17 @@ Implementation complete. You're on a detached HEAD (externally managed workspace
 Reply with 1 or 2.
 ```
 
-5. **Merge locally:** `cd` to the main repo root, then `git checkout <base>`, `git pull`, `git merge <feature>`. On a conflict, run `git merge --abort` and report. Run the tests on the merged result. If they fail, report and offer to undo the merge with `git reset --hard ORIG_HEAD`, which needs your partner's confirmation; the branch and worktree stay in place and nothing was pushed. Once green, clean up per step 7, then `git branch -d <feature>`.
+5. **Merge locally:** first read this branch's trackers from `$WORKTREE_PATH/.claude/dietpowers/trackers/` (those whose `Branch:` is this branch) and keep their deferred, won't-fix and rejected findings, since cleanup may remove the worktree. Then `cd` to the main repo root, then `git checkout <base>`, `git pull`, `git merge <feature>`. On a conflict, run `git merge --abort` and report. Run the tests on the merged result. If they fail, report and offer to undo the merge with `git reset --hard ORIG_HEAD`, which needs your partner's confirmation; the branch and worktree stay in place and nothing was pushed. Once green, clean up per step 7, then `git branch -d <feature>`. In your final report, list the findings you kept, one line each.
 6. **Push and PR:** `git push -u origin <feature>`, or from a detached HEAD `git push origin HEAD:refs/heads/<new-branch>`. Open the request against the base branch using the forge's CLI or the URL it prints on push. Write the description from what this run produced, fitted to the repo's PR template if it has one:
    - what changed and why, in two or three sentences, with a link to the spec;
    - the commits, one line each, grouped by plan task (`git log <base>..HEAD`);
    - each success criterion with the test or command that shows it, from `prove-done`;
    - every `Changed` note in the spec since approval;
-   - review findings fixed, and findings rejected with the reason;
+   - from the trackers in `.claude/dietpowers/trackers/` whose `Branch:` is this branch: each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason;
    - anything left open.
 
    Report the URL. Keep the worktree — PR feedback gets fixed there.
-7. **Cleanup**, for a local merge only. Run it from outside the worktree, using the values captured in step 2. If `GIT_DIR` equals `GIT_COMMON` there is no worktree to remove. If `WORKTREE_PATH` is under `.worktrees/` or `worktrees/` it is ours: `git worktree remove "$WORKTREE_PATH"` then `git worktree prune`. Otherwise the host environment owns it — leave it in place.
+7. **Cleanup**, for a local merge only. Run it from outside the worktree, using the values captured in step 2. If `GIT_DIR` equals `GIT_COMMON` there is no worktree to remove. If `WORKTREE_PATH` is under `.worktrees/` or `worktrees/` it is ours: `git worktree remove "$WORKTREE_PATH"` then `git worktree prune`. Otherwise the host environment owns it — leave it in place. No skill deletes a tracker directly; removing a worktree removes the trackers inside it.
 
 Discarding the work happens only when your partner asks for it in so many words. Show exactly what will be deleted — branch, commit list, worktree path — and wait for them to type `discard` before `git branch -D`.
 

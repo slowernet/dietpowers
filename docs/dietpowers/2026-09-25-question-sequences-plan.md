@@ -147,7 +147,7 @@ Tests (new block):
 - `brainstorm SKILL.md contains pause, ## Tracker format and a Depth: line naming ../review/trackers.md`.
 - `[ -f skills/brainstorm/../review/trackers.md ]` — fails if the pointer target moves.
 
-### - [ ] Task 7: Finish branch: review record
+### - [x] Task 7: Finish branch: review record
 
 Files: modify `skills/finish-branch/SKILL.md`; modify `tests/skills/check-skills.sh`.
 

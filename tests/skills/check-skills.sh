@@ -110,6 +110,11 @@ for want in "pause" "## Tracker format" "Depth: ../review/trackers.md"; do
 done
 [ -f "$SKILLS_DIR/brainstorm/../review/trackers.md" ] || fail "brainstorm: ../review/trackers.md does not resolve"
 
+# Finish branch: the review record comes from the trackers.
+F="$SKILLS_DIR/finish-branch/SKILL.md"
+grep -qF ".claude/dietpowers/trackers/" "$F" || fail "finish-branch: does not read the trackers"
+grep -qF "findings rejected with the reason" "$F" && fail "finish-branch: old review bullet"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
