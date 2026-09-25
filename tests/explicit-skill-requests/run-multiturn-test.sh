@@ -53,6 +53,7 @@ claude -p "I need to implement an authentication system. Let's plan this out. Th
     --dangerously-skip-permissions \
     --max-turns 2 \
     --output-format stream-json \
+    --verbose \
     > "$TURN1_LOG" 2>&1 || true
 
 echo "Turn 1 complete."
@@ -68,6 +69,7 @@ claude -p "Good analysis. I've already written the plan to docs/superpowers/plan
     --dangerously-skip-permissions \
     --max-turns 2 \
     --output-format stream-json \
+    --verbose \
     > "$TURN2_LOG" 2>&1 || true
 
 echo "Turn 2 complete."
@@ -83,6 +85,7 @@ claude -p "executing-plans, please" \
     --dangerously-skip-permissions \
     --max-turns 2 \
     --output-format stream-json \
+    --verbose \
     > "$TURN3_LOG" 2>&1 || true
 
 echo "Turn 3 complete."
@@ -91,7 +94,7 @@ echo ""
 echo "=== Results ==="
 
 # Check if skill was triggered in Turn 3
-SKILL_PATTERN='"skill":"([^"]*:)?executing-plans"'
+SKILL_PATTERN='"skill":"dietpowers:executing-plans"'
 if grep -q '"name":"Skill"' "$TURN3_LOG" && grep -qE "$SKILL_PATTERN" "$TURN3_LOG"; then
     echo "PASS: Skill 'executing-plans' was triggered in Turn 3"
     TRIGGERED=true

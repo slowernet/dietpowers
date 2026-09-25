@@ -69,12 +69,12 @@ for i in $(seq 1 "$RUNS"); do
         exit 1
     fi
 
-    # "superpowers:brainstorming" has a colon before the name and does not match this.
+    # "dietpowers:brainstorming" has a colon before the name and does not match this.
     if grep -m1 '"subtype":"init"' "$LOG" | grep -q '"brainstorming"'; then
         polluted=$((polluted + 1))
     fi
 
-    if grep -qE '"skill":"superpowers:brainstorming"' "$LOG"; then
+    if grep -qE '"skill":"dietpowers:brainstorming"' "$LOG"; then
         fired=$((fired + 1))
     fi
 

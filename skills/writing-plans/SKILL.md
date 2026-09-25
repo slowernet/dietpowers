@@ -16,6 +16,8 @@ Write for an engineer who knows the language but nothing about this codebase or 
 7. Write steps as `- [ ]` checkboxes. Code steps carry the actual code in a fenced block. Verification steps carry the command and its expected output.
 8. Save to `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`.
 9. Re-read the plan against the spec: every requirement has a task, no placeholders remain, and names and types match across tasks.
+10. Commit the plan, then dispatch a fresh-context reviewer using `plan-document-reviewer-prompt.md`. Give it the plan and spec paths and nothing from this conversation. Fix each finding that holds; for each you reject, note why for your partner. Commit.
+11. Ask your partner to review the plan, along with any findings you rejected. Start nothing until they approve it.
 
 Never write "TBD", "add error handling", "handle edge cases", "write tests for the above", "similar to Task N", or any reference to a type or function no task defines. Repeat code rather than cross-referencing — tasks get read out of order.
 
