@@ -134,9 +134,11 @@ Terminal state: review is done when no blocker or major item is `open`, `recheck
 
 ### Finish branch (`skills/finish-branch/SKILL.md`)
 
-- Step 6's "review findings fixed, and findings rejected with the reason" bullet becomes: from the review trackers in `.claude/dietpowers/trackers/` (skip `_` files) whose header names this branch's spec or plan (from the plan's `Spec:` line and the plan's path), plus code-review trackers that name this branch and its base commit: each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
+- Step 6's "review findings fixed, and findings rejected with the reason" bullet becomes: from the review trackers in `.claude/dietpowers/trackers/` (skip `_` files) whose header names this branch's spec or plan (from the plan's `Spec:` line and the plan's path), plus code-review trackers that name this branch: each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
 - Local merge: the merge commit message stays an ordinary summary. It mentions the review process only for items whose Decision list has more than one entry.
 - Trackers are never deleted by any skill.
+
+> **Changed 2026-09-25:** code-review trackers are selected by branch name only (from "this branch and its base commit"). Why: the base commit changes on every rebase, which would drop the branch's own findings; a reused branch name pulling in an old feature's trackers is an accepted edge case. Approved by the partner in plan review (finding 2): "do the thing least overengineered toward edge cases".
 
 ### Other files
 
