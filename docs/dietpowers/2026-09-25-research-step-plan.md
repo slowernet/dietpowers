@@ -93,7 +93,7 @@ Tests (new block):
 - `README.md does not contain "New research step for well-known problems"` — fails if the old bullet survives.
 - `README.md contains "No research:"` — fails if the new bullet is missing.
 
-### - [ ] Task 4: Manual trial
+### - [x] Task 4: Manual trial
 
 Files: none.
 
@@ -102,3 +102,5 @@ Context: spec Success criteria 2.
 Behavior: the partner runs two brainstorms with the plugin loaded: one on a change with an outside dependency (research proposed with about three questions, dispatched on `go`, findings cited in the spec's References) and one on a repo-internal change such as renaming a skill (`No research: ...` printed, no research question asked). Record results, or problems, in the project's `.claude/dietpowers/problems.md` with the dev companion.
 
 Tests: the checks above; no automated test.
+
+Result (2026-09-25, run by the model with claude -p on a throwaway cells branch, since deleted): criterion 2 shown. Brainstorm A (WebGPU timestamp timer) first skipped with the correct skip line; `research anyway` produced a three-question proposal; `go` dispatched the researcher, whose cited findings corrected a remembered fact (Chrome quantizes to 65,536 ns, not 100 µs) and appeared in the spec's References with links. Brainstorm B (rename a case key) printed `No research: ...` and asked no research question. Problems logged in cells problems.md: researcher used 35 tool calls against a budget of about 15 and ran a headless-Chrome probe; B's skip line omitted the override sentence; `.claude/` is a protected path, so no tracker could be written in either run; brainstorm edited an existing spec and skipped steps 5 and 6.
