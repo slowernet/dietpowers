@@ -22,18 +22,18 @@ I started from superpowers-slim because it had already done part of this work.
 ## The skill flow
 
 ```
-brainstorm        design, one question at a time; spec written
-review (spec)     hostile review; you decide what matters; fix; one fix check
-write-plan        tasks: paths, interfaces, tests; no code
-review (plan)     hostile review; you decide what matters; fix; one fix check
-execute-plan      one task at a time, test first
-review (code)     hostile review of the branch; you decide; fix; one fix check
-prove-done        fresh full run; each success criterion shown; spec changes listed
-finish-branch     full suite green, then merge, PR or keep
+brainstorm                 design, one question at a time; spec written
+adversarial-review (spec)  hostile review; you decide what matters; fix; one fix check
+write-plan                 tasks: paths, interfaces, tests; no code
+adversarial-review (plan)  hostile review; you decide what matters; fix; one fix check
+execute-plan               one task at a time, test first
+adversarial-review (code)  hostile review of the branch; you decide; fix; one fix check
+prove-done                 fresh full run; each success criterion shown; spec changes listed
+finish-branch              full suite green, then merge, PR or keep
 
-find-root-cause   root cause, failing test, one fix at the source
-handle-feedback   feedback from people, such as PR comments
-update-spec       approved change to specified behavior, noted in the spec
+find-root-cause            root cause, failing test, one fix at the source
+handle-feedback            feedback from people, such as PR comments
+update-spec                approved change to specified behavior, noted in the spec
 ```
 
 ## Usage
@@ -47,7 +47,7 @@ There is no session-start hook, so skills rarely start on their own. Start a pie
 Each skill hands on to the next, and the flow asks before moving on after each review and after execution. Other steps can be started directly:
 
 ```
-/dietpowers:review the code on this branch against docs/dietpowers/2026-09-24-csv-export-plan.md
+/dietpowers:adversarial-review the code on this branch against docs/dietpowers/2026-09-24-csv-export-plan.md
 /dietpowers:find-root-cause the export test fails on empty reports
 ```
 
@@ -55,7 +55,7 @@ Each skill hands on to the next, and the flow asks before moving on after each r
 
 Ordered by how far each departs from what Superpowers users may expect.
 
-- **Imperative skill names.** `brainstorm`, `write-plan`, `execute-plan`, `tdd`, `review`, `prove-done`, `finish-branch`, `find-root-cause` and `handle-feedback` replace Superpowers' gerund-based naming convention; `review` and `update-spec` are new. Skills refer to each other by full name, such as `dietpowers:review`, because the bare `/review` is Claude Code's built-in reviewer.
+- **Imperative skill names.** `brainstorm`, `write-plan`, `execute-plan`, `tdd`, `adversarial-review`, `prove-done`, `finish-branch`, `find-root-cause` and `handle-feedback` replace Superpowers' gerund-based naming convention; `adversarial-review` and `update-spec` are new; the review skill is named `adversarial-review` so it cannot be confused with Claude Code's built-in `/review`. Skills refer to each other by full name, such as `dietpowers:adversarial-review`, so bare names cannot collide with other commands.
 - **The spec stays the source of truth.** Any change to specified behavior, whether it comes up in planning, execution, review, debugging, PR feedback or from you, goes through one `update-spec` skill, which the other skills invoke once the spec is approved: you approve the change, only the affected sections change, a dated note under each changed section records what changed, why, and who approved it, and the spec change travels with the code change. A new goal or feature goes back to `brainstorm` instead. Before finishing, `prove-done` pairs each success criterion with the test that shows it and lists every change since approval, so you see drift in one place.
 - **Plan files carry no implementation code.** Superpowers writes every line into the plan, for an executor with "zero context for our codebase and questionable taste." Each task in the plan includes paths, signatures, behaviors and tests, and names the code change that would make each test fail. Our rationale:
   - Superpowers plan code is written without being run, then rewritten during execution.
@@ -63,7 +63,7 @@ Ordered by how far each departs from what Superpowers users may expect.
   - Plan defects are often missing decisions, such as an ignored error-handling convention. Paths, interfaces, behaviors and tests capture those; code review catches code bugs later.
   - Shorter plans are faster to read and approve.
   - The trade-off: less is fixed before you approve, and tests are written during execution. Code review checks for tests that could never fail.
-- **Spec, plan and code each get a hostile review.** A `review` skill reviews the spec, the plan and the code, each with its own checklist. The reviewer is a fresh subagent on the same model, which has not seen the conversation.
+- **Spec, plan and code each get a hostile review.** An `adversarial-review` skill reviews the spec, the plan and the code, each with its own checklist. The reviewer is a fresh subagent on the same model, which has not seen the conversation.
 - **Code is reviewed once, over the whole branch**, with a test-suite run and a check for tests that cannot fail.
 - **Fixes are checked once more, then the loop stops.** Code fixes start with a failing test. Once every finding is decided and fixed, one fix check looks only at the fixes; anything it finds comes to you, and no further review runs. In subagent-driven mode, Superpowers allows up to five fix rounds per task.
 - **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer. Code is always committed on a feature branch, never on the base branch. Committing the spec and plan needs your approval once per piece of work, recorded in the plan; if you decline, they stay on disk and `finish-branch` proposes their commits at the end. Pushing and merging always ask.
@@ -113,9 +113,9 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - One design approval replaces approval after each section; the self re-read is gone because a review follows.
   - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` with fixed sections, including testable success criteria and References.
   - When a request spans several subsystems, lists the other parts as follow-ups in the spec's Out of scope section.
-  - Hands off to `review` instead of `writing-plans`.
+  - Hands off to `adversarial-review` instead of `writing-plans`.
   - Records each question, the approaches and the design in a tracker, so you can reply `pause` and resume later.
-- **`review`** (new; replaces `requesting-code-review`)
+- **`adversarial-review`** (new; replaces `requesting-code-review`)
   - Reviews a spec, plan or code with a matching prompt, in a fresh subagent on the same model that reads its own prompt file, and waits for its report. It reads the work from disk, so it does not need anything committed.
   - The reviewer grades each finding blocker, major or minor. Minor findings with one obvious fix are fixed with a one-line notice; every blocker and major, and any finding it wants to reject or fix more than one way, comes to you one at a time with a recommendation.
   - Records every finding, the evidence, the question and your decision in a tracker, so you can reply `pause` and resume later.
@@ -132,7 +132,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Each task: Files, Interfaces, Context, Behavior, and Tests naming the change that would make each fail, plus the command to run them.
   - Names an existing file for each new one to imitate.
   - The banned-phrase list, the self re-read and the subagent-era lines are gone.
-  - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-plan.md` and hands off to `review`.
+  - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-plan.md` and hands off to `adversarial-review`.
 - **`execute-plan`** (was `executing-plans`)
   - Reads the plan and the spec.
   - Builds each task with `tdd`, uses the plan's checkboxes as its task list, and uses `find-root-cause` for unclear failures.
@@ -145,7 +145,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Explains why the test comes first.
   - Starts from the plan's Tests.
   - Code must work for every valid input, including those no test covers; a test is never weakened to get green, and a test that is wrong because the spec is wrong goes through `update-spec`.
-  - Returns to the skill whose steps it is working within, or to `execute-plan` while the plan has unticked tasks; only on its own does it hand off to `review`.
+  - Returns to the skill whose steps it is working within, or to `execute-plan` while the plan has unticked tasks; only on its own does it hand off to `adversarial-review`.
   - `writing-good-tests.md`: the separate checklists are merged into one closing checklist, and it gains a contents line; the quotes from Superpowers' author are gone. New: expected values taken from the spec or requirement before reading the implementation; deterministic, isolated, straight-line tests with clear failure messages; an order of preference for test doubles (real, then fake, then stub or mock), asserting outcomes before calls; the spec's input limits and failure behavior in the mutation check; and the project's existing suite takes precedence.
 - **`prove-done`** (was `verification-before-completion`)
   - Runs at the end of a finished, reviewed branch instead of before any commit, and returns to `handle-feedback` when that skill invoked it; otherwise it hands on to `finish-branch`.
@@ -175,11 +175,11 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - A declined change edits nothing, and the calling skill drops it, or stops and asks when it cannot go on without it.
   - With no approved spec, says so and stops.
   - For a new goal or feature, asks whether to record it as a follow-up and carry on, or to pause and start it with `brainstorm`.
-  - Called from `write-plan`, `execute-plan`, `review`, `tdd`, `handle-feedback`, `find-root-cause` and `prove-done`, or directly by you.
+  - Called from `write-plan`, `execute-plan`, `adversarial-review`, `tdd`, `handle-feedback`, `find-root-cause` and `prove-done`, or directly by you.
 - **`find-root-cause`** (was `systematic-debugging`)
   - Opens with why the cause comes before the fix.
   - A bug in the spec goes through `update-spec` before the fix.
-  - Returns to the skill whose steps it is working within, or to `execute-plan` while the plan has unticked tasks; otherwise commits and hands off to `review` instead of `test-driven-development`.
+  - Returns to the skill whose steps it is working within, or to `execute-plan` while the plan has unticked tasks; otherwise commits and hands off to `adversarial-review` instead of `test-driven-development`.
   - `defense-in-depth.md` ("validate at EVERY layer") is replaced by `guards-after-a-fix.md`: validate at system boundaries, and add an internal guard only where the bug showed the boundary can be bypassed, with a test.
   - `root-cause-tracing.md` loses its diagrams, "NEVER" nodes and session anecdote (739 to 375 words).
   - `condition-based-waiting.md` is trimmed, and its 666-word example file, written for one specific project, is gone.

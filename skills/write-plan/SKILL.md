@@ -19,4 +19,4 @@ Before your first commit of the spec or plan for this piece of work, check the p
 5. For each task write: a `- [ ]` checkbox heading; Files, with exact paths; Interfaces, with the exact signatures it consumes and produces; Context, the plan references and existing files the task relies on, plus any fact only this task needs; Behavior, each item concrete enough that two engineers would build the same thing; Tests, naming each test, the behavior it checks, and the production change that would make it fail; the command that runs them.
 6. Save to `docs/dietpowers/YYYY-MM-DD-<topic>-plan.md`, using the spec's topic, and commit it if commits are approved.
 
-Terminal state: invoke the `dietpowers:review` skill on the plan.
+Terminal state: invoke the `dietpowers:adversarial-review` skill on the plan.

@@ -1,5 +1,5 @@
 ---
-name: review
+name: adversarial-review
 description: Runs a hostile review of a spec, plan, or code in a fresh subagent, then fixes what holds. Use when a spec, a plan, or implemented code needs review before the next step; also when asked to review code, hunt for bugs, audit a diff or branch, stress-test a PR before merging, or "tear this apart"; or to resume a paused review.
 argument-hint: "[spec, plan, or code]"
 ---

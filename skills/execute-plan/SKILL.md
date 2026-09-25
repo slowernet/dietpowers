@@ -21,4 +21,4 @@ Commit your work on the feature branch as you go: the spec and plan may be held 
 7. If your partner changes a requirement, invoke the `dietpowers:update-spec` skill, then return to step 2.
 8. When every task is ticked, report in a few lines: what was built, the calls you made under step 5, and anything left open.
 
-Terminal state: ask "Continue with code review? Reply with **yes** or **no**." On yes, invoke the `dietpowers:review` skill on the code. Otherwise, report what is built and what is uncommitted, and stop.
+Terminal state: ask "Continue with code review? Reply with **yes** or **no**." On yes, invoke the `dietpowers:adversarial-review` skill on the code. Otherwise, report what is built and what is uncommitted, and stop.

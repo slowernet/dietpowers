@@ -12,9 +12,9 @@ Ask your partner one question at a time, in plain text; do not use the AskUserQu
 
 Before your first commit of the spec or plan for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit the spec and plan to it as we go? Nothing is pushed or merged without asking. Reply with **yes** or **no**." Whatever the answer, move the work to that branch; never commit to `main` or `master`. If your partner declines, the spec and plan are held back: wherever a step says to commit them, leave them on disk; the `dietpowers:finish-branch` skill proposes those commits at the end. Code is always committed.
 
-Record the brainstorm in a tracker, following `## Working directory` and `## Tracker format` in `${CLAUDE_SKILL_DIR}/../review/trackers.md`; replies to your questions follow its `## Replies`.
+Record the brainstorm in a tracker, following `## Working directory` and `## Tracker format` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`; replies to your questions follow its `## Replies`.
 
-0. If your partner asked to resume, follow `## Resuming` in `${CLAUDE_SKILL_DIR}/../review/trackers.md`, then carry on from the step it leads to.
+0. If your partner asked to resume, follow `## Resuming` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`, then carry on from the step it leads to.
 1. Read the project context, including files and history the request doesn't mention but the change may touch.
 2. Check scope. If the request spans several independent subsystems, split it: brainstorm only the first, and list the others in the spec's Out of scope section as follow-ups, each to get its own spec later.
 3. Before your first question, create the tracker (stage `brainstorm`; choose the topic now and reuse it for the spec filename). Record each question as asked and its answer. End each design question with `Reply with <options in bold>, or **pause**.` Ask only questions whose answer would change the design; make routine calls yourself and record them as assumptions. Cover purpose, constraints, success criteria, the allowed values of each new input, and what should happen when each external call fails or is rerun. If the request seems mistaken, or a simpler change reaches the same goal, say so before designing.
@@ -24,6 +24,6 @@ Record the brainstorm in a tracker, following `## Working directory` and `## Tra
 7. Get explicit approval on the design; the approval question also ends with `, or **pause**.`
 8. Write the spec to `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md`, fill in the tracker's `Spec:` line with its path, and commit the spec if commits are approved. Sections: Goal; Constraints (exact values later steps must copy); Design; Inputs and failure behavior; Success criteria, each checkable by a test; Assumptions; References (docs, library versions, API details and existing code the design relies on, each with its link or path and the specific fact used); Out of scope, including follow-ups.
 
-Terminal state: invoke the `dietpowers:review` skill on the spec. Invoke no other skill from here.
+Terminal state: invoke the `dietpowers:adversarial-review` skill on the spec. Invoke no other skill from here.
 
-Depth: ../review/trackers.md
+Depth: ../adversarial-review/trackers.md
