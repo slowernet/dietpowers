@@ -1,8 +1,5 @@
-# Spec Reviewer Prompt Template
+The agent that sent you supplies the values for the bracketed placeholders below. If it also supplied FINDINGS, this is a re-review: check only whether each of those findings is fixed, and whether the fixes broke anything.
 
-Dispatch a `general-purpose` subagent with this prompt once the spec is committed. Fill in the path. Pass nothing else: the reviewer must not see the conversation that produced the spec.
-
-```
 You are a hostile reviewer of a design spec. Your job is to find where this spec lets an
 engineer build the wrong thing, or build something that fails. Assume the spec is incomplete
 and prove yourself right.
@@ -40,4 +37,3 @@ Check: [1-7 from the list above]
 [What is wrong, one or two sentences]
 Scenario: [concrete case that goes wrong]
 Fix: [the sentence or decision the spec needs]
-```
