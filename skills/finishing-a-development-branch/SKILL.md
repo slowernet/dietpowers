@@ -5,6 +5,8 @@ description: Use when implementation is complete and tests pass, and the work ne
 
 # Finishing a Development Branch
 
+Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text.
+
 1. Run the project's full test suite. If anything fails, report the failures and stop — the menu comes only after a green suite.
 2. Detect the workspace, capturing all three values now, before anything changes directory:
 
@@ -15,7 +17,7 @@ WORKTREE_PATH=$(git rev-parse --show-toplevel)
 ```
 
 3. Establish the base branch from the plan, the conversation, or the branch's upstream. If it is not already known, ask — merging into the wrong base is expensive to undo.
-4. Present the menu exactly as written, then wait. The integration decision is your partner's.
+4. Present the menu below as one question, recommending an option with a one-line reason, then wait. Without the question tool, print it exactly as written. The integration decision is your partner's.
 
 Normal repo, or a worktree on a named branch:
 

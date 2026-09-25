@@ -10,24 +10,24 @@ fail() { echo "FAIL: $*"; FAIL=1; }
 # SKILL.md word ceilings. Raise a ceiling here rather than dropping a step.
 budget() {
   case "$1" in
-    brainstorming)                  echo 340 ;;
-    writing-plans)                  echo 430 ;;
-    executing-plans)                echo 220 ;;
+    brainstorming)                  echo 320 ;;
+    writing-plans)                  echo 390 ;;
+    executing-plans)                echo 260 ;;
     test-driven-development)        echo 270 ;;
-    systematic-debugging)           echo 400 ;;
-    requesting-code-review)         echo 190 ;;
+    systematic-debugging)           echo 430 ;;
+    adversarial-review)             echo 330 ;;
     receiving-code-review)          echo 370 ;;
     verification-before-completion) echo 230 ;;
-    finishing-a-development-branch) echo 470 ;;
+    finishing-a-development-branch) echo 500 ;;
     *) echo -1 ;;
   esac
 }
 
-DELETED="using-superpowers using-git-worktrees subagent-driven-development dispatching-parallel-agents writing-skills"
+DELETED="using-superpowers using-git-worktrees subagent-driven-development dispatching-parallel-agents writing-skills requesting-code-review"
 
 EXPECTED=$(printf '%s\n' \
-  brainstorming executing-plans finishing-a-development-branch \
-  receiving-code-review requesting-code-review systematic-debugging \
+  adversarial-review brainstorming executing-plans finishing-a-development-branch \
+  receiving-code-review systematic-debugging \
   test-driven-development verification-before-completion writing-plans \
   | sort | tr '\n' ' ')
 # -not -name '.*' — local tooling leaves untracked dirs like skills/.claude behind,
