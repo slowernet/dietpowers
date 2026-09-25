@@ -5,9 +5,11 @@ description: Use when implementation is complete and tests pass, and the work ne
 
 # Finish Branch
 
-Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text.
+Integration is the step that touches shared state, so it waits for your partner's choice. When the choice is a pull request, the description should let a reviewer judge the work without rereading the conversation.
 
-1. Run the project's full test suite. If anything fails, report the failures and stop — the menu comes only after a green suite.
+Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
+
+1. If the `prove-done` skill just ran on this commit, use its result; otherwise run the project's full test suite. If anything fails, report the failures and stop — the menu comes only after a green suite.
 2. Detect the workspace, capturing all three values now, before anything changes directory:
 
 ```bash
@@ -17,7 +19,7 @@ WORKTREE_PATH=$(git rev-parse --show-toplevel)
 ```
 
 3. Establish the base branch from the plan, the conversation, or the branch's upstream. If it is not already known, ask — merging into the wrong base is expensive to undo.
-4. Present the menu below as one question, recommending an option with a one-line reason, then wait. Without the question tool, print it exactly as written. The integration decision is your partner's.
+4. If the branch already has an open pull request, skip the menu: push the new commits and report the URL. Otherwise, present the menu below as one question, recommending "Push and create a Pull Request" unless your partner has said otherwise, then wait. Without the question tool, print it exactly as written. The integration decision is your partner's.
 
 Normal repo, or a worktree on a named branch:
 
@@ -43,7 +45,17 @@ Which option?
 ```
 
 5. **Merge locally:** `cd` to the main repo root, then `git checkout <base>`, `git pull`, `git merge <feature>`, then run the tests on the merged result. If they fail, stop and leave the branch and worktree in place — nothing was pushed, so it is recoverable. Once green, clean up per step 7, then `git branch -d <feature>`.
-6. **Push and PR:** `git push -u origin <feature>`, or from a detached HEAD `git push origin HEAD:refs/heads/<new-branch>`. Open the request against the base branch using the forge's CLI or the URL it prints on push, following the repo's PR template if it has one, and report the URL. Keep the worktree — PR feedback gets fixed there.
+6. **Push and PR:** `git push -u origin <feature>`, or from a detached HEAD `git push origin HEAD:refs/heads/<new-branch>`. Open the request against the base branch using the forge's CLI or the URL it prints on push. Write the description from what this run produced, fitted to the repo's PR template if it has one:
+   - what changed and why, in two or three sentences, with a link to the spec;
+   - the commits, one line each, grouped by plan task (`git log <base>..HEAD`);
+   - each success criterion with the test or command that shows it, from `prove-done`;
+   - every `Changed` note in the spec since approval;
+   - review findings fixed, and findings rejected with the reason;
+   - anything left open.
+
+   Report the URL. Keep the worktree — PR feedback gets fixed there.
 7. **Cleanup**, for a local merge only. Run it from outside the worktree, using the values captured in step 2. If `GIT_DIR` equals `GIT_COMMON` there is no worktree to remove. If `WORKTREE_PATH` is under `.worktrees/` or `worktrees/` it is ours: `git worktree remove "$WORKTREE_PATH"` then `git worktree prune`. Otherwise the host environment owns it — leave it in place.
 
 Discarding the work happens only when your partner asks for it in so many words. Show exactly what will be deleted — branch, commit list, worktree path — and wait for them to type `discard` before `git branch -D`.
+
+Terminal state: after a pull request, when review comments arrive, invoke the `handle-feedback` skill.

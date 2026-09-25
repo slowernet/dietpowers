@@ -14,7 +14,7 @@ DELETED="using-superpowers using-git-worktrees subagent-driven-development dispa
 EXPECTED=$(printf '%s\n' \
   review brainstorm execute-plan finish-branch \
   handle-feedback find-root-cause \
-  tdd prove-done write-plan \
+  tdd prove-done update-spec write-plan \
   | sort | tr '\n' ' ')
 # -not -name '.*' — local tooling leaves untracked dirs like skills/.claude behind,
 # and the "$SKILLS_DIR"/*/ glob below already skips them.
@@ -52,5 +52,5 @@ for dir in "$SKILLS_DIR"/*/; do
 done
 
 [ "$FAIL" -eq 0 ] \
-  && echo "PASS: 9 skills, valid frontmatter, no @-links, no dangling references"
+  && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

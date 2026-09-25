@@ -34,6 +34,12 @@ fi
 echo "Found $TOTAL test files"
 echo ""
 
+if [ -e "$POLLUTION_CHECK" ]; then
+  echo "Error: $POLLUTION_CHECK already exists before any test ran."
+  echo "Remove it first, or the search cannot tell which test creates it."
+  exit 2
+fi
+
 COUNT=0
 for TEST_FILE in $TEST_FILES; do
   COUNT=$((COUNT + 1))

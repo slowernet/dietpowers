@@ -1,6 +1,6 @@
 # dietpowers
 
-9 skills for Claude Code, forked from [tim-hub/superpowers-slim](https://github.com/tim-hub/superpowers-slim), which was reduced from [obra/superpowers](https://github.com/obra/superpowers). The repo holds skills only: no session-start hook, and no support for other agent tools.
+10 skills for Claude Code, forked from [tim-hub/superpowers-slim](https://github.com/tim-hub/superpowers-slim), which was reduced from [obra/superpowers](https://github.com/obra/superpowers). The repo holds skills only: no session-start hook, and no support for other agent tools.
 
 ## Working on the skills
 
