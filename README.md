@@ -23,11 +23,11 @@ I started from superpowers-slim because it had already done part of this work.
 
 ```
 brainstorm        design, one question at a time; spec written
-review (spec)     hostile review; fix; one re-review
+review (spec)     hostile review; you decide what matters; fix; one fix check
 write-plan        tasks: paths, interfaces, tests; no code
-review (plan)     hostile review; fix; one re-review
+review (plan)     hostile review; you decide what matters; fix; one fix check
 execute-plan      one task at a time, test first
-review (code)     hostile review of the branch; fix; one re-review
+review (code)     hostile review of the branch; you decide; fix; one fix check
 prove-done        fresh full run; each success criterion shown; spec changes listed
 finish-branch     full suite green, then merge, PR or keep
 
@@ -65,11 +65,12 @@ Ordered by how far each departs from what Superpowers users may expect.
   - The trade-off: less is fixed before you approve, and tests are written during execution. Code review checks for tests that could never fail.
 - **Spec, plan and code each get a hostile review.** A `review` skill reviews the spec, the plan and the code, each with its own checklist. The reviewer is a fresh subagent on the same model, which has not seen the conversation.
 - **Code is reviewed once, over the whole branch**, with a test-suite run and a check for tests that cannot fail.
-- **Fixes are checked once more, then the loop stops.** Code fixes start with a failing test. One re-review checks only the fixes, and anything still open goes to you. In subagent-driven mode, Superpowers allows up to five fix rounds per task.
-- **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer. Committing needs your approval once per piece of work, recorded in the plan; pushing and merging always ask. If you decline commits, the work stays on disk and `finish-branch` proposes atomic commits at the end.
+- **Fixes are checked once more, then the loop stops.** Code fixes start with a failing test. Once every finding is decided and fixed, one fix check looks only at the fixes; anything it finds comes to you, and no further review runs. In subagent-driven mode, Superpowers allows up to five fix rounds per task.
+- **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer. Code is always committed on a feature branch, never on the base branch. Committing the spec and plan needs your approval once per piece of work, recorded in the plan; if you decline, they stay on disk and `finish-branch` proposes their commits at the end. Pushing and merging always ask.
 - **Brainstorming aims for the simplest well-grounded spec.** It looks up how the problem is usually solved, always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
-- **Questions come one at a time,** as multiple choice with a recommended option and a reason.
+- **Questions come one at a time, in plain text,** with the problem, the options, a recommendation and a reason in one message, ending with a `Reply with` line. You can answer with an option, your own idea, a question or an aside.
+- **Reviews and brainstorms can pause and resume.** Reply `pause` to any finding or design question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.claude/dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
 - **Prompts tuned for Opus 5.5.** Skill and reviewer prompts were grounded against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill-vs-superpowers-slim).
 
 ### What superpowers-slim changed from superpowers
@@ -99,7 +100,7 @@ claude --plugin-dir /path/to/dietpowers --plugin-dir /path/to/dietpowers/dev
 
 ## What changed in each skill vs superpowers-slim
 
-Every skill that asks you anything gained the same rule: one question at a time, multiple choice, recommended option first with a reason. Most also gained a line asking for short messages that lead with the question or outcome. Every skill that commits asks once per piece of work before its first commit ("I'll work on branch `<name>`. May I commit to it as we go?"), and the plan records the answer in a `Commits:` line; nothing is pushed or merged without asking, and nothing is committed to `main` or `master`. If you decline, commits are held back: the work stays on disk, and `finish-branch` proposes the commits at the end. Every description now says what the skill produces as well as when to use it, and the skills you start directly have an argument hint.
+Every skill that asks you anything gained the same rule: one question at a time, in plain text rather than the question tool, recommended option first with a reason, ending with a `Reply with` line. Most also gained a line asking for short messages that lead with the question or outcome. Code steps always commit on the feature branch, asking once to create it if you are on the base branch. The spec and plan skills ask once per piece of work before their first commit ("I'll work on branch `<name>`. May I commit the spec and plan to it as we go?"), and the plan records the answer in a `Commits:` line; if you decline, the spec and plan stay on disk and `finish-branch` proposes their commits at the end. Nothing is pushed or merged without asking, and nothing is committed to `main` or `master`. Every description now says what the skill produces as well as when to use it, and the skills you start directly have an argument hint.
 
 - **`brainstorm`** (was `brainstorming`)
   - Description says what it produces and when to use it; "You MUST" and the summary of steps are gone.
@@ -113,12 +114,14 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` with fixed sections, including testable success criteria and References.
   - When a request spans several subsystems, lists the other parts as follow-ups in the spec's Out of scope section.
   - Hands off to `review` instead of `writing-plans`.
+  - Records each question, the approaches and the design in a tracker, so you can reply `pause` and resume later.
 - **`review`** (new; replaces `requesting-code-review`)
   - Reviews a spec, plan or code with a matching prompt, in a fresh subagent on the same model that reads its own prompt file, and waits for its report. It reads the work from disk, so it does not need anything committed.
-  - Lists the clear-cut findings it will fix, with one-line reasons, without stopping; asks you, one at a time with a recommendation, only about findings it wants to reject, findings with more than one reasonable fix, and fixes that change the approved spec.
+  - The reviewer grades each finding blocker, major or minor. Minor findings with one obvious fix are fixed with a one-line notice; every blocker and major, and any finding it wants to reject or fix more than one way, comes to you one at a time with a recommendation.
+  - Records every finding, the evidence, the question and your decision in a tracker, so you can reply `pause` and resume later.
   - Edits a spec or plan under review directly; code fixes start with a failing test; a fix that changes the approved spec goes through `update-spec`.
-  - Runs one scoped re-review, then stops.
-  - Reports outcome first and appends rejected findings with their reasons to a `Review notes` section in the spec or plan, then asks whether to continue, revise (one fresh review of the revision) or stop.
+  - Once every finding is decided and fixed, runs one fix check that looks only at the fixes, then stops.
+  - Reports outcome first, then asks whether to continue, revise (a new review run of the revision) or stop. The spec and plan carry no review notes; the tracker is the record, and `finish-branch` copies it into the pull request.
   - `spec-reviewer.md` (was `brainstorming/spec-document-reviewer-prompt.md`, which nothing used): rewritten as a hostile review with nine checks, including input limits, failure behavior, over-complex designs, reference facts, and security and data access (untrusted input, permissions, unbounded reads, missing transactions, deprecated or insecure practices).
   - `plan-reviewer.md` (was `writing-plans/plan-document-reviewer-prompt.md`, also unused): rewritten as a hostile review with eight checks, including tests that cannot fail, missing task context, and security and data access (N+1 queries, unbounded reads, skipped permission checks, deprecated APIs).
   - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in the plan, a check of the seams between plan tasks, a check for deprecated or insecure practices, and a read-only rule. It reviews every change since the base branch, committed or not, instead of the last commit.
@@ -154,10 +157,10 @@ Every skill that asks you anything gained the same rule: one question at a time,
 - **`finish-branch`** (was `finishing-a-development-branch`)
   - Reuses `prove-done`'s run instead of running the suite again.
   - Stops on failing tests or unmet success criteria.
-  - When commits were held back, proposes a sequence of atomic commits before the menu (spec and plan, then one per plan task, splitting shared files by task; one per fix for work after the pull request) and creates them only after you approve; declining leaves only "keep".
+  - When the spec and plan were held back, proposes their commits before the menu and creates them only after you approve; declining leaves only "keep".
   - On a merge conflict, aborts the merge; if tests fail after a local merge, offers to undo it with your confirmation.
   - Asks the integration menu as one question, recommending the pull request unless you've said otherwise.
-  - Writes the PR description from the run: what changed and why with a spec link, the commits grouped by plan task, each success criterion with its evidence, the spec's `Changed` notes, review findings fixed and rejected, and open items.
+  - Writes the PR description from the run: what changed and why with a spec link, the commits grouped by plan task, each success criterion with its evidence, the spec's `Changed` notes, the review record from this branch's trackers (fixed findings with their evidence; deferred, won't-fix, rejected and duplicate findings with their reasons), and open items. After a local merge, the final report lists the deferred, won't-fix and rejected findings.
   - When a pull request is already open, pushes (after your approval) instead of showing the menu, and returns to the skill that invoked it.
   - Hands off to `handle-feedback` when PR comments arrive.
 - **`handle-feedback`** (was `receiving-code-review`)

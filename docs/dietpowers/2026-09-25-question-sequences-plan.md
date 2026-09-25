@@ -162,7 +162,7 @@ Tests (new block):
 - `finish-branch SKILL.md contains .claude/dietpowers/trackers/`.
 - `finish-branch SKILL.md does not contain "findings rejected with the reason"` — fails if the old bullet survives.
 
-### - [ ] Task 8: README
+### - [x] Task 8: README
 
 Files: modify `README.md`; modify `tests/skills/check-skills.sh`.
 

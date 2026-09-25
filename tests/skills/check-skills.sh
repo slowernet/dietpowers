@@ -115,6 +115,11 @@ F="$SKILLS_DIR/finish-branch/SKILL.md"
 grep -qF ".claude/dietpowers/trackers/" "$F" || fail "finish-branch: does not read the trackers"
 grep -qF "findings rejected with the reason" "$F" && fail "finish-branch: old review bullet"
 
+# README describes the current loop, questions and commits.
+for gone in "one re-review" "section in the spec or plan" "multiple choice" "splitting shared files by task"; do
+  grep -qiF "$gone" README.md && fail "README.md: stale text '$gone'"
+done
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
