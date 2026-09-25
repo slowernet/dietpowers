@@ -142,6 +142,10 @@ for want in "Research:" "skipped, <reason>"; do
 done
 grep -qF "brainstorm step 3 is incomplete" "$T" && fail "trackers.md: old brainstorm step reference"
 
+# README describes the new research step.
+grep -qF "New research step for well-known problems" README.md && fail "README.md: old research-step bullet"
+grep -qF "No research:" README.md || fail "README.md: no description of the research step"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

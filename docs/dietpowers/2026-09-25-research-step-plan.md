@@ -81,7 +81,7 @@ Tests (new block):
 
 Departure: the Depth line also names `researcher.md` (AGENTS.md: a `Depth:` line points to the skill's detail files); the References and Assumptions rule for research facts is added to step 9's spec sections.
 
-### - [ ] Task 3: README
+### - [x] Task 3: README
 
 Files: modify `README.md`; modify `tests/skills/check-skills.sh`.
 
