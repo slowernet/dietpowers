@@ -63,7 +63,7 @@ There is no session-start hook. superpowers-slim's recorded measurements live in
 
 ### analyze-token-usage.py
 
-Counts token use in a captured JSON stream.
+Counts token use, for the main session and each subagent, in a Claude Code session transcript (`.jsonl`).
 
 ## Adding new tests
 
@@ -82,6 +82,6 @@ There is no runner to register with. Invoke the script directly.
 
 - `tests/skills/check-skills.sh`: structural gate, a check that must pass (skill set, frontmatter,
   references)
-- `tests/explicit-skill-requests/`: checks that a skill still fires when the user names it and also
-  pushes the model to skip process
+- `tests/explicit-skill-requests/`: checks that a skill fires when the user names it, including under
+  pressure to skip process (`skip-formalities.txt`)
 - `docs/testing.md`: how the structural and behavioral tests relate

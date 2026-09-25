@@ -18,11 +18,11 @@ bash tests/skills/check-skills.sh
 
 The script checks that:
 
-- the skill set is exactly the nine expected skills;
-- each `SKILL.md` has frontmatter with exactly the keys `name` and `description`, and the frontmatter
+- the skill set is exactly the ten expected skills;
+- each `SKILL.md` has frontmatter with the keys `name` and `description`, and optionally `argument-hint`, and the frontmatter
   is under 1024 characters;
 - no `@`-link force-loads another skill (an `@` path makes Claude Code load that file at once);
-- no file under `skills/` references a deleted skill.
+- no file under `skills/` references a renamed or deleted skill.
 
 It exits 0, or prints one `FAIL:` line per violation.
 
@@ -60,23 +60,25 @@ broken hook.
 
 See `tests/claude-code/README.md` for the `-p` flag, used to compare two trees.
 
-### Explicit skill requests under pressure
+### Explicit skill requests
 
 ```bash
 bash tests/explicit-skill-requests/run-all.sh
 ```
 
-The runner sends four prompts. Each names a skill and also pushes the model to skip process, for
-example "Don't waste time, just read the plan and start implementing immediately". A prompt passes if
-the named skill still fired. The runner also reports whether any tool ran before the skill did.
+The runner sends four prompts that each name a skill: `execute-plan-please.txt`, `use-find-root-cause.txt`,
+`please-use-brainstorm.txt` and `mid-conversation-execute-plan.txt`. A prompt passes if the named skill
+fired. The runner also reports whether any tool ran before the skill did. `skip-formalities.txt`, run on
+its own with `run-test.sh`, adds pressure to skip process ("Don't waste time - just read the plan and
+start implementing immediately").
 
 The other prompts in `prompts/` can be run one at a time with `run-test.sh <skill> <prompt-file>`.
 `run-multiturn-test.sh` and `run-extended-multiturn-test.sh` carry their own prompts.
 
 ## Reading behavioral results
 
-Each run is one sample, so a single pass is weak evidence. `--max-turns 3` can also stop a run before
-a skill is invoked, which produces a false FAIL. When a result informs a decision, run it three times
+Each run is one sample, so a single pass is weak evidence. A low `--max-turns` (the multi-turn scripts use 2 and 3)
+can also stop a run before a skill is invoked, which produces a false FAIL. When a result informs a decision, run it three times
 and report all three.
 
 Recorded before/after measurements live in superpowers-slim's [`docs/superpowers/baseline/`](https://github.com/tim-hub/superpowers-slim/tree/master/docs/superpowers/baseline).

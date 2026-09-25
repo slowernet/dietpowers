@@ -26,11 +26,11 @@ fi
 
 # Get the directory where this script lives
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# Get the superpowers plugin root (two levels up)
+# Get the dietpowers plugin root (two levels up)
 PLUGIN_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 TIMESTAMP=$(date +%s)
-OUTPUT_DIR="${TMPDIR:-/tmp}/superpowers-tests/${TIMESTAMP}-$$/explicit-skill-requests/${SKILL_NAME}"
+OUTPUT_DIR="${TMPDIR:-/tmp}/dietpowers-tests/${TIMESTAMP}-$$/explicit-skill-requests/${SKILL_NAME}"
 mkdir -p "$OUTPUT_DIR"
 
 TIMEOUT_BIN=$(command -v gtimeout || command -v timeout || true)
@@ -55,7 +55,7 @@ PROJECT_DIR="${TMPDIR:-/tmp}/ws-${TIMESTAMP}-$$"
 mkdir -p "$PROJECT_DIR/docs/dietpowers"
 
 # Create a dummy plan file for mid-conversation tests
-cat > "$PROJECT_DIR/docs/dietpowers/auth-system-plan.md" << 'EOF'
+cat > "$PROJECT_DIR/docs/dietpowers/2026-01-01-auth-system-plan.md" << 'EOF'
 # Auth System Implementation Plan
 
 ## Task 1: Add User Model

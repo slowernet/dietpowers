@@ -33,7 +33,7 @@ done
 
 PROMPT="Let's make a react todo list"
 TIMESTAMP=$(date +%s)
-OUTPUT_DIR="${TMPDIR:-/tmp}/superpowers-tests/${TIMESTAMP}-$$/autotrigger"
+OUTPUT_DIR="${TMPDIR:-/tmp}/dietpowers-tests/${TIMESTAMP}-$$/autotrigger"
 mkdir -p "$OUTPUT_DIR"
 
 TIMEOUT_BIN=$(command -v gtimeout || command -v timeout || true)
