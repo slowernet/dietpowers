@@ -76,6 +76,16 @@ setup_project
 OUTPUT="$(run_polluter './src/**/*.test.ts')"
 assert_contains "$OUTPUT" "Found 2 test files" "leading ./ on the pattern is accepted"
 
+echo "Test: pre-existing pollution is an error, not a clean result"
+setup_project
+OUTPUT="$(
+  cd "$PROJECT" && touch pollution.marker &&
+  PATH="$PROJECT/bin:$PATH" "$SCRIPT_UNDER_TEST" 'pollution.marker' 'src/**/*.test.ts' 2>&1; echo "exit=$?"
+)"
+assert_contains "$OUTPUT" "already exists before any test ran" "reports the pre-existing file"
+assert_contains "$OUTPUT" "exit=2" "exits with status 2"
+if printf '%s' "$OUTPUT" | grep -Fq "all tests clean"; then fail "does not claim all tests clean"; else pass "does not claim all tests clean"; fi
+
 echo "Test: non-matching pattern reports an honest zero"
 setup_project
 OUTPUT="$(run_polluter 'nomatch/**/*.test.ts')"

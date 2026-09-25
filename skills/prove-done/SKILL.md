@@ -5,14 +5,16 @@ description: Use when about to claim work is complete, fixed, or passing, before
 
 # Prove Done
 
-Before any statement that work is done, fixed, passing, or good:
+A claim that work is done is only as good as the command output behind it. This step turns the spec's success criteria into evidence your partner can check, and shows every change of direction made since the spec was approved.
 
-1. Name the command that would prove the claim.
-2. Run it fresh and in full — not a subset, not a remembered earlier run.
-3. Read the whole output. Check the exit code. Count the failures.
-4. State the claim together with that evidence, or state the actual status together with that evidence.
+Keep each message to your partner short: lead with the outcome, then only the detail needed to act on it.
 
-What each claim actually requires:
+1. Run the project's full test suite, linter and build fresh on the current commit. Read the whole output and the exit codes.
+2. List every change to the spec since it was approved, from its `Changed` notes, and check them against `git log -p` on the spec file for edits without a note.
+3. For each success criterion in the spec as it stands now, name the test or command that shows it holds, and its result. Mark any criterion nothing demonstrates. Where the code and the spec disagree, never mark that criterion as passed: recommend which one should change, and either fix the code or invoke the `update-spec` skill.
+4. Report: pass or fail, the criteria with their evidence, the spec changes, and anything unmet. State only what the output shows.
+
+Evidence for common claims:
 
 | Claim | Evidence |
 |---|---|
@@ -22,8 +24,6 @@ What each claim actually requires:
 | Bug fixed | The original symptom retested, now passing |
 | Regression test works | Reverted the fix, watched the test fail, restored it |
 | A subagent finished | The VCS diff, not the agent's report |
-| Requirements met | The requirements re-read line by line |
+| Requirements met | Each spec success criterion paired with the test or command that shows it |
 
-This covers paraphrases, synonyms, and any wording that implies success — including expressions of satisfaction offered before the command has run.
-
-Terminal state: invoke the `finish-branch` skill once the whole branch is done.
+Terminal state: invoke the `finish-branch` skill.

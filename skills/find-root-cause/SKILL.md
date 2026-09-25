@@ -5,7 +5,9 @@ description: Use when encountering any bug, test failure, or unexpected behavior
 
 # Find Root Cause
 
-Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text.
+Fixes made before the cause is known tend to move a bug rather than remove it, and each one makes the next harder to find. Find the cause, prove it with a failing test, then fix it once, at the source.
+
+Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
 ## Find the root cause
 
@@ -30,13 +32,13 @@ Ask your partner questions one at a time with the AskUserQuestion tool: multiple
 
 ## Fix at the source
 
-13. Write a failing test that reproduces the bug, before fixing anything.
+13. Write a failing test that reproduces the bug, before fixing anything. If the bug is in the spec rather than the code, invoke the `update-spec` skill first.
 14. Make one change, at the root cause. No bundled refactoring, no while-I-am-here improvements.
 15. Verify: the test passes, nothing else broke, the original symptom is gone.
 16. Count your failed fixes. At three, stop fixing and question the architecture with your partner. Fixes that each surface a new problem somewhere else mean the design is wrong, not the hypothesis.
 
 If investigation shows the cause is genuinely environmental, timing-dependent, or external, document what you ruled out, add appropriate handling and monitoring, and say so explicitly.
 
-Terminal state: invoke the `tdd` skill to lock the fix in with a regression test.
+Terminal state: inside a plan, return to the `execute-plan` skill and continue the task. Otherwise, commit the fix and its test, then invoke the `review` skill on the code.
 
-Depth: root-cause-tracing.md, defense-in-depth.md, condition-based-waiting.md
+Depth: root-cause-tracing.md, guards-after-a-fix.md, condition-based-waiting.md
