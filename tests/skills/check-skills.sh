@@ -75,7 +75,7 @@ grep -qF "even though the code change is committed" "$SKILLS_DIR/update-spec/SKI
 # Shared tracker file for review and brainstorm.
 T="$SKILLS_DIR/review/trackers.md"
 if [ -f "$T" ]; then
-  for want in ".gitignore" "Resuming" "pause" "Resuming <tracker file> at item <N>" \
+  for want in ".gitignore" "Resuming" "Paused at item <N>" "earliest unfinished brainstorm step" "Resuming <tracker file> at item <N>" \
     "## Working directory" "## Tracker format" "## Replies" "## Resuming" "### N. [open|answered]"; do
     grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
   done
