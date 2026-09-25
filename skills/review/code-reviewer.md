@@ -93,6 +93,7 @@ Work through these categories in order. Skip a category only when it genuinely d
 - CSRF, open redirect, path traversal
 - Secrets in code, logs, or error messages
 - Timing attacks on comparison operations
+- An API or practice that is deprecated or removed in the version in use, or known to be insecure (for example, unsalted password hashes or SQL built by string concatenation)
 
 ### 7. Data Integrity
 
