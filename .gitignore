@@ -12,3 +12,5 @@ triage/
 # plugin, so the whole directory is ignored here.
 evals/
 .pi/worktree-sessions/
+
+tmp/

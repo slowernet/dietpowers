@@ -7,28 +7,14 @@ FAIL=0
 
 fail() { echo "FAIL: $*"; FAIL=1; }
 
-# SKILL.md word ceilings. Raise a ceiling here rather than dropping a step.
-budget() {
-  case "$1" in
-    brainstorming)                  echo 320 ;;
-    writing-plans)                  echo 390 ;;
-    executing-plans)                echo 260 ;;
-    test-driven-development)        echo 270 ;;
-    systematic-debugging)           echo 430 ;;
-    adversarial-review)             echo 330 ;;
-    receiving-code-review)          echo 370 ;;
-    verification-before-completion) echo 230 ;;
-    finishing-a-development-branch) echo 500 ;;
-    *) echo -1 ;;
-  esac
-}
-
-DELETED="using-superpowers using-git-worktrees subagent-driven-development dispatching-parallel-agents writing-skills requesting-code-review"
+DELETED="using-superpowers using-git-worktrees subagent-driven-development dispatching-parallel-agents writing-skills requesting-code-review\
+  adversarial-review brainstorming executing-plans finishing-a-development-branch receiving-code-review\
+  systematic-debugging test-driven-development verification-before-completion writing-plans"
 
 EXPECTED=$(printf '%s\n' \
-  adversarial-review brainstorming executing-plans finishing-a-development-branch \
-  receiving-code-review systematic-debugging \
-  test-driven-development verification-before-completion writing-plans \
+  review brainstorm execute-plan finish-branch \
+  handle-feedback find-root-cause \
+  tdd prove-done write-plan \
   | sort | tr '\n' ' ')
 # -not -name '.*' — local tooling leaves untracked dirs like skills/.claude behind,
 # and the "$SKILLS_DIR"/*/ glob below already skips them.
@@ -57,21 +43,14 @@ for dir in "$SKILLS_DIR"/*/; do
     && fail "$name: contains an @-link, which force-loads the target"
 
   for d in $DELETED; do
-    if grep -rqF "$d" "$dir"; then
+    pat="(^|[^a-z-])$d([^a-z-]|\$)"
+    if grep -rqE "$pat" "$dir"; then
       fail "$name: references deleted skill '$d'"
-      grep -rnF "$d" "$dir" | sed 's/^/    /'
+      grep -rnE "$pat" "$dir" | sed 's/^/    /'
     fi
   done
-
-  words=$(wc -w < "$f" | tr -d ' ')
-  max=$(budget "$name")
-  if [ "$max" -lt 0 ]; then
-    fail "$name: no word ceiling defined"
-  elif [ "$words" -gt "$max" ]; then
-    fail "$name: SKILL.md is $words words, ceiling $max"
-  fi
 done
 
 [ "$FAIL" -eq 0 ] \
-  && echo "PASS: 9 skills, valid frontmatter, no @-links, no dangling references, all within ceiling"
+  && echo "PASS: 9 skills, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

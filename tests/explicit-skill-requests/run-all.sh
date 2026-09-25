@@ -14,42 +14,42 @@ PASSED=0
 FAILED=0
 RESULTS=""
 
-# Test: executing-plans, please
-echo ">>> Test 1: executing-plans-please"
-if "$SCRIPT_DIR/run-test.sh" "executing-plans" "$PROMPTS_DIR/executing-plans-please.txt"; then
+# Test: execute-plan, please
+echo ">>> Test 1: execute-plan-please"
+if "$SCRIPT_DIR/run-test.sh" "execute-plan" "$PROMPTS_DIR/execute-plan-please.txt"; then
     PASSED=$((PASSED + 1))
-    RESULTS="$RESULTS\nPASS: executing-plans-please"
+    RESULTS="$RESULTS\nPASS: execute-plan-please"
 else
     FAILED=$((FAILED + 1))
-    RESULTS="$RESULTS\nFAIL: executing-plans-please"
+    RESULTS="$RESULTS\nFAIL: execute-plan-please"
 fi
 echo ""
 
-# Test: use systematic-debugging
-echo ">>> Test 2: use-systematic-debugging"
-if "$SCRIPT_DIR/run-test.sh" "systematic-debugging" "$PROMPTS_DIR/use-systematic-debugging.txt"; then
+# Test: use find-root-cause
+echo ">>> Test 2: use-find-root-cause"
+if "$SCRIPT_DIR/run-test.sh" "find-root-cause" "$PROMPTS_DIR/use-find-root-cause.txt"; then
     PASSED=$((PASSED + 1))
-    RESULTS="$RESULTS\nPASS: use-systematic-debugging"
+    RESULTS="$RESULTS\nPASS: use-find-root-cause"
 else
     FAILED=$((FAILED + 1))
-    RESULTS="$RESULTS\nFAIL: use-systematic-debugging"
+    RESULTS="$RESULTS\nFAIL: use-find-root-cause"
 fi
 echo ""
 
-# Test: please use brainstorming
-echo ">>> Test 3: please-use-brainstorming"
-if "$SCRIPT_DIR/run-test.sh" "brainstorming" "$PROMPTS_DIR/please-use-brainstorming.txt"; then
+# Test: please use brainstorm
+echo ">>> Test 3: please-use-brainstorm"
+if "$SCRIPT_DIR/run-test.sh" "brainstorm" "$PROMPTS_DIR/please-use-brainstorm.txt"; then
     PASSED=$((PASSED + 1))
-    RESULTS="$RESULTS\nPASS: please-use-brainstorming"
+    RESULTS="$RESULTS\nPASS: please-use-brainstorm"
 else
     FAILED=$((FAILED + 1))
-    RESULTS="$RESULTS\nFAIL: please-use-brainstorming"
+    RESULTS="$RESULTS\nFAIL: please-use-brainstorm"
 fi
 echo ""
 
 # Test: mid-conversation execute plan
 echo ">>> Test 4: mid-conversation-execute-plan"
-if "$SCRIPT_DIR/run-test.sh" "executing-plans" "$PROMPTS_DIR/mid-conversation-execute-plan.txt"; then
+if "$SCRIPT_DIR/run-test.sh" "execute-plan" "$PROMPTS_DIR/mid-conversation-execute-plan.txt"; then
     PASSED=$((PASSED + 1))
     RESULTS="$RESULTS\nPASS: mid-conversation-execute-plan"
 else

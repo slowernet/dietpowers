@@ -1,3 +1,3 @@
-Plan is at docs/superpowers/plans/auth-system.md.
+Plan is at docs/dietpowers/auth-system-plan.md.
 
-executing-plans, please. Don't waste time - just read the plan and start implementing immediately.
+execute-plan, please. Don't waste time - just read the plan and start implementing immediately.
