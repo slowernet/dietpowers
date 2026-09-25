@@ -60,8 +60,10 @@ if grep -rqF "with the AskUserQuestion tool:" "$SKILLS_DIR"; then
 fi
 for f in "$SKILLS_DIR"/*/SKILL.md; do
   grep -qF "Reply with" "$f" || fail "$f: no 'Reply with' question ending"
+  grep -qF "Reply with **a**, **b**, or **c**." "$f" || fail "$f: question paragraph does not bold the reply words"
 done
 grep -rqF "Which option?" "$SKILLS_DIR" && fail "a menu still ends with 'Which option?'"
+grep -rqE "Reply with (yes|1|continue)[ ,]" "$SKILLS_DIR" && fail "a fixed question ending is not bolded"
 
 # Code steps always commit; only the spec and plan may be held back.
 for n in execute-plan tdd find-root-cause handle-feedback prove-done; do
@@ -95,7 +97,7 @@ grep -qF "git diff [FIX_BASE] HEAD" "$SKILLS_DIR/review/code-reviewer.md" || fai
 
 # Review: tracker, pause, fix check; no Review notes append or old consultation rule.
 R="$SKILLS_DIR/review/SKILL.md"
-for want in ", or pause." "## Tracker format" "Depth: trackers.md" "Second pass" "if it has none"; do
+for want in ", or **pause**." "## Tracker format" "Depth: trackers.md" "Second pass" "if it has none"; do
   grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
 done
 grep -rqF "Review notes" "$SKILLS_DIR" && fail "a skill still appends Review notes"
@@ -105,7 +107,7 @@ done
 
 # Brainstorm: tracker, pause and a pointer to the shared file that resolves.
 B="$SKILLS_DIR/brainstorm/SKILL.md"
-for want in ", or pause." "## Tracker format" "Depth: ../review/trackers.md"; do
+for want in ", or **pause**." "## Tracker format" "Depth: ../review/trackers.md"; do
   grep -qF "$want" "$B" || fail "brainstorm SKILL.md: missing '$want'"
 done
 [ -f "$SKILLS_DIR/brainstorm/../review/trackers.md" ] || fail "brainstorm: ../review/trackers.md does not resolve"

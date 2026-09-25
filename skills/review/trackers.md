@@ -56,7 +56,7 @@ Example review item:
 ### 4. [open] Retry after timeout double-charges the card (blocker, review 1)
 - Finding: `charge()` retries on timeout without an idempotency key, so a slow first attempt that succeeds is followed by a second charge. Fix: send the order ID as the idempotency key on every attempt.
 - Verified: `src/billing/charge.ts:88` retries with a fresh request; no key is set anywhere in `src/billing/`.
-- Question: A timeout retry can charge a card twice. Fix as proposed (recommended: one header, no schema change), or retry only on connection errors? Reply with fix, retry-only, or pause.
+- Question: A timeout retry can charge a card twice. Fix as proposed (recommended: one header, no schema change), or retry only on connection errors? Reply with **fix**, **retry-only**, or **pause**.
 - Decision:
 - Fix:
 ```

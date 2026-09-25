@@ -7,7 +7,7 @@ description: Integrates a finished branch by local merge or pull request, only w
 
 Integration is the step that touches shared state, so it waits for your partner's choice. When the choice is a pull request, the description should let a reviewer judge the work without rereading the conversation.
 
-Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, recommended first, each with a one-line reason. End with a line naming the answers, such as `Reply with a, b, or c.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it.
+Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, each with a bold label, recommended first, each with a one-line reason. End with a line naming the answers in bold, such as `Reply with **a**, **b**, or **c**.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it.
 
 1. If the `dietpowers:prove-done` skill just ran on this state of the branch, use its result; otherwise run the project's full test suite. If anything fails or a success criterion is unmet, report it and stop — the menu comes only after a green suite.
 2. Detect the workspace, capturing all three values now, before anything changes directory:
@@ -32,7 +32,7 @@ Implementation complete. What would you like to do?
 2. Push and create a Pull Request
 3. Keep the branch as-is (I'll handle it later)
 
-Reply with 1, 2, or 3.
+Reply with **1**, **2**, or **3**.
 ```
 
 Detached HEAD, meaning an externally managed workspace — no merge option:
@@ -43,7 +43,7 @@ Implementation complete. You're on a detached HEAD (externally managed workspace
 1. Push as new branch and create a Pull Request
 2. Keep as-is (I'll handle it later)
 
-Reply with 1 or 2.
+Reply with **1** or **2**.
 ```
 
 5. **Merge locally:** first read this branch's trackers from `$WORKTREE_PATH/.claude/dietpowers/trackers/` (those whose `Branch:` is this branch) and keep their deferred, won't-fix and rejected findings, since cleanup may remove the worktree. Then `cd` to the main repo root, then `git checkout <base>`, `git pull`, `git merge <feature>`. On a conflict, run `git merge --abort` and report. Run the tests on the merged result. If they fail, report and offer to undo the merge with `git reset --hard ORIG_HEAD`, which needs your partner's confirmation; the branch and worktree stay in place and nothing was pushed. Once green, clean up per step 7, then `git branch -d <feature>`. In your final report, list the findings you kept, one line each.
