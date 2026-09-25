@@ -37,7 +37,7 @@ Each review item:
 - **Decision:** the choice and its reason, dated.
 - **Fix:** what changed, and the commit, or `uncommitted`.
 
-Each brainstorm item holds the question exactly as asked and the answer. Before asking your partner to approve text, such as the approaches or the design, write that text into the tracker, and have the item point to it.
+Each brainstorm item has the heading `### N. [open|answered] <title>` and holds the question exactly as asked and the answer. Before asking your partner to approve text, such as the approaches or the design, write that text into the tracker, and have the item point to it.
 
 Review item statuses:
 
@@ -80,6 +80,6 @@ Resume only when your partner asks.
 2. Look only at your own stages: brainstorm resumes `brainstorm` trackers; review resumes `spec-review`, `plan-review` and `code-review` trackers.
 3. Take the most recently modified unfinished tracker whose `Branch:` is the current branch. Say which one, and list any other unfinished ones on this branch. If there is none on this branch, say so, change nothing, and give the number of unfinished trackers on other branches.
 4. If the tracker cannot be read or is missing a field, say which, and ask whether to continue with what is readable or leave the tracker.
-5. Find the first `open` item. If it has no Verified line, it was never checked: check it now, as in the first pass (a minor finding with one reasonable fix gets a notice; the rest are asked). Otherwise, show any text the item points to, then say `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.` and ask its recorded Question verbatim.
+5. Find the first `open` item. In a review tracker, an item with no Verified line was never checked: check it now, as in the first pass (a minor finding with one reasonable fix gets a notice; the rest are asked). Otherwise, show any text the item points to, then say `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.` and ask its recorded Question verbatim.
 6. If the reply describes a change to the design, route it through the `dietpowers:update-spec` skill (in a brainstorm, fold it into the design instead), and set back to `open` any earlier item it affects.
-7. Then carry on: the remaining `open` items, then the `fix` items, then the second pass if it is still `pending`.
+7. Then carry on. In a review: the remaining `open` items, then the `fix` items, then the second pass if it is still `pending`. In a brainstorm: the remaining `open` items; with none open, continue at the next brainstorm step, presenting the approaches or design already written in the tracker, or writing the spec.
