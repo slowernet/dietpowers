@@ -86,6 +86,19 @@ assert_contains "$OUTPUT" "already exists before any test ran" "reports the pre-
 assert_contains "$OUTPUT" "exit=2" "exits with status 2"
 if printf '%s' "$OUTPUT" | grep -Fq "all tests clean"; then fail "does not claim all tests clean"; else pass "does not claim all tests clean"; fi
 
+echo "Test: a test path containing a space is run as one file"
+setup_project
+mkdir -p "$PROJECT/src/my feature"
+echo "test('spaced')" > "$PROJECT/src/my feature/spaced.test.ts"
+cat > "$PROJECT/bin/npm" <<'EOF2'
+#!/usr/bin/env bash
+case "$2" in *"my feature/spaced.test.ts") touch pollution.marker ;; esac
+EOF2
+chmod +x "$PROJECT/bin/npm"
+OUTPUT="$(run_polluter 'src/**/*.test.ts')"
+assert_contains "$OUTPUT" "Found 3 test files" "counts the spaced path as one file"
+assert_contains "$OUTPUT" "Test: ./src/my feature/spaced.test.ts" "identifies the spaced file as the polluter"
+
 echo "Test: non-matching pattern reports an honest zero"
 setup_project
 OUTPUT="$(run_polluter 'nomatch/**/*.test.ts')"

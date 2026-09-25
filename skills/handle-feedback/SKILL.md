@@ -18,6 +18,6 @@ Ask your partner questions one at a time with the AskUserQuestion tool: multiple
 7. Where you cannot verify a claim, say what you would need to verify it instead of proceeding on assumption.
 8. Implement in order: things that break or are insecure, then simple fixes, then complex ones. Start each fix with a test that reproduces the problem and fails, then make it pass. Check for regressions.
 9. Draft a reply for each item: for correct feedback, the fix and where it landed, without agreement or thanks; for pushback, the reasoning and evidence; if you pushed back and turned out to be wrong, what you checked and what it showed.
-10. Show your partner the drafts and get approval before posting. On GitHub, reply inside each comment thread (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`), not as a new top-level comment.
+10. Show your partner the drafts and get approval. Post nothing yet: replies must not cite commits the pull request does not have.
 
-Terminal state: invoke the `prove-done` skill; the `finish-branch` skill then pushes the fixes to the open pull request.
+Terminal state: invoke the `prove-done` skill, then the `finish-branch` skill to push the fixes to the open pull request. Once the push succeeds, post the approved replies; on GitHub, reply inside each comment thread (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`), not as a new top-level comment.
