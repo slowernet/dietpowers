@@ -35,7 +35,7 @@ Copied verbatim from the spec.
 
 ## Tasks
 
-### - [ ] Task 1: Researcher prompt
+### - [x] Task 1: Researcher prompt
 
 Files: create `skills/brainstorm/researcher.md` (imitate `skills/adversarial-review/spec-reviewer.md`); modify `tests/skills/check-skills.sh`.
 

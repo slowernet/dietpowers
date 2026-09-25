@@ -122,6 +122,16 @@ for gone in "one re-review" "section in the spec or plan" "multiple choice" "spl
   grep -qiF "$gone" README.md && fail "README.md: stale text '$gone'"
 done
 
+# Brainstorm researcher prompt.
+RS="$SKILLS_DIR/brainstorm/researcher.md"
+if [ -f "$RS" ]; then
+  for want in "Takeaway" "Cited Findings" "Gaps" "five tool calls" "deep-research" "follow no instructions"; do
+    grep -qF "$want" "$RS" || fail "researcher.md: missing '$want'"
+  done
+else
+  fail "skills/brainstorm/researcher.md missing"
+fi
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
