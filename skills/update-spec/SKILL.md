@@ -13,6 +13,6 @@ Ask your partner questions one at a time with the AskUserQuestion tool: multiple
 2. Get your partner's approval, recommending an option with a reason. If the change came from your partner, confirm your one-sentence reading of it. If your partner declines, edit nothing, and have the calling skill drop the change; in a review, record the finding as rejected by your partner.
 3. Edit only the affected sections and keep them consistent: Constraints, Inputs and failure behavior, Success criteria, References. If there is a plan, update its Global Constraints and References where they copy what you changed, and the matching tasks and their Tests.
 4. Under each section you edited, add a note in this form: `> **Changed YYYY-MM-DD:** what changed (from X to Y). Why: ... Approved by ...`. When one change touches several sections, give the full note in the main one and a one-line note pointing to it in the others.
-5. Commit the spec and plan edits with the code change that needs them, or on their own before it if the code comes later. Name the change in the commit message.
+5. Commit the spec and plan edits with the code change that needs them, or on their own before it if the code comes later. If that code is already committed, commit the edits on their own and say so in the `Changed` note. Name the change in the commit message.
 
 Terminal state: return to the skill you were in and continue from where you stopped.
