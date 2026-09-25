@@ -34,7 +34,7 @@ wrapped became a measurement script.
 Autotriggering means the model calls a skill on its own, without the user naming it.
 
 The script sends exactly `Let's make a react todo list` N times against one tree. It reports how often
-`dietpowers:brainstorming` fired, how often a file was written before any skill call, and how often the
+`dietpowers:brainstorm` fired, how often a file was written before any skill call, and how often the
 turn budget cut the run off.
 
 It never passes or fails on the rate. Autotriggering is a probabilistic model behavior, so the script
@@ -56,29 +56,10 @@ broken:
 SessionStart hook fails with EPERM, a permission error, under `~/.claude`. The hook's output never
 reaches the model, so the run measures a broken hook while reporting the hook as present.
 
-`brainstorming`'s description contains `"You MUST use this before any creative work..."`, wording that
-orders the model to act. There is no session-start hook. Recorded measurements live in
-`docs/superpowers/baseline/`.
-
-### measure-configs.sh
-
-A script written for one sweep over several configurations. It builds a worktree per configuration and
-calls `measure-autotrigger.sh` once for each. See `docs/superpowers/baseline/2026-08-04-after.md` for
-the results.
+There is no session-start hook. superpowers-slim's recorded measurements live in its
+[`docs/superpowers/baseline/`](https://github.com/tim-hub/superpowers-slim/tree/master/docs/superpowers/baseline).
 
 ## Test structure
-
-### test-helpers.sh
-
-Shared functions:
-
-- `run_claude "prompt" [timeout]`: run Claude with a prompt
-- `assert_contains output pattern name`: check that a pattern exists
-- `assert_not_contains output pattern name`: check that a pattern is absent
-- `assert_count output pattern count name`: check an exact count
-- `assert_order output pattern_a pattern_b name`: check that pattern_a comes before pattern_b
-- `create_test_project`: create a temp test directory
-- `create_test_plan project_dir`: create a sample plan file
 
 ### analyze-token-usage.py
 
@@ -100,7 +81,7 @@ There is no runner to register with. Invoke the script directly.
 ## Related
 
 - `tests/skills/check-skills.sh`: structural gate, a check that must pass (skill set, frontmatter,
-  word ceilings, references)
+  references)
 - `tests/explicit-skill-requests/`: checks that a skill still fires when the user names it and also
   pushes the model to skip process
 - `docs/testing.md`: how the structural and behavioral tests relate

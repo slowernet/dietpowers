@@ -1,0 +1,8 @@
+I have my implementation plan ready at docs/dietpowers/auth-system-plan.md.
+
+I want to use execute-plan to execute it. That means:
+- Work through each task in the plan in order
+- Run the verifications each task specifies
+- Keep iteration fast within this conversation
+
+Let's start - please read the plan and begin implementing each task.

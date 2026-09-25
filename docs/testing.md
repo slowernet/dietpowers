@@ -22,16 +22,12 @@ The script checks that:
 - each `SKILL.md` has frontmatter with exactly the keys `name` and `description`, and the frontmatter
   is under 1024 characters;
 - no `@`-link force-loads another skill (an `@` path makes Claude Code load that file at once);
-- no file under `skills/` references a deleted skill;
-- each `SKILL.md` is within its word ceiling, the most words it may contain.
+- no file under `skills/` references a deleted skill.
 
 It exits 0, or prints one `FAIL:` line per violation.
 
-Word ceilings live in the `budget()` function in that script. When a skill needs more room, raise its
-ceiling there. Do not drop a workflow step to fit.
-
 Two more scripts: `bash tests/shell-lint/test-lint-shell.sh` covers `scripts/lint-shell.sh`, and
-`bash tests/systematic-debugging/test-find-polluter.sh` covers that skill's bisection helper.
+`bash tests/find-root-cause/test-find-polluter.sh` covers that skill's `find-polluter.sh`, which runs test files one at a time.
 
 ## Behavioral tests
 
@@ -49,14 +45,14 @@ bash tests/claude-code/measure-autotrigger.sh -n 15
 ```
 
 The script sends exactly `Let's make a react todo list` N times. It reports how often
-`dietpowers:brainstorming` fired, how often a file was written before any skill call, and how often the
+`dietpowers:brainstorm` fired, how often a file was written before any skill call, and how often the
 turn budget cut the run off.
 
 The script reports a rate and never fails on it. It exits 0 whenever the runs completed, so a `0/15`
 firing rate is a result to record. It exits non-zero only when the test setup is broken. This skill set
-has no session-start hook. `brainstorming`'s description does carry binding language, wording that
-orders the model to act: `"You MUST use this before any creative work..."`. It is still an open
-question what makes the model call a first skill.
+has no session-start hook, and `brainstorm`'s description no longer carries the upstream
+`"You MUST use this before any creative work..."` wording, so expect a rate near zero. Start work by
+naming the skill.
 
 Run it outside any command sandbox (a shell that blocks some file access). Inside one, a plugin
 SessionStart hook fails with EPERM, a permission error, under `~/.claude`, so the run measures a
@@ -74,8 +70,8 @@ The runner sends four prompts. Each names a skill and also pushes the model to s
 example "Don't waste time, just read the plan and start implementing immediately". A prompt passes if
 the named skill still fired. The runner also reports whether any tool ran before the skill did.
 
-The other prompts in `prompts/` are run by `run-test.sh`, `run-haiku-test.sh`,
-`run-multiturn-test.sh` and `run-extended-multiturn-test.sh`, each invoked on its own.
+The other prompts in `prompts/` can be run one at a time with `run-test.sh <skill> <prompt-file>`.
+`run-multiturn-test.sh` and `run-extended-multiturn-test.sh` carry their own prompts.
 
 ## Reading behavioral results
 
@@ -83,11 +79,10 @@ Each run is one sample, so a single pass is weak evidence. `--max-turns 3` can a
 a skill is invoked, which produces a false FAIL. When a result informs a decision, run it three times
 and report all three.
 
-Recorded before/after measurements live in `docs/superpowers/baseline/`.
+Recorded before/after measurements live in superpowers-slim's [`docs/superpowers/baseline/`](https://github.com/tim-hub/superpowers-slim/tree/master/docs/superpowers/baseline).
 
 ## Not included
 
 Upstream's skill-behavior evals use the drill harness from
 [superpowers-evals](https://github.com/prime-radiant-inc/superpowers-evals/). That harness is not part
-of this repo. `.pre-commit-config.yaml` still carries three hooks scoped to `^evals/.*\.py$`. This repo
-has no `evals/` directory, so they never fire.
+of this repo.

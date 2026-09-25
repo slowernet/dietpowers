@@ -1,5 +1,5 @@
 [Previous assistant message]:
-Plan complete and saved to docs/superpowers/plans/auth-system.md.
+Plan complete and saved to docs/dietpowers/auth-system-plan.md.
 
 Two execution options:
 1. This session - I work through each task, verifying as I go, fast iteration within this conversation
@@ -8,4 +8,4 @@ Two execution options:
 Which approach do you want to use for implementation?
 
 [Your response]:
-executing-plans, please
+execute-plan, please

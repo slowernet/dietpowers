@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Measures how often brainstorming autotriggers on a given tree, over N runs.
+# Measures how often brainstorm autotriggers on a given tree, over N runs.
 #
 # This reports a rate. It asserts nothing about whether the skill fired: autotriggering is
 # a probabilistic model behavior and one sample cannot gate a repository. Only broken
@@ -69,12 +69,12 @@ for i in $(seq 1 "$RUNS"); do
         exit 1
     fi
 
-    # "dietpowers:brainstorming" has a colon before the name and does not match this.
-    if grep -m1 '"subtype":"init"' "$LOG" | grep -q '"brainstorming"'; then
+    # "dietpowers:brainstorm" has a colon before the name and does not match this.
+    if grep -m1 '"subtype":"init"' "$LOG" | grep -q '"brainstorm"'; then
         polluted=$((polluted + 1))
     fi
 
-    if grep -qE '"skill":"dietpowers:brainstorming"' "$LOG"; then
+    if grep -qE '"skill":"dietpowers:brainstorm"' "$LOG"; then
         fired=$((fired + 1))
     fi
 
@@ -110,7 +110,7 @@ fi
 echo "logs:       $OUTPUT_DIR"
 
 if [ "$polluted" -gt 0 ]; then
-    echo "HARNESS ERROR: bare 'brainstorming' registered in $polluted of $RUNS runs." >&2
+    echo "HARNESS ERROR: bare 'brainstorm' registered in $polluted of $RUNS runs." >&2
     echo "  --setting-sources project did not take effect; personal skills are in play." >&2
     exit 1
 fi

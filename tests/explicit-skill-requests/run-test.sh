@@ -13,14 +13,14 @@ set -e
 
 SKILL_NAME="$1"
 PROMPT_FILE="$2"
-# 3 is too low. use-systematic-debugging names no actual bug, so the model spends the
+# 3 is too low. use-find-root-cause names no actual bug, so the model spends the
 # budget exploring before it can invoke anything: measured, it ends on error_max_turns at
 # num_turns 4 with nothing fired. At 8 the skill fired in 3 of 3 runs.
 MAX_TURNS="${3:-8}"
 
 if [ -z "$SKILL_NAME" ] || [ -z "$PROMPT_FILE" ]; then
     echo "Usage: $0 <skill-name> <prompt-file> [max-turns]"
-    echo "Example: $0 executing-plans ./prompts/executing-plans-please.txt"
+    echo "Example: $0 execute-plan ./prompts/execute-plan-please.txt"
     exit 1
 fi
 
@@ -52,10 +52,10 @@ cp "$PROMPT_FILE" "$OUTPUT_DIR/prompt.txt"
 # The agent sees its cwd. Any "superpowers" or skill name in that path cues the skill
 # call the test is trying to measure, so the workspace lives outside OUTPUT_DIR.
 PROJECT_DIR="${TMPDIR:-/tmp}/ws-${TIMESTAMP}-$$"
-mkdir -p "$PROJECT_DIR/docs/superpowers/plans"
+mkdir -p "$PROJECT_DIR/docs/dietpowers"
 
 # Create a dummy plan file for mid-conversation tests
-cat > "$PROJECT_DIR/docs/superpowers/plans/auth-system.md" << 'EOF'
+cat > "$PROJECT_DIR/docs/dietpowers/auth-system-plan.md" << 'EOF'
 # Auth System Implementation Plan
 
 ## Task 1: Add User Model
@@ -95,7 +95,7 @@ if grep -q '"subtype":"error_max_turns"' "$LOG_FILE"; then
 fi
 
 # If a bare skill name is registered, --setting-sources project did not take and the
-# measurement is meaningless. Note the leading quote: "dietpowers:brainstorming" has a
+# measurement is meaningless. Note the leading quote: "dietpowers:brainstorm" has a
 # colon before the name and does not match this pattern.
 if grep -m1 '"subtype":"init"' "$LOG_FILE" | grep -q "\"${SKILL_NAME}\""; then
     echo "HARNESS ERROR: bare '${SKILL_NAME}' is registered — personal skills are in play." >&2

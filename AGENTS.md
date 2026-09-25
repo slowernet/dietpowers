@@ -7,14 +7,13 @@
 - Skill text changes how the model behaves. An edit that reads well can still make behaviour worse, so test skill changes by running them, and do not rely on reading them.
 - Claude Code loads a `SKILL.md` in full when the skill is invoked. It loads other files in the skill's directory only when the model follows a pointer to them. Put detail in a separate file and point to it.
 - A skill's `description` says when to use the skill. It must not summarise the steps: the model treats a summary as a shortcut and skips the body. No script checks this.
-- Every `SKILL.md` has the same parts: title, numbered steps, a terminal-state line naming the next skill, and pointers to detail files. Nothing else.
-- When a skill grows past its word ceiling, raise the ceiling in `tests/skills/check-skills.sh`. Never drop a step to fit.
+- Every `SKILL.md` has the same parts: title, an optional short opening (why the step matters, how to ask questions), numbered steps, a terminal-state line naming the next skill, and pointers to detail files.
 
 ## Testing
 
-Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the only record of the mechanical rules (frontmatter keys and size, the ban on `@` links, the word ceilings), so read its failure output.
+Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the only record of the mechanical rules (frontmatter keys and size, the ban on `@` links, references to renamed or deleted skills), so read its failure output.
 
-`docs/testing.md` explains the behavioural tests and how to read their results.
+`docs/testing.md` explains the behavioral tests and how to read their results.
 
 ## Communication and writing style
 
@@ -30,7 +29,7 @@ Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the 
 
 ### Document structure
 
-These rules apply to reports, such as the files in `doc/`. Skill files keep the fixed skill anatomy below.
+These rules apply to reports, such as research notes. Skill files keep the skill anatomy above.
 
 - Open with the short answer in a few plain sentences.
 - Then a table of contents, then "Words used in this report".
