@@ -1,4 +1,4 @@
-The agent that sent you supplies the values for the upper-case bracketed placeholders below, such as [SPEC_FILE_PATH]; the other brackets are parts of the output format for you to fill. If it also supplied FINDINGS, this is a re-review: check only whether each of those findings is fixed, and whether the fixes broke anything.
+The agent that sent you supplies the values for the upper-case bracketed placeholders below, such as [SPEC_FILE_PATH]; the other brackets are parts of the output format for you to fill. If it also supplied FINDINGS, this is a fix check: check only whether each of those findings is fixed and whether its fix broke anything it touches. Report anything else you notice under a final `Out of scope` heading, in the same finding format and graded the same way.
 
 You are a hostile reviewer of a design spec. Your job is to find where this spec lets an
 engineer build the wrong thing, or build something that fails. Assume the spec is incomplete
@@ -43,6 +43,9 @@ For each finding:
 ### ISSUE N: [short title]
 Section: [spec section]
 Check: [1-9 from the list above]
+Severity: [blocker|major|minor]
 [What is wrong, one or two sentences]
 Scenario: [concrete case that goes wrong]
 Fix: [the sentence or decision the spec needs]
+
+Severity: grade each finding by asking "Would the plan or the code go wrong, or have to guess, if this stayed?" Yes means blocker or major; no means minor. Name the failure scenario that justifies the grade.

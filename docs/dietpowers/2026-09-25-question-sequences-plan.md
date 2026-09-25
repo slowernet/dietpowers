@@ -91,7 +91,7 @@ Tests (new block):
 - `trackers.md exists and contains .gitignore, Resuming, pause, Resuming <tracker file> at item <N>` — fails if the file is missing or the lead-in is reworded.
 - `trackers.md contains the four headings` — fails if a heading Tasks 5 and 6 point to is renamed.
 
-### - [ ] Task 4: Reviewer prompts
+### - [x] Task 4: Reviewer prompts
 
 Files: modify `skills/review/spec-reviewer.md`, `skills/review/plan-reviewer.md`, `skills/review/code-reviewer.md`; modify `tests/skills/check-skills.sh`.
 

@@ -83,6 +83,16 @@ else
   fail "skills/review/trackers.md missing"
 fi
 
+# Reviewer prompts: severity grades, a fix check with an Out of scope section, no old re-review mode.
+for n in spec-reviewer plan-reviewer; do
+  grep -qF "Severity: [blocker|major|minor]" "$SKILLS_DIR/review/$n.md" || fail "$n.md: no severity line"
+done
+for n in spec-reviewer plan-reviewer code-reviewer; do
+  grep -qF "Out of scope" "$SKILLS_DIR/review/$n.md" || fail "$n.md: no Out of scope section"
+  grep -qF "this is a re-review" "$SKILLS_DIR/review/$n.md" && fail "$n.md: old re-review sentence"
+done
+grep -qF "git diff [FIX_BASE] HEAD" "$SKILLS_DIR/review/code-reviewer.md" || fail "code-reviewer.md: no fix-check scope"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
