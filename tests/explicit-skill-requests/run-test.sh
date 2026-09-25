@@ -6,7 +6,7 @@
 # (without using the plugin namespace prefix)
 #
 # --setting-sources project excludes ~/.claude, so personal skills of the same name are
-# not loaded and the plugin's own hooks and CLAUDE.md are the only ones in play. HOME is
+# not loaded and only the plugin's own skills are in play. HOME is
 # left alone: authentication depends on it and there is nothing to seed.
 
 set -e
@@ -95,7 +95,7 @@ if grep -q '"subtype":"error_max_turns"' "$LOG_FILE"; then
 fi
 
 # If a bare skill name is registered, --setting-sources project did not take and the
-# measurement is meaningless. Note the leading quote: "superpowers:brainstorming" has a
+# measurement is meaningless. Note the leading quote: "dietpowers:brainstorming" has a
 # colon before the name and does not match this pattern.
 if grep -m1 '"subtype":"init"' "$LOG_FILE" | grep -q "\"${SKILL_NAME}\""; then
     echo "HARNESS ERROR: bare '${SKILL_NAME}' is registered — personal skills are in play." >&2
@@ -103,9 +103,9 @@ if grep -m1 '"subtype":"init"' "$LOG_FILE" | grep -q "\"${SKILL_NAME}\""; then
     exit 2
 fi
 
-# Only a superpowers:-prefixed invocation counts. An unprefixed match would be a
+# Only a dietpowers:-prefixed invocation counts. An unprefixed match would be a
 # personal ~/.claude/skills copy of the same name answering instead of this plugin.
-SKILL_PATTERN='"skill":"superpowers:'"${SKILL_NAME}"'"'
+SKILL_PATTERN='"skill":"dietpowers:'"${SKILL_NAME}"'"'
 if grep -q '"name":"Skill"' "$LOG_FILE" && grep -qE "$SKILL_PATTERN" "$LOG_FILE"; then
     echo "PASS: Skill '$SKILL_NAME' was triggered"
     TRIGGERED=true

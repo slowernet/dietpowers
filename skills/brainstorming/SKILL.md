@@ -15,7 +15,8 @@ description: "You MUST use this before any creative work - creating features, bu
 8. Get explicit approval on the design before anything gets built.
 9. Write the spec to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit it.
 10. Re-read the spec: no placeholders, no sections contradicting each other, scope small enough for one plan, no requirement readable two ways. Fix inline.
-11. Ask your partner to review the committed spec. Make any changes they ask for and re-check.
+11. Dispatch a fresh-context reviewer using `spec-document-reviewer-prompt.md`. Give it the spec path and nothing from this conversation. Fix each finding that holds; for each you reject, note why for your partner. Commit.
+12. Ask your partner to review the committed spec, along with any findings you rejected. Make any changes they ask for and re-check.
 
 Terminal state: invoke writing-plans. Invoke no other skill from here.
 
