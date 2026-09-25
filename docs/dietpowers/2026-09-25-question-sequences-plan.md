@@ -1,14 +1,12 @@
 # Question sequences: implementation plan
 
-Spec: docs/dietpowers/2026-09-25-question-sequences-spec.md @ c73e091
+Spec: docs/dietpowers/2026-09-25-question-sequences-spec.md @ 3609243
 Base: main
 Commits: approved
 
 Goal: plain-text questions in every skill; review asks about every blocker and major finding and records a pausable, resumable tracker; one fix check after all decisions; review history to the PR; code steps always commit on the feature branch.
 
 Architecture: text changes to the ten `SKILL.md` files, the three reviewer prompts and `README.md`, plus one new detail file, `skills/review/trackers.md`, which review and brainstorm point to. `tests/skills/check-skills.sh` is the test: each task adds its assertions there first, sees them fail, then makes the change.
-
-Working-tree note: `README.md` and `skills/review/code-reviewer.md` carry uncommitted edits that are not part of this plan (the partner's tagline and seam-check sentence, and the rewritten Motivation section the partner asked for). Leave them on disk. When committing a task that edits either file, stage only that task's hunks (`git add -p`), never those.
 
 ## Global Constraints
 
@@ -50,7 +48,7 @@ Behavior:
 - `pause` appears only where Tasks 5 and 6 add it; this task adds no `pause`.
 
 Tests (new block in check-skills.sh):
-- `no file under skills/ contains AskUserQuestion` — fails if any skill keeps the old paragraph.
+- `no file under skills/ contains "with the AskUserQuestion tool:"` (the old paragraph's text; the new paragraph may name the tool) — fails if any skill keeps the old paragraph.
 - `every SKILL.md contains Reply with` — fails if a skill is missed.
 - `no file under skills/ contains Which option?` — fails if a finish-branch menu keeps the old ending.
 
@@ -58,13 +56,13 @@ Tests (new block in check-skills.sh):
 
 Files: modify `skills/execute-plan/SKILL.md`, `skills/tdd/SKILL.md`, `skills/find-root-cause/SKILL.md`, `skills/handle-feedback/SKILL.md`, `skills/prove-done/SKILL.md`, `skills/review/SKILL.md`, `skills/update-spec/SKILL.md`, `skills/write-plan/SKILL.md`, `skills/finish-branch/SKILL.md`; modify `tests/skills/check-skills.sh`.
 
-Context: spec "Commits in the code steps"; References (shared commit paragraph, commit clauses).
+Context: spec "Commits in the code steps" (including its Changed note); References (shared commit paragraph, commit clauses).
 
 Behavior:
 - execute-plan, tdd, find-root-cause, handle-feedback: replace the commit paragraph with the code-step rule, worded identically in all four: commit on the feature branch as you go, never on `main`, `master` or the plan's `Base:` branch; if you are on one of those, ask once `I'll create branch <name> for this work. Reply with yes or no.`; if your partner declines, do no code work until a branch is agreed. Their commit clauses become unconditional ("commit ...").
 - prove-done: remove the commit paragraph and step 3's commit clause; code it fixes goes through `dietpowers:tdd`.
 - review: its commit paragraph states both rules, using the phrase `code-step rule`: fixes in a code review follow the code-step rule; fixes in a spec or plan review follow the document rule (the existing commit question and held-back mode). Step 2 splits the same way.
-- brainstorm, write-plan: keep the document commit paragraph; write-plan's header description says `Commits:` covers the spec and plan only.
+- brainstorm, write-plan, update-spec and review's document rule: keep the document commit paragraph, adding that whatever the answer, the work moves to the named feature branch and declining holds back commits only. write-plan's header description says `Commits:` covers the spec and plan only.
 - update-spec: step 6 says that when document commits are held back, spec and plan edits stay on disk even though the code change is committed; otherwise they are committed with the code change.
 - finish-branch step 3: the proposal covers only a held-back spec and plan (spec first, then plan); remove the per-task commits and the `git apply --cached` splitting.
 - Keep Task 1's `Reply with yes or no.` on every remaining commit question.
@@ -73,7 +71,7 @@ Tests (new block):
 - `execute-plan, tdd, find-root-cause, handle-feedback and prove-done SKILL.md do not contain "if commits are approved"` — fails if a code step keeps the conditional.
 - `review SKILL.md contains code-step rule` — fails if review keeps a single rule.
 - `finish-branch SKILL.md does not contain git apply --cached` — fails if the per-task split survives.
-- `update-spec SKILL.md contains held back` — fails if the held-back rule for spec edits is dropped.
+- `update-spec SKILL.md contains "even though the code change is committed"` — fails if the new held-back rule for spec edits is dropped (the phrase is absent today).
 
 ### - [ ] Task 3: Shared detail file `skills/review/trackers.md`
 
@@ -81,13 +79,13 @@ Files: create `skills/review/trackers.md` (imitate `skills/find-root-cause/root-
 
 Interfaces: produces the headings `## Working directory`, `## Tracker format`, `## Replies`, `## Resuming`, which Tasks 5 and 6 name when they point in.
 
-Context: spec "Shared detail file"; Global Constraints (working directory, tracker path, statuses, `Second pass:` values, resume lead-in).
+Context: spec "Shared detail file" and "Inputs and failure behavior"; Global Constraints (working directory, tracker path, statuses, `Second pass:` values, resume lead-in).
 
 Behavior:
 - `## Working directory`: `.claude/dietpowers/` and its `.gitignore` (`*`); no tracker, and no pause, when it can't be written, outside a git work tree, or on a detached HEAD, and the partner is told.
 - `## Tracker format`: the path rule with its topic fallbacks and `-2` suffix; review header fields (stage, document, branch, first-reviewer values with `REQUIREMENTS` verbatim, `FIX_BASE` for code, `Second pass:`); brainstorm header (`Spec:` empty until the spec is saved, no `Second pass:`); repo-relative paths; the review item fields and brainstorm item fields as in the spec; statuses; approval text written before its question; one filled example review item.
-- `## Replies`: `pause` only on tracker items; answers, non-answers (respond, then ask the same item again), `pause` (item stays `open`, say `Paused at item <N>. Say "resume" any time.`, stop); nothing but an answer moves on, nothing licenses deciding the rest.
-- `## Resuming`: the rules in the spec's Resuming bullet, in its order, with the lead-in copied exactly.
+- `## Replies`: `pause` only on tracker items; answers, non-answers (respond, then ask the same item again), `pause` (item stays `open`, say `Paused at item <N>. Say "resume" any time.`, stop); an empty or unclear reply is not an answer, so ask again; nothing but an answer moves on, nothing licenses deciding the rest.
+- `## Resuming`: the rules in the spec's Resuming bullet, in its order, with the lead-in copied exactly; plus, for an unreadable tracker or one with missing fields, say which field and ask whether to continue with what is readable or leave the tracker.
 
 Tests (new block):
 - `trackers.md exists and contains .gitignore, Resuming, pause, Resuming <tracker file> at item <N>` — fails if the file is missing or the lead-in is reworded.
@@ -122,12 +120,12 @@ Context: spec "Review", "Inputs and failure behavior"; Global Constraints.
 Behavior:
 - Description adds "or to resume a paused review"; frontmatter stays under 1024 characters.
 - Opening: the "One round of fixes and one re-review ..." sentence becomes: review ends when nothing blocking is open, because a reviewer will always find something.
-- Steps, in order: resume (follow `## Resuming` in `${CLAUDE_SKILL_DIR}/trackers.md`); steps 1 to 3 as today, step 1 adding that the reviewer grades each finding; write the tracker with every finding as an unchecked `open` item and `Second pass: pending`; check each and record the evidence; minor with one fix → `fix` plus a one-line notice; blockers, majors and the other asked cases → one at a time, most severe first, each ending `Reply with <options>, or pause.`, replies per `## Replies`; fixing when nothing is `open`, recording `FIX_BASE` first for code, failed fix back to `open` with evidence; the fix check (or `not run (nothing fixed)`), review-2 items and `Second pass: done (N findings)` in one write, review-2 minors by the notice rule, `duplicate of N`, out-of-scope items with defer recommended unless a blocker, `not run (<reason>)` on failure, never dispatch again; report leading with the outcome, nothing appended to the spec or plan.
+- Steps, in order: resume (follow `## Resuming` in `${CLAUDE_SKILL_DIR}/trackers.md`); steps 1 to 3 as today, step 1 adding that the reviewer grades each finding; write the tracker, following `## Working directory` and `## Tracker format` in `${CLAUDE_SKILL_DIR}/trackers.md`, with every finding as an unchecked `open` item and `Second pass: pending`; check each and record the evidence; minor with one fix → `fix` plus a one-line notice; blockers, majors and the other asked cases → one at a time, most severe first, each ending `Reply with <options>, or pause.`, replies per `## Replies`; fixing when nothing is `open`, recording `FIX_BASE` first for code, failed fix back to `open` with evidence; the fix check (or `not run (nothing fixed)`), review-2 items and `Second pass: done (N findings)` in one write, review-2 minors by the notice rule, `duplicate of N`, out-of-scope items with defer recommended unless a blocker, `not run (<reason>)` on failure, never dispatch again; report leading with the outcome, nothing appended to the spec or plan.
 - Terminal state: done when no blocker or major is `open` or `fix`; recommend continuing only when none is `deferred`; `Reply with continue, revise, or stop.`; a revise run gets a new tracker.
 - End with `Depth: trackers.md`.
 
 Tests (new block):
-- `review SKILL.md contains pause and Depth: trackers.md`.
+- `review SKILL.md contains pause, ## Tracker format and Depth: trackers.md`.
 - `no file under skills/ contains Review notes`.
 - `review SKILL.md contains Second pass and does not contain "a notice, not a question" or "Dispatch no third review"` — fails if old steps 4 or 6 survive.
 
@@ -142,11 +140,11 @@ Context: spec "Brainstorm"; References (`skills/tdd/SKILL.md:29`).
 Behavior:
 - Description adds "or to resume a paused brainstorm".
 - First step: if the partner asked to resume, follow `## Resuming` in `${CLAUDE_SKILL_DIR}/../review/trackers.md`.
-- Before the first question, create the tracker (stage `brainstorm`, topic reused for the spec filename). Each design question ends `Reply with <options>, or pause.` Record each question and answer, and the approaches and design before asking about them. Fill in the `Spec:` line when the spec is saved.
+- Before the first question, create the tracker following `## Working directory` and `## Tracker format` in `${CLAUDE_SKILL_DIR}/../review/trackers.md` (stage `brainstorm`, topic reused for the spec filename). Each design question ends `Reply with <options>, or pause.` Record each question and answer, and the approaches and design before asking about them. Fill in the `Spec:` line when the spec is saved.
 - End with `Depth: ../review/trackers.md`.
 
 Tests (new block):
-- `brainstorm SKILL.md contains pause and a Depth: line naming ../review/trackers.md`.
+- `brainstorm SKILL.md contains pause, ## Tracker format and a Depth: line naming ../review/trackers.md`.
 - `[ -f skills/brainstorm/../review/trackers.md ]` — fails if the pointer target moves.
 
 ### - [ ] Task 7: Finish branch: review record
@@ -157,7 +155,7 @@ Context: spec "Finish branch".
 
 Behavior:
 - Step 6's review bullet: from the trackers in `.claude/dietpowers/trackers/` whose header names this branch, each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
-- Local merge (step 5): the final report lists the deferred, won't-fix and rejected findings from those trackers, one line each.
+- Local merge (step 5): before its `cd`, read this branch's trackers from `$WORKTREE_PATH/.claude/dietpowers/trackers/` (captured in step 2) and keep the deferred, won't-fix and rejected findings; the final report lists them, one line each, after cleanup.
 - State that no skill deletes a tracker directly, and that removing a worktree removes its trackers.
 
 Tests (new block):
@@ -171,12 +169,12 @@ Files: modify `README.md` (see Working-tree note); modify `tests/skills/check-sk
 Context: spec "Other files".
 
 Behavior:
-- Bring in line every passage the spec lists: the flow-diagram lines ending `fix; one re-review`; the bullet containing `One re-review checks only the fixes`; `Runs one scoped re-review, then stops.`; the change note beginning `Reports outcome first and appends rejected findings`, including `(one fresh review of the revision)`; the bullet `Questions come one at a time,`; the sentences beginning `Every skill that asks you anything gained the same rule` and `Every skill that commits asks once`.
+- Bring in line every passage the spec lists: the flow-diagram lines ending `fix; one re-review`; the bullet containing `One re-review checks only the fixes`; `Runs one scoped re-review, then stops.`; the change note beginning `Reports outcome first and appends rejected findings`, including `(one fresh review of the revision)`; the bullet `Questions come one at a time,`; the sentences beginning `Every skill that asks you anything gained the same rule`, `Every skill that commits asks once` and `Committing needs your approval once per piece of work`; finish-branch's change notes `(spec and plan, then one per plan task, splitting shared files by task)` and the PR-description note mentioning review findings.
 - Add change notes: plain-text questions, trackers (`.claude/dietpowers/`, self-ignoring), pause and resume, the PR record, commits in the code steps.
 - New wording must avoid the three strings the test bans.
 
 Tests (new block):
-- `README.md contains none of "one re-review", "section in the spec or plan", "multiple choice"`.
+- `README.md contains none of "one re-review", "section in the spec or plan", "multiple choice", "splitting shared files by task"`.
 
 ### - [ ] Task 9: Manual trial on cells
 
