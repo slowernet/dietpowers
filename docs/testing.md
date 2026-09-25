@@ -75,6 +75,10 @@ start implementing immediately").
 The other prompts in `prompts/` can be run one at a time with `run-test.sh <skill> <prompt-file>`.
 `run-multiturn-test.sh` and `run-extended-multiturn-test.sh` carry their own prompts.
 
+## Manual trials of pause and resume
+
+To test resuming a paused review or brainstorm, pause in one session, then say `resume` in a new session, so the skill has to work from the tracker file alone. Over ACP there is no `/clear`; open a new session instead. Afterwards, `git check-ignore -v .claude/dietpowers/trackers/<tracker>` should name `.claude/dietpowers/.gitignore`.
+
 ## Reading behavioral results
 
 Each run is one sample, so a single pass is weak evidence. A low `--max-turns` (the multi-turn scripts use 2 and 3)
