@@ -11,12 +11,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 TIMESTAMP=$(date +%s)
-OUTPUT_DIR="/tmp/superpowers-tests/${TIMESTAMP}-$$/explicit-skill-requests/multiturn"
+OUTPUT_DIR="${TMPDIR:-/tmp}/dietpowers-tests/${TIMESTAMP}-$$/explicit-skill-requests/multiturn"
 mkdir -p "$OUTPUT_DIR"
 
 # Create project directory (conversation is cwd-based).
 # The agent sees its cwd, so keep "superpowers" out of the workspace path.
-PROJECT_DIR="/tmp/ws-${TIMESTAMP}-$$"
+PROJECT_DIR="${TMPDIR:-/tmp}/ws-${TIMESTAMP}-$$"
 mkdir -p "$PROJECT_DIR/docs/dietpowers"
 
 echo "=== Multi-Turn Explicit Skill Request Test ==="
@@ -28,7 +28,7 @@ echo ""
 cd "$PROJECT_DIR"
 
 # Create a dummy plan file
-cat > "$PROJECT_DIR/docs/dietpowers/auth-system-plan.md" << 'EOF'
+cat > "$PROJECT_DIR/docs/dietpowers/2026-01-01-auth-system-plan.md" << 'EOF'
 # Auth System Implementation Plan
 
 ## Task 1: Add User Model
@@ -62,7 +62,7 @@ echo ""
 # Turn 2: Continue with more planning detail
 echo ">>> Turn 2: Continuing planning..."
 TURN2_LOG="$OUTPUT_DIR/turn2.json"
-claude -p "Good analysis. I've already written the plan to docs/dietpowers/auth-system-plan.md. Now I'm ready to implement. What are my options for execution?" \
+claude -p "Good analysis. I've already written the plan to docs/dietpowers/2026-01-01-auth-system-plan.md. Now I'm ready to implement. What are my options for execution?" \
     --continue \
     --plugin-dir "$PLUGIN_DIR" \
     --setting-sources project \

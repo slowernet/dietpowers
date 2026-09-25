@@ -1,4 +1,4 @@
-I have my implementation plan ready at docs/dietpowers/auth-system-plan.md.
+I have my implementation plan ready at docs/dietpowers/2026-01-01-auth-system-plan.md.
 
 I want to use execute-plan to execute it. That means:
 - Work through each task in the plan in order

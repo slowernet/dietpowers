@@ -8,11 +8,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 TIMESTAMP=$(date +%s)
-OUTPUT_DIR="/tmp/superpowers-tests/${TIMESTAMP}-$$/explicit-skill-requests/extended-multiturn"
+OUTPUT_DIR="${TMPDIR:-/tmp}/dietpowers-tests/${TIMESTAMP}-$$/explicit-skill-requests/extended-multiturn"
 mkdir -p "$OUTPUT_DIR"
 
 # The agent sees its cwd, so keep "superpowers" out of the workspace path.
-PROJECT_DIR="/tmp/ws-${TIMESTAMP}-$$"
+PROJECT_DIR="${TMPDIR:-/tmp}/ws-${TIMESTAMP}-$$"
 mkdir -p "$PROJECT_DIR/docs/dietpowers"
 
 echo "=== Extended Multi-Turn Test ==="
@@ -62,7 +62,7 @@ echo "Done."
 
 # Turn 4: Confirm plan looks good
 echo ">>> Turn 4: Confirming plan..."
-claude -p "The plan looks good. What are my options for executing it?" \
+claude -p "The plan looks good. Continue with execute-plan?" \
     --continue \
     --plugin-dir "$PLUGIN_DIR" \
     --setting-sources project \
