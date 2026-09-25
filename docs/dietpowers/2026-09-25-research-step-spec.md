@@ -24,11 +24,11 @@ Later steps copy these values exactly.
 
 ### Brainstorm steps (`skills/brainstorm/SKILL.md`)
 
-- Steps are renumbered. Step 3 becomes the purpose questions (what the change is for, and for whom), step 4 the research step, and step 5 the remaining design questions (constraints, success criteria, allowed input values, failure and rerun behavior). Old steps 5 to 8 become 6 to 9. `skills/adversarial-review/trackers.md` Resuming 7, which names "brainstorm step 3", is updated to the new numbers and lists the research step between the purpose questions and the remaining questions: a tracker with neither a research proposal item nor a `Research: skipped` note has not run step 4 yet.
+- Steps are renumbered. Step 3 becomes the purpose questions (what the change is for, and for whom), step 4 the research step, and step 5 the remaining design questions (constraints, success criteria, allowed input values, failure and rerun behavior). Old steps 5 to 8 become 6 to 9. `skills/adversarial-review/trackers.md` Resuming 7, which names "brainstorm step 3", is updated to the new numbers and lists the research step between the purpose questions and the remaining questions: a tracker whose header `Research:` line is empty and which has no research proposal item has not run step 4 yet.
 - Old step 4 ("When the problem has a well-known solution ... Note what you used in the spec.") is replaced by the research step, except for one sentence that applies whether or not research runs: "When versions or APIs matter, prefer what the current documentation for the version in use recommends and avoid what it marks deprecated or insecure; check the project's existing dependencies and framework features before adding new ones."
 - **Research step.**
   1. Apply the research test to what you know now.
-  2. If the answer is no, give the skip line, record it in the tracker as a note (`Research: skipped, <reason>`), and continue. If the partner replies `research anyway` before the design is approved, go to 3.
+  2. If the answer is no, give the skip line, record it in the brainstorm tracker's header line `Research: skipped, <reason>`, and continue. If the partner replies `research anyway` before the design is approved, go to 3.
   3. Otherwise, write the proposal into the tracker as a tracker item, then ask it: about three questions, each with the question it answers and the kinds of source to check (for example official documentation, a changelog, a standards body, or an issue tracker), ending with the proposal ending. `trim` drops the numbered questions and dispatches the rest; a `trim` that names any number not on the list is asked again. An alternative that edits the list is an answer; if it grows past about three questions, ask which to drop. `skip` records the skip and continues. `pause` follows the tracker rules.
   4. On `go` (or after a trim), dispatch a `general-purpose` subagent on the same model whose whole prompt is "Read `${CLAUDE_SKILL_DIR}/researcher.md` and follow it," then `TOPIC` and `QUESTIONS`. Wait for its report.
   5. Write the report into the tracker, show the partner a short version (one line per question), pass on any deep-research suggestion from the report and list it in the spec's Out of scope as a follow-up, and continue with the design questions.
@@ -51,7 +51,9 @@ Adapted from deep-research's `references/researcher.md`, keeping its language wh
 
 - `tests/skills/check-skills.sh`: the assertions under Success criteria.
 - `README.md`: replace the existing brainstorm bullet "New research step for well-known problems and outside APIs or dependencies..." with a description of the new step.
-- `skills/adversarial-review/trackers.md`: Resuming 7's brainstorm step numbers.
+- `skills/adversarial-review/trackers.md`: Tracker format (the brainstorm header gains a `Research:` line, empty until step 4 runs) and Resuming 7's brainstorm step numbers.
+
+> **Changed 2026-09-25:** the research skip is recorded in a `Research:` header line of the brainstorm tracker (from a free-standing note). Why: the tracker format had no place for notes (plan review finding 2). Same behavior. Approved as a minor fix with a notice to the partner during plan review.
 
 ## Inputs and failure behavior
 
