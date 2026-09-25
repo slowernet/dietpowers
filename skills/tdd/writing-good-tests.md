@@ -2,6 +2,8 @@
 
 **Load this reference when:** writing or changing tests, adding mocks, or adding cleanup or helper methods for tests.
 
+Contents: Principle 1, name the break; Principle 2, exercise the real thing; Make tests deterministic and readable; Ship only the tests the behavior needs; Checklist.
+
 Where the project's existing suite already settles a question here (fixtures, network access, style), follow the suite.
 
 A test exists to catch a specific break. Two principles govern everything here: every test names the break it catches, and every test exercises the real thing. Strict TDD produces both naturally: a test written first and watched failing against real code has already proven it can fail, and it only earns a mock when the real dependency proves slow or external.

@@ -35,8 +35,8 @@ async function gitInit(directory: string) {
 
 ## Finding which test causes pollution
 
-When something appears during a test run and you don't know which test creates it, run `find-polluter.sh` from this directory. It runs test files one at a time and stops at the first one that creates the file:
+When something appears during a test run and you don't know which test creates it, run this skill's `find-polluter.sh` from the project root; `find-root-cause`'s `SKILL.md` gives its full path. It runs test files one at a time and stops at the first one that creates the file:
 
 ```bash
-./find-polluter.sh '.git' 'src/**/*.test.ts'
+<path to find-polluter.sh> '.git' 'src/**/*.test.ts'
 ```
