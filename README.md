@@ -40,13 +40,12 @@ Each skill hands on to the next and asks before each new stage. Other steps can 
 
 ## Why dietpowers
 
-Superpowers taught coding agents a disciplined process: agree a spec, plan, build test-first, review. As models improved, the process grew around them: capitalised instructions injected into every session, a fresh subagent for every task with a ledger of briefs, reports and review packages, and review loops of up to five rounds per task. Current models already do much of this themselves. Anthropic says Opus 5 "verifies its own work without being told to" ([Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5#task-scope-and-over-verification)), and Superpowers' maintainer says frontier models have "gotten better at executing work inline" ([6.4 release](https://blog.fsck.com/2026/09/21/superpowers-6.4/)). So the extra structure repeats work the model does anyway, or pulls against it, and features take longer and cost more than they need to. Users report the same in [issue #2017](https://github.com/obra/superpowers/issues/2017). Anthropic removed over 80% of Claude Code's own system prompt for Claude 5 models, saying "we were overconstraining Claude Code, both through our system prompt and in our CLAUDE.md files and skills" ([post](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)).
-
-dietpowers keeps what still pays for itself and drops the rest:
-
+- **Superpowers' process outgrew current models.** It added capitalised instructions in every session, a subagent per task with a ledger of briefs and review packages, and up to five review rounds per task. Opus 5 "verifies its own work without being told to" ([Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5#task-scope-and-over-verification)), and frontier models have "gotten better at executing work inline" ([Superpowers 6.4](https://blog.fsck.com/2026/09/21/superpowers-6.4/)). The extra structure repeats or fights that work, so features take longer and cost more ([issue #2017](https://github.com/obra/superpowers/issues/2017)).
+- **Anthropic reached the same conclusion** for Claude Code itself, removing over 80% of its system prompt because "we were overconstraining Claude Code, both through our system prompt and in our CLAUDE.md files and skills" ([post](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)).
+- **A better working experience.** The flow should keep you focused and moving: short messages that lead with the decision, one question at a time with a recommendation, the agent carrying on without check-ins it doesn't need, and design steps that suggest simpler and more creative options instead of only executing the request.
 - **Keeps:** a spec agreed before any code, test-first implementation, and review by a fresh reviewer that has not seen the conversation.
 - **Drops:** always-on instructions, per-task subagents and ledgers, emphatic rules, and code written into plans.
-- **Aims for:** one linear flow biased toward simplicity and correctness. It does not try to go faster through parallel agents.
+- **Aims for:** one linear flow biased toward simplicity and correctness, without parallel agents.
 
 ## What dietpowers changes from superpowers-slim
 
@@ -97,24 +96,10 @@ claude --plugin-dir /path/to/dietpowers
 
 ## What changed in each skill
 
-Compared with superpowers-slim. Every skill that asks the user anything gained the same rule: one question at a time, multiple choice, recommended option first with a reason. Most also gained a line asking for short messages that lead with the question or outcome.
-
-Each skill lists what grounds its changes. Sources, strongest first:
-
-- **[5.5]** Anthropic, [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5). The primary guide.
-- **[Opus 5]** Anthropic, [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5). The 5.5 guide calls its patterns "a reasonable starting point"; used only where 5.5 is silent.
-- **[BP]** Anthropic, [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), which apply to all current models.
-- **[CE]** Anthropic, [The new rules of context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models).
-- **[Skills]** Claude Code [skills docs](https://code.claude.com/docs/en/skills) and Anthropic's [skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
-- **[AR]** [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review).
-- **[SP]** Superpowers' own history and issues, such as [#2017](https://github.com/obra/superpowers/issues/2017) (cost and speed) and [#2112](https://github.com/obra/superpowers/issues/2112) (review rounds that keep adding tests).
-- **[Tests]** Google, *Software Engineering at Google*, chapters on [unit testing](https://abseil.io/resources/swe-book/html/ch12.html) and [test doubles](https://abseil.io/resources/swe-book/html/ch13.html); Kent Beck, [Test Desiderata](https://testdesiderata.com/); and two 2026 preprints, not yet peer reviewed, on tests written by AI tools: [requirements versus implementation in generated assertions](https://arxiv.org/abs/2607.10277) and [VibeCheck](https://arxiv.org/abs/2609.05978).
-- **[SDD]** Birgitta Böckeler, [Understanding Spec-Driven Development](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html), on keeping a spec current as work proceeds.
-- **Flow:** changes made so the skills fit together, with no outside source.
+Compared with superpowers-slim. Every skill that asks you anything gained the same rule: one question at a time, multiple choice, recommended option first with a reason. Most also gained a line asking for short messages that lead with the question or outcome.
 
 - **`brainstorm`** (was `brainstorming`)
-  - Grounded in: [5.5] Opus 5.5 "tends to get to work quickly" and should look through sources the task does not mention, and stops for "decisions ... none of [which] blocks" are unwanted; [BP] give the reason behind instructions, and keep complexity to "the minimum needed"; [CE] no emphatic wording; [Opus 5] say so when "a better approach exists"; Flow: sections the plan and reviewers rely on.
-  - Description names when to use it; "You MUST" and the summary of steps are gone.
+  - Description says only when to use it; "You MUST" and the summary of steps are gone.
   - Opens with why the spec matters and a preference for the simplest well-grounded design.
   - Reads context beyond what the request names.
   - Asks only questions that change the design and records routine calls as assumptions; covers input limits, failure and rerun behavior.
@@ -123,71 +108,80 @@ Each skill lists what grounds its changes. Sources, strongest first:
   - Approaches must include the simplest one and one built on an existing library or pattern.
   - One design approval replaces approval after each section; the self re-read is gone because a review follows.
   - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` with fixed sections, including testable success criteria and References.
-  - Hands off to `review`.
+  - Hands off to `review` instead of `writing-plans`.
 - **`review`** (new; replaces `requesting-code-review`)
-  - Grounded in: [5.5] wait for a running subagent before treating a task as done; [AR] the code-review prompt; [Opus 5] review prompts that say "only report high-severity issues" make the model report less, so ours limit scope, never severity; [SP] #2112, review rounds that keep adding tests, for stopping after one re-review; [Skills] a subagent reads its own prompt file, which keeps it out of the main context.
   - Reviews a spec, plan or code with a matching prompt, in a fresh subagent on the same model that reads its own prompt file and runs in the foreground.
-  - Checks each finding, fixes what holds (test first for code), routes any fix that changes specified behavior through `update-spec`, runs one scoped re-review, then stops.
+  - Lists the clear-cut findings it will fix, with one-line reasons, without stopping; asks you, one at a time with a recommendation, only about findings it wants to reject, findings with more than one reasonable fix, and fixes that change the approved spec.
+  - Edits a spec or plan under review directly; code fixes start with a failing test; a fix that changes the approved spec goes through `update-spec`.
+  - Runs one scoped re-review, then stops.
   - Reports outcome first, then asks whether to continue to the next stage.
   - `spec-reviewer.md` (was `brainstorming/spec-document-reviewer-prompt.md`, which nothing used): rewritten as a hostile review with eight checks, including input limits, failure behavior, over-complex designs and reference facts.
   - `plan-reviewer.md` (was `writing-plans/plan-document-reviewer-prompt.md`, also unused): rewritten as a hostile review with seven checks, including tests that cannot fail and missing task context.
-  - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in commits, and a read-only rule. It reviews the whole branch.
+  - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in commits, and a read-only rule. It reviews the whole branch instead of the last commit.
 - **`write-plan`** (was `writing-plans`)
-  - Grounded in: [5.5] Opus 5.5 is "strongest on multistep work in a real repository"; [Opus 5] it works best "given the complete task specification up front"; [CE] no instructions repeated across skills (the TDD steps live in `tdd`); Flow: plans linked to specs, and references carried once.
   - No implementation code and no TDD micro-steps.
-  - Header: `Spec:` link, goal, architecture, Global Constraints, and shared References.
+  - Header: `Spec: <path> @ <commit>`, marking the approved spec, then goal, architecture, Global Constraints and shared References.
   - Each task: Files, Interfaces, Context, Behavior, and Tests naming the change that would make each fail, plus the command to run them.
   - Names an existing file for each new one to imitate.
   - The banned-phrase list, the self re-read and the subagent-era lines are gone.
   - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-plan.md` and hands off to `review`.
 - **`execute-plan`** (was `executing-plans`)
-  - Grounded in: [5.5] name the early stops to avoid and the ones wanted, put status notes "in the same message as your next tool call", and keep tasks "in a checklist the model updates"; [Opus 5] check in "only when different readings ... would lead to materially different work"; Flow: no-code plans and `update-spec`.
   - Reads the plan and the spec.
   - Builds each task with `tdd`, uses the plan's checkboxes as its task list, and uses `find-root-cause` for unclear failures.
   - Makes routine calls itself and records them in commits; asks only about changes to interfaces, requirements or other tasks, and routes changes to specified behavior through `update-spec`.
   - Names the stops it should and should not make.
-  - Ends with a short report, then asks before code review (it used to go straight to finishing).
+  - Ends with a short report, then asks before code review; it used to go straight to finishing.
 - **`tdd`** (was `test-driven-development`)
-  - Grounded in: [BP] "implement a solution that works correctly for all valid inputs, not just the test cases" and report tests that are wrong rather than work around them; [BP] give the reason for a rule; [SP] Superpowers found removing its TDD rebuttals made results worse, so the delete rule stays.
   - Explains why the test comes first.
   - Starts from the plan's Tests.
-  - Code must work for every valid input, not only the test's; a test is never weakened to get green, and a test that is wrong because the spec is wrong goes through `update-spec`.
-  - Inside a plan it returns to `execute-plan` instead of requesting a review.
-  - `writing-good-tests.md`: each rule now appears once; the two gate functions, the mutation check, the quick reference and the warning signs are merged into one checklist; the quotes from Superpowers' author are gone (1,309 to 1,026 words). It then gained: expected values taken from the spec before reading the implementation; tests that are deterministic, isolated and straight-line, with clear failure messages; an order of preference for test doubles (real, then fake, then stub or mock) with outcomes asserted before calls; and the spec's input limits and failure behavior in the mutation check. Grounded in [Tests].
+  - Code must work for every valid input, including those no test covers; a test is never weakened to get green, and a test that is wrong because the spec is wrong goes through `update-spec`.
+  - Returns to the skill that invoked it; only on its own does it hand off to `review`.
+  - `writing-good-tests.md`: each rule appears once, in one closing checklist; the quotes from Superpowers' author are gone. New: expected values taken from the spec or requirement before reading the implementation; deterministic, isolated, straight-line tests with clear failure messages; an order of preference for test doubles (real, then fake, then stub or mock), asserting outcomes before calls; the spec's input limits and failure behavior in the mutation check; and the project's existing suite takes precedence.
 - **`prove-done`** (was `verification-before-completion`)
-  - Grounded in: [Opus 5] explicit verification instructions "cause over-verification", so there is one final check instead of scattered ones; [5.5] reports should say "what it did, what it found, and what it needs from you"; Flow: success criteria from the spec, and drift from `update-spec`.
+  - Runs at the end of a finished, reviewed branch instead of before any commit, and returns to the skill that invoked it.
   - Runs the full suite, linter and build fresh.
-  - Lists every change to the spec since approval, from its `Changed` notes checked against git history.
-  - Pairs each current success criterion with the test or command that shows it, and never passes a criterion the code and spec disagree on; it fixes the code or routes the change through `update-spec`.
+  - Lists every change to the spec since approval, from its `Changed` notes checked against git history from the plan's `Spec:` commit.
+  - Pairs each current success criterion with the test or command that shows it, and never passes a criterion the code and spec disagree on.
   - The paragraph about paraphrases and "expressions of satisfaction" is gone.
 - **`finish-branch`** (was `finishing-a-development-branch`)
-  - Grounded in: [5.5] keep "your own confirmation step for risky or irreversible actions", and reports that say "what it did, what it found, and what it needs from you"; Flow: no second suite run straight after `prove-done`, and a PR description built from what the flow produced.
   - Reuses `prove-done`'s run instead of running the suite again.
   - Asks the integration menu as one question, recommending the pull request unless you've said otherwise.
   - Writes the PR description from the run: what changed and why with a spec link, the commits grouped by plan task, each success criterion with its evidence, the spec's `Changed` notes, review findings fixed and rejected, and open items.
-  - Hands off to `handle-feedback` when PR comments arrive, and skips the menu when a pull request is already open.
+  - When a pull request is already open, pushes instead of showing the menu, and returns to the skill that invoked it.
+  - Hands off to `handle-feedback` when PR comments arrive.
 - **`handle-feedback`** (was `receiving-code-review`)
-  - Grounded in: [5.5] keep a confirmation step for outward actions, and avoid stopping over decisions that block nothing; [Opus 5] check in only when readings "would lead to materially different work"; [BP] give the reason; Flow: feedback from people stays separate from `review`.
   - Opens with why: feedback is a claim to check, answered with changes and evidence.
   - Scoped to feedback from people and pull requests.
   - An item that could be read two ways blocks only itself and what depends on it.
   - Changes to specified behavior go through `update-spec`; each fix starts with a test that reproduces the problem.
-  - Replies are drafted, shown to you, and posted in-thread only after you approve.
-  - Hands off to `prove-done`, then `finish-branch`, which pushes to the open pull request instead of showing the integration menu again.
+  - Replies are drafted and approved by you, and posted in-thread only after `prove-done` and `finish-branch` have pushed the fixes.
 - **`update-spec`** (new)
-  - Grounded in: [SDD] a spec kept current as the work proceeds; [Skills] invoked skill content "stays [in the conversation] across later turns", so the calling skill resumes where it stopped; Flow: one path for every change to specified behavior.
-  - The one way specified behavior changes after approval: states the change, gets approval, edits only the affected sections and plan tasks, adds a dated `Changed` note under each edited section, and commits it with the code.
+  - The one way specified behavior changes once you have approved the spec: states the change, gets approval, edits only the affected sections plus the plan's matching tasks, Global Constraints and References, adds a dated `Changed` note under each edited section, and commits with the code.
+  - A declined change edits nothing, and the calling skill drops it.
   - Sends new goals or features back to `brainstorm`.
   - Called from `write-plan`, `execute-plan`, `review`, `tdd`, `handle-feedback`, `find-root-cause` and `prove-done`, or directly by you.
 - **`find-root-cause`** (was `systematic-debugging`)
-  - Grounded in: [5.5] Opus 5.5 "tends to get to work quickly", so the investigate-first steps stay, and step 16 is the kind of stop the guide wants; [BP] give the reason; Flow: a correct hand-off from inside a plan.
   - Opens with why the cause comes before the fix.
-  - Steps 1 to 16 unchanged; a bug in the spec goes through `update-spec` first.
-  - Inside a plan it returns to `execute-plan`; otherwise it commits and hands off to `review`. The redundant hop to `tdd` is gone.
-  - `defense-in-depth.md` ("validate at EVERY layer") is replaced by `guards-after-a-fix.md`: validate at system boundaries, and add an internal guard only where the bug showed the boundary can be bypassed, with a test. Grounded in [BP]: "Only validate at system boundaries (user input, external APIs)."
-  - `root-cause-tracing.md` keeps the tracing method and logging tips without the diagrams, "NEVER" nodes and session anecdote (739 to 375 words).
+  - A bug in the spec goes through `update-spec` before the fix.
+  - Returns to the skill that invoked it; otherwise commits and hands off to `review` instead of `test-driven-development`.
+  - `defense-in-depth.md` ("validate at EVERY layer") is replaced by `guards-after-a-fix.md`: validate at system boundaries, and add an internal guard only where the bug showed the boundary can be bypassed, with a test.
+  - `root-cause-tracing.md` loses its diagrams, "NEVER" nodes and session anecdote (739 to 375 words).
   - `condition-based-waiting.md` is trimmed, and its 666-word example file, written for one specific project, is gone.
-  - `find-polluter.sh` now stops with an error when the pollution exists before any test runs; it used to report "all tests clean". Its header no longer calls it a bisection script.
+  - `find-polluter.sh` stops with an error when the pollution exists before any test runs, instead of reporting "all tests clean"; runs test paths containing spaces as one file; and no longer calls itself a bisection script.
+
+### Sources
+
+- Anthropic, [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5): the primary guide.
+- Anthropic, [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5): used only where the 5.5 guide is silent.
+- Anthropic, [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices).
+- Anthropic, [The new rules of context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models).
+- Claude Code [skills documentation](https://code.claude.com/docs/en/skills) and Anthropic's [skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
+- [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review).
+- obra/superpowers [release notes](https://github.com/obra/superpowers/blob/main/RELEASE-NOTES.md) and issues [#2017](https://github.com/obra/superpowers/issues/2017) and [#2112](https://github.com/obra/superpowers/issues/2112).
+- Google, *Software Engineering at Google*: [Unit Testing](https://abseil.io/resources/swe-book/html/ch12.html) and [Test Doubles](https://abseil.io/resources/swe-book/html/ch13.html).
+- Kent Beck, [Test Desiderata](https://testdesiderata.com/).
+- [From Business Requirements to Test Assertions](https://arxiv.org/abs/2607.10277) and [VibeCheck](https://arxiv.org/abs/2609.05978), 2026 preprints, not yet peer reviewed.
+- Birgitta Böckeler, [Understanding Spec-Driven Development](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
 
 ## Contributing
 
