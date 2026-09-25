@@ -9,7 +9,7 @@ A test written before the code states what the code should do; a test written af
 
 Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, recommended first, each with a one-line reason. End with a line naming the answers, such as `Reply with a, b, or c.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it.
 
-Before your first commit for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit to it as we go? Nothing is pushed or merged without asking. Reply with yes or no." Never commit to `main` or `master`. If your partner declines, commits are held back: commit nothing, and wherever a step says to commit, leave the work on disk; the `dietpowers:finish-branch` skill proposes the commits at the end.
+Commit your work on the feature branch as you go: the spec and plan may be held back, code never is. If you are on `main`, `master` or the plan's `Base:` branch, first ask once: "I'll create branch `<name>` for this work. Reply with yes or no." If your partner declines, do no code work until a branch is agreed. Nothing is pushed or merged without asking.
 
 1. Write one small test for one behaviour. Name it after the behaviour, not the function. Inside a plan, the task's Tests are the starting set; add a test when you find a behaviour they miss.
 2. Run it. Confirm it fails, and that it fails because the feature is missing rather than from a typo or a broken setup. A test that passes at this point is testing something that already works; fix the test.
@@ -24,6 +24,6 @@ Assert on real behaviour, not on mock behaviour. Match test style to the surroun
 
 For a bug: write a test that reproduces it, watch it fail, then fix it. The test is what stops the bug coming back.
 
-Terminal state: if you are working within another dietpowers skill's steps (`dietpowers:execute-plan`, `dietpowers:review`, `dietpowers:handle-feedback`, `dietpowers:prove-done`), or the plan for this branch still has unticked tasks, return to that skill and continue where it stopped. Otherwise, commit the change and its tests if commits are approved, then invoke the `dietpowers:review` skill on the code.
+Terminal state: if you are working within another dietpowers skill's steps (`dietpowers:execute-plan`, `dietpowers:review`, `dietpowers:handle-feedback`, `dietpowers:prove-done`), or the plan for this branch still has unticked tasks, return to that skill and continue where it stopped. Otherwise, commit the change and its tests, then invoke the `dietpowers:review` skill on the code.
 
 Depth: writing-good-tests.md, ../find-root-cause/condition-based-waiting.md

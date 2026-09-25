@@ -36,7 +36,7 @@ Copied verbatim from the spec.
 
 ## Tasks
 
-### - [ ] Task 1: Plain-text questions in every skill
+### - [x] Task 1: Plain-text questions in every skill
 
 Files: modify all ten `skills/*/SKILL.md`; modify `tests/skills/check-skills.sh`.
 
@@ -52,7 +52,7 @@ Tests (new block in check-skills.sh):
 - `every SKILL.md contains Reply with` — fails if a skill is missed.
 - `no file under skills/ contains Which option?` — fails if a finish-branch menu keeps the old ending.
 
-### - [ ] Task 2: Commits in the code steps
+### - [x] Task 2: Commits in the code steps
 
 Files: modify `skills/execute-plan/SKILL.md`, `skills/tdd/SKILL.md`, `skills/find-root-cause/SKILL.md`, `skills/handle-feedback/SKILL.md`, `skills/prove-done/SKILL.md`, `skills/review/SKILL.md`, `skills/update-spec/SKILL.md`, `skills/write-plan/SKILL.md`, `skills/finish-branch/SKILL.md`; modify `tests/skills/check-skills.sh`.
 

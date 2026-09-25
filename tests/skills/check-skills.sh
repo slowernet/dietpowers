@@ -63,6 +63,15 @@ for f in "$SKILLS_DIR"/*/SKILL.md; do
 done
 grep -rqF "Which option?" "$SKILLS_DIR" && fail "a menu still ends with 'Which option?'"
 
+# Code steps always commit; only the spec and plan may be held back.
+for n in execute-plan tdd find-root-cause handle-feedback prove-done; do
+  grep -qF "if commits are approved" "$SKILLS_DIR/$n/SKILL.md" && fail "$n: code step still commits conditionally"
+done
+grep -qF "code-step rule" "$SKILLS_DIR/review/SKILL.md" || fail "review: no code-step rule for code fixes"
+grep -qF "git apply --cached" "$SKILLS_DIR/finish-branch/SKILL.md" && fail "finish-branch: per-task commit splitting still present"
+grep -qF "even though the code change is committed" "$SKILLS_DIR/update-spec/SKILL.md" \
+  || fail "update-spec: no held-back rule for spec edits beside committed code"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
