@@ -32,9 +32,11 @@ for dir in "$SKILLS_DIR"/*/; do
   [ -f "$f" ] || { fail "$name: no SKILL.md"; continue; }
 
   fm=$(awk 'NR==1 && $0=="---" {inside=1; next} inside && $0=="---" {exit} inside' "$f")
-  keys=$(printf '%s\n' "$fm" | grep -oE '^[a-z_]+:' | tr -d ':' | sort | tr '\n' ' ')
-  [ "$keys" = "description name " ] \
-    || fail "$name: frontmatter keys are '$keys', expected 'description name '"
+  keys=$(printf '%s\n' "$fm" | grep -oE '^[a-z_-]+:' | tr -d ':' | sort | tr '\n' ' ')
+  case "$keys" in
+    "description name "|"argument-hint description name ") ;;
+    *) fail "$name: frontmatter keys are '$keys', expected name, description and optionally argument-hint" ;;
+  esac
 
   fmlen=$(printf '%s' "$fm" | wc -c | tr -d ' ')
   [ "$fmlen" -le 1024 ] || fail "$name: frontmatter is $fmlen chars, limit 1024"

@@ -1,6 +1,7 @@
 ---
 name: find-root-cause
-description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+description: Finds a bug's root cause and fixes it once, at the source, with a regression test. Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes.
+argument-hint: "[error or failing test]"
 ---
 
 # Find Root Cause
@@ -9,7 +10,7 @@ Fixes made before the cause is known tend to move a bug rather than remove it, a
 
 Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
-Before your first commit for this piece of work, unless your partner has already answered, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, create the branch but commit nothing: wherever a step says to commit, leave the work on disk instead, and the `finish-branch` skill proposes the commits at the end.
+Before your first commit for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, commits are held back: commit nothing, and wherever a step says to commit, leave the work on disk; the `dietpowers:finish-branch` skill proposes the commits at the end.
 
 ## Find the root cause
 
@@ -34,13 +35,13 @@ Before your first commit for this piece of work, unless your partner has already
 
 ## Fix at the source
 
-13. Write a failing test that reproduces the bug, before fixing anything. If the bug is in the spec rather than the code, invoke the `update-spec` skill first.
+13. Write a failing test that reproduces the bug, before fixing anything. If the bug is in the spec rather than the code, invoke the `dietpowers:update-spec` skill first.
 14. Make one change, at the root cause. No bundled refactoring, no while-I-am-here improvements.
 15. Verify: the test passes, nothing else broke, the original symptom is gone.
 16. Count your failed fixes. At three, stop fixing and question the architecture with your partner. Fixes that each surface a new problem somewhere else mean the design is wrong, not the hypothesis.
 
 If investigation shows the cause is genuinely environmental, timing-dependent, or external, document what you ruled out, add appropriate handling and monitoring, and say so explicitly.
 
-Terminal state: if another skill invoked you, return to it and continue where it stopped. Otherwise, commit the change and its tests if commits are approved, then invoke the `review` skill on the code.
+Terminal state: if you are working within another dietpowers skill's steps (`dietpowers:execute-plan`, `dietpowers:review`, `dietpowers:handle-feedback`, `dietpowers:prove-done`), or the plan for this branch still has unticked tasks, return to that skill and continue where it stopped. Otherwise, commit the change and its tests if commits are approved, then invoke the `dietpowers:review` skill on the code.
 
-Depth: root-cause-tracing.md, guards-after-a-fix.md, condition-based-waiting.md
+Depth: root-cause-tracing.md, guards-after-a-fix.md, condition-based-waiting.md. To find which test creates unwanted files, run `${CLAUDE_SKILL_DIR}/find-polluter.sh` from the project root.

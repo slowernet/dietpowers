@@ -1,18 +1,20 @@
 ---
 name: tdd
-description: Use when implementing any feature or bugfix, before writing implementation code
+description: Builds a feature or bugfix test first, so each test states what the code should do. Use when implementing any feature or bugfix, before writing implementation code.
 ---
 
 # Test-Driven Development
 
 A test written before the code states what the code should do; a test written after tends to restate what the code happens to do. Write each test first.
 
-Before your first commit for this piece of work, unless your partner has already answered, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, create the branch but commit nothing: wherever a step says to commit, leave the work on disk instead, and the `finish-branch` skill proposes the commits at the end.
+Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
+
+Before your first commit for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, commits are held back: commit nothing, and wherever a step says to commit, leave the work on disk; the `dietpowers:finish-branch` skill proposes the commits at the end.
 
 1. Write one small test for one behaviour. Name it after the behaviour, not the function. Inside a plan, the task's Tests are the starting set; add a test when you find a behaviour they miss.
 2. Run it. Confirm it fails, and that it fails because the feature is missing rather than from a typo or a broken setup. A test that passes at this point is testing something that already works; fix the test.
 3. Write the simplest code that makes it pass and works for every valid input, not only the test's. No extra options, no unrelated cleanup, nothing the test does not ask for.
-4. Run it again. Confirm it passes, the rest of the suite still passes, and the output is clean with no stray errors or warnings. If it fails, fix the code. If the test itself is wrong, say so and correct it openly; never weaken a test to get to green. If it is wrong because the spec is wrong, invoke the `update-spec` skill.
+4. Run it again. Confirm it passes, the rest of the suite still passes, and the output is clean with no stray errors or warnings. If it fails, fix the code. If the test itself is wrong, say so and correct it openly; never weaken a test to get to green. If it is wrong because the spec is wrong, invoke the `dietpowers:update-spec` skill.
 5. Refactor while green: remove duplication, improve names, extract helpers. Add no behaviour.
 6. Repeat for the next behaviour.
 
@@ -22,6 +24,6 @@ Assert on real behaviour, not on mock behaviour. Match test style to the surroun
 
 For a bug: write a test that reproduces it, watch it fail, then fix it. The test is what stops the bug coming back.
 
-Terminal state: if another skill invoked you, return to it and continue where it stopped. Otherwise, commit the change and its tests if commits are approved, then invoke the `review` skill on the code.
+Terminal state: if you are working within another dietpowers skill's steps (`dietpowers:execute-plan`, `dietpowers:review`, `dietpowers:handle-feedback`, `dietpowers:prove-done`), or the plan for this branch still has unticked tasks, return to that skill and continue where it stopped. Otherwise, commit the change and its tests if commits are approved, then invoke the `dietpowers:review` skill on the code.
 
-Depth: writing-good-tests.md
+Depth: writing-good-tests.md, ../find-root-cause/condition-based-waiting.md
