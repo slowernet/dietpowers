@@ -1,6 +1,6 @@
 # dietpowers
 
-**Work in progress.** 
+**Work in progress** 
 
 An opinionated, test-first development flow tuned for latest Opus models (`claude-opus-5-5` at time of writing).
 
@@ -8,10 +8,9 @@ dietpowers is a fork of [tim-hub/superpowers-slim](https://github.com/tim-hub/su
 
 ## Motivation
 
-I've been a happy and grateful Superpowers user in Claude Code, but over time I developed a sense that the workflow had lost efficiency. My naive read was that the capabilities Opus has gained are eating the scaffold, or at least fighting against it somehow. Late 2025 models often felt like pair programming with an enthusiastic puppy, but the baseline has improved and different guardrails now make more sense to me. Most of all, I wanted to have a more thoughtful, focused conversation with the agent. Specific shortcomings I noticed:
+I've been a happy and grateful Superpowers user in Claude Code, but over time I developed a sense that the workflow had lost some efficiency. Late 2025 models often felt like pair programming with an enthusiastic puppy, but the baseline has improved, and my vague sense was that the capabilities Opus has gained are at times fighting against the scaffold. Most of all, I wanted to have a more interactive conversation with the agent that preserved my flow state. Specific shortcomings I noticed:
 
-- **No enforced path through the flow.** Nothing made the agent move from one skill to the next in order, so steps would get missed.
-- **Subagent-driven development wasn't worth its cost.** 
+- **No enforced path through the flow.** Nothing made the agent move from one skill to the next in order, so I would miss steps or handle them sloppily (eg. running a review in the implementor's context, biasing the findings).
 - **Prompts written to support every coding agent diluted efficiency.** Supporting many agent tools meant the prompts and workflows were not tuned for the newest Opus models and harnesses. See below for details.
 - **Spec drift.** Decisions made after the spec was written did not  make it back into the spec.
 - **No required review of specs and plans.** Mistakes in a spec or plan passed straight into the code: garbage in, garbage out.
