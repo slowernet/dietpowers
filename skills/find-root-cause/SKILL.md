@@ -9,6 +9,8 @@ Fixes made before the cause is known tend to move a bug rather than remove it, a
 
 Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
+Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+
 ## Find the root cause
 
 1. Read the error and the full stack trace. Note line numbers, paths, and codes. The answer is often already in there.

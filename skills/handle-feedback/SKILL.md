@@ -9,6 +9,8 @@ Review feedback is a claim about the code, made by someone who may be missing co
 
 Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
+Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+
 1. Read all the feedback before reacting to any of it.
 2. Restate each item as a technical requirement in your own words. If an item could be read two ways that lead to different changes, ask about it before implementing it or anything that depends on it; carry on with the rest.
 3. Check each item against the codebase. Does it hold here? Does it break something that currently works? Is there a reason the code is the way it is? Does the reviewer have the full context?

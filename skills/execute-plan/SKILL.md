@@ -9,7 +9,9 @@ You build the plan's tasks in order, test first, in this session. The plan names
 
 Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
-1. Work on a branch, never directly on `main` or `master`; create one if needed. Use an isolated worktree when the work is long-running or would collide with other changes.
+Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+
+1. Work on the approved branch. Use an isolated worktree when the work is long-running or would collide with other changes.
 2. Read the plan and the spec it links, in full. If either conflicts with the repository in a way that changes what gets built, raise it now, before writing code.
 3. Use the plan's task checkboxes as your task list, mirrored in todos.
 4. For each task: build it with the `tdd` skill against its Behavior and Tests, commit, and tick its checkbox. When a test fails and the cause isn't obvious, use the `find-root-cause` skill.

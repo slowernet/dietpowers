@@ -7,6 +7,8 @@ description: Use when you have an approved spec or clear requirements for a mult
 
 The plan is executed task by task, possibly in a fresh session that has only the plan, the spec, and the repository. Give each task what that executor needs to build it without guessing: paths, interfaces, behaviors, tests. Leave implementation code to the executor, which writes it against the real repository and runs it.
 
+Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+
 1. Check scope. If the spec spans independent subsystems, write one plan per subsystem; each must produce working, testable software on its own. If the spec is missing something the plan needs, or planning shows it must change, invoke the `update-spec` skill.
 2. Map the files: what gets created, what gets modified, what each is responsible for. Follow the codebase's existing patterns, and name the existing file each new one should imitate.
 3. Draw task boundaries at the smallest unit that carries its own test cycle. Fold setup, config and docs into the task that needs them. Split only where a reviewer could reject one task while approving its neighbor.

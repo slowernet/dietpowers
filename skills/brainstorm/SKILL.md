@@ -9,6 +9,8 @@ The spec you write here is what the plan, the reviewers, and the code are all ch
 
 Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
+Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+
 1. Read the project context, including files and history the request doesn't mention but the change may touch.
 2. Check scope. If the request spans several independent subsystems, split it and brainstorm only the first; each part gets its own spec.
 3. Ask only questions whose answer would change the design; make routine calls yourself and record them as assumptions. Cover purpose, constraints, success criteria, the allowed values of each new input, and what should happen when each external call fails or is rerun. If the request seems mistaken, or a simpler change reaches the same goal, say so before designing.
