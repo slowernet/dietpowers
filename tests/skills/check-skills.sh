@@ -93,6 +93,16 @@ for n in spec-reviewer plan-reviewer code-reviewer; do
 done
 grep -qF "git diff [FIX_BASE] HEAD" "$SKILLS_DIR/review/code-reviewer.md" || fail "code-reviewer.md: no fix-check scope"
 
+# Review: tracker, pause, fix check; no Review notes append or old consultation rule.
+R="$SKILLS_DIR/review/SKILL.md"
+for want in "pause" "## Tracker format" "Depth: trackers.md" "Second pass"; do
+  grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
+done
+grep -rqF "Review notes" "$SKILLS_DIR" && fail "a skill still appends Review notes"
+for gone in "a notice, not a question" "Dispatch no third review"; do
+  grep -qF "$gone" "$R" && fail "review SKILL.md: old text '$gone'"
+done
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

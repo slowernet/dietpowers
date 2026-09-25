@@ -109,7 +109,7 @@ Tests (new block):
 - `all three prompts contain Out of scope and none contains "this is a re-review"`.
 - `code-reviewer.md contains git diff [FIX_BASE] HEAD` — fails if the fix-check scope is missing.
 
-### - [ ] Task 5: Review skill steps
+### - [x] Task 5: Review skill steps
 
 Files: modify `skills/review/SKILL.md`; modify `tests/skills/check-skills.sh`.
 
