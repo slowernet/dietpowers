@@ -5,6 +5,8 @@ description: Use when encountering any bug, test failure, or unexpected behavior
 
 # Systematic Debugging
 
+Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text.
+
 ## Find the root cause
 
 1. Read the error and the full stack trace. Note line numbers, paths, and codes. The answer is often already in there.

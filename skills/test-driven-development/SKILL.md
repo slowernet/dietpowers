@@ -18,6 +18,6 @@ Assert on real behaviour, not on mock behaviour. Match test style to the surroun
 
 For a bug: write a test that reproduces it, watch it fail, then fix it. The test is what stops the bug coming back.
 
-Terminal state: inside a plan, return to executing-plans for the next task. Outside a plan, invoke requesting-code-review once the change is committed.
+Terminal state: inside a plan, return to executing-plans for the next task. Outside a plan, invoke adversarial-review on the code once the change is committed.
 
 Depth: writing-good-tests.md

@@ -5,9 +5,11 @@ description: "You MUST use this before any creative work - creating features, bu
 
 # Brainstorming
 
+Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text.
+
 1. Read the project context first — files, docs, recent commits.
 2. Check scope. If the request spans several independent subsystems, decompose it before refining details, then brainstorm only the first sub-project. Each sub-project gets its own spec.
-3. Ask clarifying questions one at a time, one question per message. Prefer multiple choice. Cover purpose, constraints, and success criteria.
+3. Ask clarifying questions. Cover purpose, constraints, and success criteria.
 4. Propose 2-3 approaches with their trade-offs. Lead with your recommendation and say why. Cut anything speculative from every approach.
 5. Present the design in sections, each scaled to its complexity — a few sentences when it is straightforward. Ask after each section whether it holds before continuing. Cover architecture, components, data flow, error handling, and testing.
 6. Give each unit one responsibility and a defined interface. For every unit, be able to say what it does, how it is used, and what it depends on. If someone cannot tell what a unit does without reading its internals, the boundary is wrong.
@@ -15,9 +17,5 @@ description: "You MUST use this before any creative work - creating features, bu
 8. Get explicit approval on the design before anything gets built.
 9. Write the spec to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit it.
 10. Re-read the spec: no placeholders, no sections contradicting each other, scope small enough for one plan, no requirement readable two ways. Fix inline.
-11. Dispatch a fresh-context reviewer using `spec-document-reviewer-prompt.md`. Give it the spec path and nothing from this conversation. Fix each finding that holds; for each you reject, note why for your partner. Commit.
-12. Ask your partner to review the committed spec, along with any findings you rejected. Make any changes they ask for and re-check.
 
-Terminal state: invoke writing-plans. Invoke no other skill from here.
-
-Depth: spec-document-reviewer-prompt.md
+Terminal state: invoke adversarial-review on the spec. Invoke no other skill from here.
