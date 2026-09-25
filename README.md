@@ -94,7 +94,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Reads context beyond what the request names.
   - Asks only questions that change the design and records routine calls as assumptions; covers input limits, failure and rerun behavior.
   - Pushes back when the request seems mistaken or a simpler change would do.
-  - New research step for well-known problems and outside APIs or dependencies.
+  - New research step for well-known problems and outside APIs or dependencies, preferring what current documentation recommends and avoiding what it marks deprecated or insecure.
   - Approaches must include the simplest one and one built on an existing library or pattern.
   - One design approval replaces approval after each section; the self re-read is gone because a review follows.
   - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` with fixed sections, including testable success criteria and References.
@@ -106,9 +106,9 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Edits a spec or plan under review directly; code fixes start with a failing test; a fix that changes the approved spec goes through `update-spec`.
   - Runs one scoped re-review, then stops.
   - Reports outcome first and appends rejected findings with their reasons to a `Review notes` section in the spec or plan, then asks whether to continue, revise (one fresh review of the revision) or stop.
-  - `spec-reviewer.md` (was `brainstorming/spec-document-reviewer-prompt.md`, which nothing used): rewritten as a hostile review with eight checks, including input limits, failure behavior, over-complex designs and reference facts.
-  - `plan-reviewer.md` (was `writing-plans/plan-document-reviewer-prompt.md`, also unused): rewritten as a hostile review with seven checks, including tests that cannot fail and missing task context.
-  - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in the plan, and a read-only rule. It reviews every change since the base branch, committed or not, instead of the last commit.
+  - `spec-reviewer.md` (was `brainstorming/spec-document-reviewer-prompt.md`, which nothing used): rewritten as a hostile review with nine checks, including input limits, failure behavior, over-complex designs, reference facts, and security and data access (untrusted input, permissions, unbounded reads, missing transactions, deprecated or insecure practices).
+  - `plan-reviewer.md` (was `writing-plans/plan-document-reviewer-prompt.md`, also unused): rewritten as a hostile review with eight checks, including tests that cannot fail, missing task context, and security and data access (N+1 queries, unbounded reads, skipped permission checks, deprecated APIs).
+  - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in the plan, a check for deprecated or insecure practices, and a read-only rule. It reviews every change since the base branch, committed or not, instead of the last commit.
 - **`write-plan`** (was `writing-plans`)
   - No implementation code and no TDD micro-steps.
   - Header: `Spec: <path> @ <commit>` marking the approved spec (or `@ uncommitted`), `Base:` branch, `Commits:` approved or held back, then goal, architecture, Global Constraints and shared References.

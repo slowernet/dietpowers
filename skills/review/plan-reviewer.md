@@ -25,6 +25,11 @@ Check:
 7. Context. A task needs a fact (a version, a signature, a limit, a file to imitate) that
    neither its Context nor the plan's References provides, or a plan reference contradicts
    the spec's.
+8. Security and data access. A task makes N+1 queries (a query inside a loop, or a lazy
+   association loaded per item), reads without a limit, skips a
+   permission check or input validation the spec requires, or uses an API or practice that is
+   deprecated or removed in the version in use, or known to be insecure, where a replacement
+   exists.
 
 Rules:
 
@@ -38,7 +43,7 @@ For each finding:
 
 ### ISSUE N: [short title]
 Task: [task and step]
-Check: [1-7 from the list above]
+Check: [1-8 from the list above]
 [What is wrong, one or two sentences]
 Scenario: [concrete case that goes wrong]
 Fix: [the change the plan needs]

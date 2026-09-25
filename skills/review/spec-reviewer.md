@@ -25,6 +25,11 @@ Check:
 8. References. The design relies on an outside API, library or existing code, but the spec
    does not record the specific fact used, or the fact is wrong. Check facts against their
    source where you can.
+9. Security and data access. The design takes untrusted input, handles authentication,
+   permissions or secrets, or reads and writes data without saying how: no permission check
+   named, no limit on how much is read, a list whose items each trigger their own query (N+1), or several writes that must succeed or fail together
+   with no transaction. Or it relies on a practice the current documentation, for the version
+   in use, marks deprecated or insecure.
 
 Rules:
 
@@ -37,7 +42,7 @@ For each finding:
 
 ### ISSUE N: [short title]
 Section: [spec section]
-Check: [1-8 from the list above]
+Check: [1-9 from the list above]
 [What is wrong, one or two sentences]
 Scenario: [concrete case that goes wrong]
 Fix: [the sentence or decision the spec needs]
