@@ -53,6 +53,16 @@ for dir in "$SKILLS_DIR"/*/; do
   done
 done
 
+# Plain-text questions: the old question-tool paragraph is gone, every skill ends its questions with "Reply with".
+if grep -rqF "with the AskUserQuestion tool:" "$SKILLS_DIR"; then
+  fail "old AskUserQuestion paragraph still present"
+  grep -rnF "with the AskUserQuestion tool:" "$SKILLS_DIR" | sed 's/^/    /'
+fi
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+  grep -qF "Reply with" "$f" || fail "$f: no 'Reply with' question ending"
+done
+grep -rqF "Which option?" "$SKILLS_DIR" && fail "a menu still ends with 'Which option?'"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

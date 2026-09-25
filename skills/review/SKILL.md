@@ -8,9 +8,9 @@ argument-hint: "[spec, plan, or code]"
 
 A reviewer that has not seen this conversation judges the work itself, not the reasoning that produced it. One round of fixes and one re-review catch most of what a review will find; further rounds tend to add tests and fixes without converging, so the loop stops there.
 
-Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
+Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, recommended first, each with a one-line reason. End with a line naming the answers, such as `Reply with a, b, or c.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it.
 
-Before your first commit for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, commits are held back: commit nothing, and wherever a step says to commit, leave the work on disk; the `dietpowers:finish-branch` skill proposes the commits at the end.
+Before your first commit for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit to it as we go? Nothing is pushed or merged without asking. Reply with yes or no." Never commit to `main` or `master`. If your partner declines, commits are held back: commit nothing, and wherever a step says to commit, leave the work on disk; the `dietpowers:finish-branch` skill proposes the commits at the end.
 
 1. Pick the prompt file for the target from this skill's directory, `${CLAUDE_SKILL_DIR}`: `spec-reviewer.md` for a spec (needs `SPEC_FILE_PATH`), `plan-reviewer.md` for a plan (`PLAN_FILE_PATH`, `SPEC_FILE_PATH`), `code-reviewer.md` for code (`SPEC_AND_PLAN_PATHS` or a one-paragraph `REQUIREMENTS`, and `BASE_SHA=$(git merge-base HEAD <base>)`, with `<base>` from the plan's `Base:` line, or ask). Do not read the prompt file yourself.
 2. Save all work to disk, and commit it if commits are approved. The reviewer reads the files on disk and git history, never this conversation.
@@ -20,7 +20,7 @@ Before your first commit for this piece of work, check the plan's `Commits:` lin
 6. If you fixed anything, dispatch one re-review the same way, adding `FINDINGS`: the findings you fixed. Fix what holds the same way. Dispatch no third review.
 7. Report to your partner, leading with the outcome: what you fixed, what you rejected and why, and anything still open. Append the rejected findings and their reasons to a `Review notes` section at the end of the reviewed spec or plan; for code, at the end of the plan.
 
-Terminal state: ask whether to continue, recommending it only when nothing is open.
+Terminal state: ask whether to continue, recommending it only when nothing is open, and end the question with `Reply with continue, revise, or stop.`
 - After a spec: "Continue with write-plan?" On yes, invoke the `dietpowers:write-plan` skill.
 - After a plan: "Continue with execute-plan?" On yes, invoke the `dietpowers:execute-plan` skill.
 - After code: "Continue to finishing?" On yes, invoke the `dietpowers:prove-done` skill.

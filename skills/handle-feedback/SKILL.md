@@ -7,9 +7,9 @@ description: Checks review feedback against the code and answers it with fixes a
 
 Review feedback is a claim about the code, made by someone who may be missing context. Check each item before acting on it, and answer with changes and evidence rather than agreement.
 
-Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
+Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, recommended first, each with a one-line reason. End with a line naming the answers, such as `Reply with a, b, or c.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it.
 
-Before your first commit for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, commits are held back: commit nothing, and wherever a step says to commit, leave the work on disk; the `dietpowers:finish-branch` skill proposes the commits at the end.
+Before your first commit for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit to it as we go? Nothing is pushed or merged without asking. Reply with yes or no." Never commit to `main` or `master`. If your partner declines, commits are held back: commit nothing, and wherever a step says to commit, leave the work on disk; the `dietpowers:finish-branch` skill proposes the commits at the end.
 
 1. Find the pull request and its comments (`gh pr view --comments`; inline review comments via `gh api repos/{owner}/{repo}/pulls/{pr}/comments`), and read the spec and plan it links.
 2. Read all the feedback before reacting to any of it.
@@ -21,6 +21,6 @@ Before your first commit for this piece of work, check the plan's `Commits:` lin
 8. Where you cannot verify a claim, say what you would need to verify it instead of proceeding on assumption.
 9. Implement in order: things that break or are insecure, then simple fixes, then complex ones. Start each fix with a test that reproduces the problem and fails, then make it pass. Check for regressions. Commit each fix with its test if commits are approved.
 10. Draft a reply for each item: for correct feedback, the fix and where it landed, without agreement or thanks; for pushback, the reasoning and evidence; if you pushed back and turned out to be wrong, what you checked and what it showed.
-11. Show your partner the drafts and ask one question: "Push the fixes and post these replies?" Post nothing yet: replies must not cite changes the pull request does not have.
+11. Show your partner the drafts and ask one question: "Push the fixes and post these replies? Reply with yes or no." Post nothing yet: replies must not cite changes the pull request does not have.
 
 Terminal state: invoke the `dietpowers:prove-done` skill, then the `dietpowers:finish-branch` skill to push the fixes to the open pull request. Once the push succeeds, post the approved replies; on GitHub, reply inside each comment thread (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`), not as a new top-level comment.
