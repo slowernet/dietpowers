@@ -1,6 +1,6 @@
 # Question sequences: implementation plan
 
-Spec: docs/dietpowers/2026-09-25-question-sequences-spec.md @ 388da35
+Spec: docs/dietpowers/2026-09-25-question-sequences-spec.md @ f32f90f
 Base: main
 Commits: approved
 
