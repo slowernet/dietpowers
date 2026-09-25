@@ -7,7 +7,7 @@ description: Use when implementing any feature or bugfix, before writing impleme
 
 A test written before the code states what the code should do; a test written after tends to restate what the code happens to do. Write each test first.
 
-Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+Before your first commit for this piece of work, unless your partner has already answered, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, create the branch but commit nothing: wherever a step says to commit, leave the work on disk instead, and the `finish-branch` skill proposes the commits at the end.
 
 1. Write one small test for one behaviour. Name it after the behaviour, not the function. Inside a plan, the task's Tests are the starting set; add a test when you find a behaviour they miss.
 2. Run it. Confirm it fails, and that it fails because the feature is missing rather than from a typo or a broken setup. A test that passes at this point is testing something that already works; fix the test.
@@ -22,6 +22,6 @@ Assert on real behaviour, not on mock behaviour. Match test style to the surroun
 
 For a bug: write a test that reproduces it, watch it fail, then fix it. The test is what stops the bug coming back.
 
-Terminal state: if another skill invoked you, return to it and continue where it stopped. Otherwise, commit the change and its tests, then invoke the `review` skill on the code.
+Terminal state: if another skill invoked you, return to it and continue where it stopped. Otherwise, commit the change and its tests if commits are approved, then invoke the `review` skill on the code.
 
 Depth: writing-good-tests.md

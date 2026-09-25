@@ -9,7 +9,7 @@ The spec you write here is what the plan, the reviewers, and the code are all ch
 
 Ask your partner questions one at a time with the AskUserQuestion tool: multiple choice, recommended option first, with a one-line reason. Where the tool is unavailable, ask the same way in plain text. Keep each message to your partner short: lead with the question or decision, then only the detail needed to answer it.
 
-Before your first commit for this piece of work, unless your partner has already approved commits for it, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`.
+Before your first commit for this piece of work, unless your partner has already answered, ask once: "May I create branch `<name>` and commit this work to it as we go? Nothing is pushed or merged without asking." Never commit to `main` or `master`. If your partner declines, create the branch but commit nothing: wherever a step says to commit, leave the work on disk instead, and the `finish-branch` skill proposes the commits at the end.
 
 1. Read the project context, including files and history the request doesn't mention but the change may touch.
 2. Check scope. If the request spans several independent subsystems, split it and brainstorm only the first; each part gets its own spec.
@@ -18,6 +18,6 @@ Before your first commit for this piece of work, unless your partner has already
 5. Propose approaches with their trade-offs: the simplest one that meets the success criteria, and one built on an existing library, framework feature, or codebase pattern where one fits. Add a less obvious option only when it is genuinely better; if only one approach is sensible, say so. Recommend the simplest unless a trade-off rules it out, and say why. Cut anything speculative.
 6. Present the design, scaled to its complexity: architecture, components, data flow, error handling, testing. Give each unit one responsibility and an interface you can state without reading its internals. In an existing codebase, follow its patterns; clean up only what blocks this work, and mention other problems instead of fixing them.
 7. Get explicit approval on the design.
-8. Write the spec to `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` and commit it. Sections: Goal; Constraints (exact values later steps must copy); Design; Inputs and failure behavior; Success criteria, each checkable by a test; Assumptions; References (docs, library versions, API details and existing code the design relies on, each with its link or path and the specific fact used); Out of scope.
+8. Write the spec to `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` and commit it if commits are approved. Sections: Goal; Constraints (exact values later steps must copy); Design; Inputs and failure behavior; Success criteria, each checkable by a test; Assumptions; References (docs, library versions, API details and existing code the design relies on, each with its link or path and the specific fact used); Out of scope.
 
 Terminal state: invoke the `review` skill on the spec. Invoke no other skill from here.

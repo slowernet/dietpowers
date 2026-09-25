@@ -43,7 +43,7 @@ Each skill hands on to the next and asks before each new stage. Other steps can 
 Ordered by how far each departs from what Superpowers users may expect.
 
 - **Imperative skill names.** `brainstorm`, `write-plan`, `execute-plan`, `tdd`, `review`, `prove-done`, `finish-branch`, `find-root-cause` and `handle-feedback` replace Superpowers' gerund-based naming convention.
-- **The spec stays the source of truth.** Any change to specified behavior, whether it comes up in planning, execution, review, debugging, PR feedback or from you, goes through one `update-spec` skill, which the other skills invoke once the spec is approved: you approve the change, only the affected sections change, a dated note under each changed section records what changed, why, and who approved it, and the spec is committed with the code. A new goal or feature goes back to `brainstorm` instead. Before finishing, `prove-done` pairs each success criterion with the test that shows it and lists every change since approval, so you see drift in one place.
+- **The spec stays the source of truth.** Any change to specified behavior, whether it comes up in planning, execution, review, debugging, PR feedback or from you, goes through one `update-spec` skill, which the other skills invoke once the spec is approved: you approve the change, only the affected sections change, a dated note under each changed section records what changed, why, and who approved it, and the spec change travels with the code change. A new goal or feature goes back to `brainstorm` instead. Before finishing, `prove-done` pairs each success criterion with the test that shows it and lists every change since approval, so you see drift in one place.
 - **Plan files carry no implementation code.** Superpowers writes every line into the plan, for an executor with "zero context for our codebase and questionable taste." Each task in the plan includes paths, signatures, behaviors and tests, and names the code change that would make each test fail. Our rationale:
   - Superpowers plan code is written without being run, then rewritten during execution.
   - Opus 5.5 is "strongest on multistep work in a real repository, such as carrying a change through a large code base until its tests pass" ([Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5)).
@@ -53,7 +53,7 @@ Ordered by how far each departs from what Superpowers users may expect.
 - **Spec, plan and code each get a hostile review.** A `review` skill reviews the spec, the plan and the code, each with its own checklist. The reviewer is a fresh subagent on the same model, which has not seen the conversation.
 - **Code is reviewed once, over the whole branch**, with a test-suite run and a check for tests that cannot fail.
 - **Fixes are checked once more, then the loop stops.** Code fixes start with a failing test. One re-review checks only the fixes, and anything still open goes to you. In subagent-driven mode, Superpowers allows up to five fix rounds per task.
-- **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer. Committing needs your approval once per piece of work; pushing and merging always ask.
+- **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer. Committing needs your approval once per piece of work; pushing and merging always ask. If you decline commits, the work stays on disk and `finish-branch` proposes the commits at the end.
 - **Brainstorming aims for the simplest well-grounded spec.** It looks up how the problem is usually solved, always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time,** as multiple choice with a recommended option and a reason.
@@ -86,7 +86,7 @@ claude --plugin-dir /path/to/dietpowers
 
 ## What changed in each skill
 
-Compared with superpowers-slim. Every skill that asks you anything gained the same rule: one question at a time, multiple choice, recommended option first with a reason. Most also gained a line asking for short messages that lead with the question or outcome. Every skill that commits asks once per piece of work before its first commit, to create the branch and commit to it; nothing is pushed or merged without asking, and nothing is committed to `main` or `master`.
+Compared with superpowers-slim. Every skill that asks you anything gained the same rule: one question at a time, multiple choice, recommended option first with a reason. Most also gained a line asking for short messages that lead with the question or outcome. Every skill that commits asks once per piece of work before its first commit, to create the branch and commit to it; nothing is pushed or merged without asking, and nothing is committed to `main` or `master`. If you decline, the branch is created, the work stays on disk, and `finish-branch` proposes the commits at the end.
 
 - **`brainstorm`** (was `brainstorming`)
   - Description says only when to use it; "You MUST" and the summary of steps are gone.
@@ -100,14 +100,14 @@ Compared with superpowers-slim. Every skill that asks you anything gained the sa
   - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` with fixed sections, including testable success criteria and References.
   - Hands off to `review` instead of `writing-plans`.
 - **`review`** (new; replaces `requesting-code-review`)
-  - Reviews a spec, plan or code with a matching prompt, in a fresh subagent on the same model that reads its own prompt file and runs in the foreground.
+  - Reviews a spec, plan or code with a matching prompt, in a fresh subagent on the same model that reads its own prompt file and runs in the foreground. It reads the work from disk, so it does not need anything committed.
   - Lists the clear-cut findings it will fix, with one-line reasons, without stopping; asks you, one at a time with a recommendation, only about findings it wants to reject, findings with more than one reasonable fix, and fixes that change the approved spec.
   - Edits a spec or plan under review directly; code fixes start with a failing test; a fix that changes the approved spec goes through `update-spec`.
   - Runs one scoped re-review, then stops.
   - Reports outcome first, then asks whether to continue to the next stage.
   - `spec-reviewer.md` (was `brainstorming/spec-document-reviewer-prompt.md`, which nothing used): rewritten as a hostile review with eight checks, including input limits, failure behavior, over-complex designs and reference facts.
   - `plan-reviewer.md` (was `writing-plans/plan-document-reviewer-prompt.md`, also unused): rewritten as a hostile review with seven checks, including tests that cannot fail and missing task context.
-  - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in commits, and a read-only rule. It reviews the whole branch instead of the last commit.
+  - `code-reviewer.md` (was `requesting-code-review/code-reviewer.md`): the general "senior reviewer" prompt is replaced by [claude-adversarial-review](https://github.com/slowernet/claude-adversarial-review), plus a test-suite run, a check for tests that cannot fail, a check of departures recorded in the plan, and a read-only rule. It reviews every change since the base branch, committed or not, instead of the last commit.
 - **`write-plan`** (was `writing-plans`)
   - No implementation code and no TDD micro-steps.
   - Header: `Spec: <path> @ <commit>`, marking the approved spec, then goal, architecture, Global Constraints and shared References.
@@ -118,7 +118,7 @@ Compared with superpowers-slim. Every skill that asks you anything gained the sa
 - **`execute-plan`** (was `executing-plans`)
   - Reads the plan and the spec.
   - Builds each task with `tdd`, uses the plan's checkboxes as its task list, and uses `find-root-cause` for unclear failures.
-  - Makes routine calls itself and records them in commits; asks only about changes to interfaces, requirements or other tasks, and routes changes to specified behavior through `update-spec`.
+  - Makes routine calls itself and records each as a `Departure:` line under its task in the plan; asks only about changes to interfaces, requirements or other tasks, and routes changes to specified behavior through `update-spec`.
   - Names the stops it should and should not make.
   - Ends with a short report, then asks before code review; it used to go straight to finishing.
 - **`tdd`** (was `test-driven-development`)
@@ -130,11 +130,12 @@ Compared with superpowers-slim. Every skill that asks you anything gained the sa
 - **`prove-done`** (was `verification-before-completion`)
   - Runs at the end of a finished, reviewed branch instead of before any commit, and returns to the skill that invoked it.
   - Runs the full suite, linter and build fresh.
-  - Lists every change to the spec since approval, from its `Changed` notes checked against git history from the plan's `Spec:` commit.
+  - Lists every change to the spec since approval, from its `Changed` notes checked against git history from the plan's `Spec:` commit when there is one.
   - Pairs each current success criterion with the test or command that shows it, and never passes a criterion the code and spec disagree on.
   - The paragraph about paraphrases and "expressions of satisfaction" is gone.
 - **`finish-branch`** (was `finishing-a-development-branch`)
   - Reuses `prove-done`'s run instead of running the suite again.
+  - When commits were held back, proposes a sequence of atomic commits before the menu (spec and plan, then one per plan task, splitting shared files by task) and creates them only after you approve.
   - Asks the integration menu as one question, recommending the pull request unless you've said otherwise.
   - Writes the PR description from the run: what changed and why with a spec link, the commits grouped by plan task, each success criterion with its evidence, the spec's `Changed` notes, review findings fixed and rejected, and open items.
   - When a pull request is already open, pushes instead of showing the menu, and returns to the skill that invoked it.
