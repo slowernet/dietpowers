@@ -70,7 +70,7 @@ Ordered by how far each departs from what Superpowers users may expect.
 - **Brainstorming aims for the simplest well-grounded spec.** When outside practice matters it runs a short, cited research round (see `brainstorm` below), always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time, in plain text,** with the problem, the options, a recommendation and a reason in one message, ending with a `Reply with` line. You can answer with an option, your own idea, a question or an aside.
-- **Reviews and brainstorms can pause and resume.** Reply `pause` to any finding or design question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.claude/dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
+- **Reviews and brainstorms can pause and resume.** Reply `pause` to any finding or design question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
 - **Prompts tuned for Opus 5.5.** Skill and reviewer prompts were grounded against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill-vs-superpowers-slim).
 
 ### What superpowers-slim changed from superpowers
@@ -203,7 +203,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
 
 See `AGENTS.md`. Run `bash tests/skills/check-skills.sh` after any skill edit. 
 
-To trial the flow, also load `dev/` (`--plugin-dir /path/to/dietpowers/dev`), which logs problems with the skills to `.claude/dietpowers/problems.md` in the project you are working on.
+To trial the flow, also load `dev/` (`--plugin-dir /path/to/dietpowers/dev`), which logs problems with the skills to `.dietpowers/problems.md` in the project you are working on.
 
 ## License
 

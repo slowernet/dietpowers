@@ -4,13 +4,13 @@ A tracker is a file on disk that records a review or brainstorm as it goes: each
 
 ## Working directory
 
-Trackers live in `.claude/dietpowers/trackers/` at the root of the git work tree. When you create `.claude/dietpowers/`, also write `.claude/dietpowers/.gitignore` containing the single line `*`, so nothing in it is ever committed; if the directory already exists without that file, write the file.
+Trackers live in `.dietpowers/trackers/` at the root of the git work tree, outside `.claude/`, which Claude Code protects from writes without a permission prompt. When you create `.dietpowers/`, also write `.dietpowers/.gitignore` containing the single line `*`, so nothing in it is ever committed; if the directory already exists without that file, write the file.
 
 Keep no tracker, and offer no `pause`, when the directory cannot be written, when the project is not in a git work tree, or when HEAD is detached. Tell your partner which, and carry on without one.
 
 ## Tracker format
 
-Path: `.claude/dietpowers/trackers/YYYY-MM-DD-<topic>-<stage>.md`, dated the day you create it.
+Path: `.dietpowers/trackers/YYYY-MM-DD-<topic>-<stage>.md`, dated the day you create it.
 
 - `<stage>` is `brainstorm`, `spec-review`, `plan-review` or `code-review`.
 - `<topic>` is the topic in the spec's filename (`YYYY-MM-DD-<topic>-spec.md`); for any other filename, its name stem; for a code review with no spec, the branch name with `/` replaced by `-`.

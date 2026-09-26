@@ -114,7 +114,7 @@ done
 
 # Finish branch: the review record comes from the trackers.
 F="$SKILLS_DIR/finish-branch/SKILL.md"
-grep -qF ".claude/dietpowers/trackers/" "$F" || fail "finish-branch: does not read the trackers"
+grep -qF ".dietpowers/trackers/" "$F" || fail "finish-branch: does not read the trackers"
 grep -qF "findings rejected with the reason" "$F" && fail "finish-branch: old review bullet"
 
 # README describes the current loop, questions and commits.
@@ -145,6 +145,14 @@ grep -qF "brainstorm step 3 is incomplete" "$T" && fail "trackers.md: old brains
 # README describes the new research step.
 grep -qF "New research step for well-known problems" README.md && fail "README.md: old research-step bullet"
 grep -qF "No research:" README.md || fail "README.md: no description of the research step"
+
+# Working state lives in .dietpowers/, outside the protected .claude/ directory.
+if grep -rqF ".claude/dietpowers" "$SKILLS_DIR" dev README.md AGENTS.md docs/testing.md; then
+  fail "old .claude/dietpowers path still referenced"
+  grep -rnF ".claude/dietpowers" "$SKILLS_DIR" dev README.md AGENTS.md docs/testing.md | sed 's/^/    /'
+fi
+grep -qF "\`.dietpowers/trackers/\`" "$SKILLS_DIR/adversarial-review/trackers.md" || fail "trackers.md: working directory is not .dietpowers/"
+grep -qF ".dietpowers/.gitignore" dev/hooks/problem-log.md || fail "dev problem log: does not keep .dietpowers/ out of git"
 
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
