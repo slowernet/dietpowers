@@ -133,7 +133,7 @@ else
 fi
 
 # Brainstorm research step and its resume rule.
-for want in "researcher.md" "No research:" "research anyway" "**go**" "deprecated or insecure" "say so before designing" "both sentences"; do
+for want in "researcher.md" "No research:" "research anyway" "**go**" "deprecated or insecure" "say so before designing" "both sentences" "go to the proposal below"; do
   grep -qF "$want" "$B" || fail "brainstorm SKILL.md: missing '$want'"
 done
 grep -qF "When the problem has a well-known solution" "$B" && fail "brainstorm SKILL.md: old step 4 still present"
