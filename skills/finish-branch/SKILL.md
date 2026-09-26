@@ -21,30 +21,22 @@ WORKTREE_PATH=$(git rev-parse --show-toplevel)
 3. Establish the base branch from the plan's `Base:` line, the conversation, or the branch's upstream. If it is not already known, ask — merging into the wrong base is expensive to undo.
 
    If the spec or plan is uncommitted because commits were held back, propose commits before the menu: the spec, then the plan. List them with their messages and create them only after your partner approves; then set the plan's `Spec:` line to the spec's commit and its `Commits:` line to `approved`. If your partner declines, offer only to keep the branch as it is.
-4. If the branch already has an open pull request, skip the menu. Push the new commits once your partner has approved the push (the `dietpowers:handle-feedback` skill asks for it together with the replies; otherwise ask), report the URL, and if another skill invoked you, return to it. Otherwise, present the menu below as one question, recommending "Push and create a Pull Request" unless your partner has said otherwise, then wait. Print it exactly as written. The integration decision is your partner's.
+4. If the branch already has an open pull request, skip the menu. Push the new commits once your partner has approved the push (the `dietpowers:handle-feedback` skill asks for it together with the replies; otherwise ask), report the URL, and if another skill invoked you, return to it. Otherwise, ask the integration question the same way as every other question: say the work is complete and what state it is in (base branch, commits, anything unmet), then list the options with their bold labels, recommending the pull request unless your partner has said otherwise, each with a one-line reason, and end with the `Reply with` line. Then wait. The integration decision is your partner's.
 
-Normal repo, or a worktree on a named branch:
+On a named branch (a normal repo, or a worktree on a named branch), the options are:
 
-```
-Implementation complete. What would you like to do?
+- **1** Merge back to `<base-branch>` locally
+- **2** Push and create a pull request
+- **3** Keep the branch as it is, to handle later
 
-1. Merge back to <base-branch> locally
-2. Push and create a Pull Request
-3. Keep the branch as-is (I'll handle it later)
+ending `Reply with **1**, **2**, or **3**.`
 
-Reply with **1**, **2**, or **3**.
-```
+On a detached HEAD, which means an externally managed workspace, there is no merge option:
 
-Detached HEAD, meaning an externally managed workspace — no merge option:
+- **1** Push as a new branch and create a pull request
+- **2** Keep it as it is, to handle later
 
-```
-Implementation complete. You're on a detached HEAD (externally managed workspace).
-
-1. Push as new branch and create a Pull Request
-2. Keep as-is (I'll handle it later)
-
-Reply with **1** or **2**.
-```
+ending `Reply with **1** or **2**.`
 
 5. **Merge locally:** first read this branch's trackers from `$WORKTREE_PATH/.dietpowers/trackers/` (those whose `Branch:` is this branch) and keep their deferred, won't-fix and rejected findings, since cleanup may remove the worktree. Then `cd` to the main repo root, then `git checkout <base>`, `git pull`, `git merge <feature>`. On a conflict, run `git merge --abort` and report. Run the tests on the merged result. If they fail, report and offer to undo the merge with `git reset --hard ORIG_HEAD`, which needs your partner's confirmation; the branch and worktree stay in place and nothing was pushed. Once green, clean up per step 7, then `git branch -d <feature>`. In your final report, list the findings you kept, one line each.
 6. **Push and PR:** `git push -u origin <feature>`, or from a detached HEAD `git push origin HEAD:refs/heads/<new-branch>`. Open the request against the base branch using the forge's CLI or the URL it prints on push. Write the description from what this run produced, fitted to the repo's PR template if it has one:

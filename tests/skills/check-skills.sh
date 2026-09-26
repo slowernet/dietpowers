@@ -154,6 +154,10 @@ fi
 grep -qF "\`.dietpowers/trackers/\`" "$SKILLS_DIR/adversarial-review/trackers.md" || fail "trackers.md: working directory is not .dietpowers/"
 grep -qF ".dietpowers/.gitignore" dev/hooks/problem-log.md || fail "dev problem log: does not keep .dietpowers/ out of git"
 
+# finish-branch asks its integration question like every other question, not as a fenced block.
+grep -qF "Print it exactly as written" "$F" && fail "finish-branch: menu still printed verbatim"
+grep -qF -- "- **2** Push and create a pull request" "$F" || fail "finish-branch: integration options are not bold-labelled"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
