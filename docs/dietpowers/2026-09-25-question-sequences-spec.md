@@ -19,13 +19,15 @@ Later steps copy these values exactly.
 
 - Question ending: every question ends with a line naming its answers. On a tracker item (a brainstorm question or a review finding): `Reply with <a>, <b>, or pause.` On any other question: `Reply with <a> or <b>.` (or `<a>, <b>, or <c>`). Fixed questions get these endings: the commit question `Reply with yes or no.`; finish-branch's menus `Reply with 1, 2, or 3.` (detached HEAD: `Reply with 1 or 2.`) in place of `Which option?`; review's terminal question `Reply with continue, revise, or stop.`; execute-plan's `Reply with yes or no.`; handle-feedback's push question `Reply with yes or no.`
 - Resume lead-in: `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.`
-- Working directory: `.claude/dietpowers/` at the root of the git work tree. When the model creates it, it writes `.claude/dietpowers/.gitignore` containing the single line `*`, and writes that file if the directory exists without it.
-- Tracker path: `.claude/dietpowers/trackers/YYYY-MM-DD-<topic>-<stage>.md`. `<stage>` is `brainstorm`, `spec-review`, `plan-review` or `code-review`. `<topic>` is the topic in the spec's filename (`YYYY-MM-DD-<topic>-spec.md`); for another filename, its name stem; for a code review with no spec, the branch name with `/` replaced by `-`. On a detached HEAD there is no tracker (see Working directory). If the name is taken, append `-2`, `-3` and so on to the topic. Every run of a stage gets a new tracker.
+- Working directory: `.dietpowers/` at the root of the git work tree. When the model creates it, it writes `.dietpowers/.gitignore` containing the single line `*`, and writes that file if the directory exists without it.
+- Tracker path: `.dietpowers/trackers/YYYY-MM-DD-<topic>-<stage>.md`. `<stage>` is `brainstorm`, `spec-review`, `plan-review` or `code-review`. `<topic>` is the topic in the spec's filename (`YYYY-MM-DD-<topic>-spec.md`); for another filename, its name stem; for a code review with no spec, the branch name with `/` replaced by `-`. On a detached HEAD there is no tracker (see Working directory). If the name is taken, append `-2`, `-3` and so on to the topic. Every run of a stage gets a new tracker.
 - Severity grades: `blocker`, `major`, `minor`. Yardstick for specs and plans: "Would the plan or the code go wrong, or have to guess, if this stayed?" Yes means blocker or major; no means minor. Code reviewer mapping: CRITICAL and HIGH → blocker, MEDIUM → major, LOW → minor.
 - Review item statuses: `open` (awaiting a decision), `fix` (decided, awaiting the fix), `fixed`, `deferred`, `won't fix`, `rejected`, `duplicate of N`. Brainstorm item statuses: `open`, `answered`.
 - `Second pass:` values (review trackers only): `pending`, `done (N findings)`, `not run (<reason>)`.
 - Reviewer dispatches per review run: at most two (the first review and one fix check).
 - The published plugin stays hook-free.
+
+> **Changed 2026-09-25:** the working directory and tracker path moved from `.claude/dietpowers/` to `.dietpowers/` at the root of the git work tree; the self-ignoring `.gitignore` moves with it. Why: Claude Code protects `.claude/`, so tracker writes asked for permission in interactive sessions and were blocked in `claude -p` runs, even with allow rules (research-step trial). The skill change was committed first (ce833cc) and this note afterwards. Existing working state in dietpowers and cells was moved by hand. The Source line (at the top) and References keep the old path as history; success criterion 2 uses the new path; cells' problems.md is now at `.dietpowers/problems.md`. Approved by the partner ("just go with .dietpowers").
 
 ## Design
 
@@ -43,9 +45,11 @@ The commit question and held-back mode stay for documents only: `brainstorm`, `w
 
 > **Changed 2026-09-25:** declining the commit question now still moves the work to the feature branch (from: the answer did not say whether a branch was created). Why: review trackers recorded `main` when documents were held back, so the PR record and resume missed them. Approved by the partner in plan review (finding 7).
 
-### Shared detail file: `skills/review/trackers.md`
+### Shared detail file: `skills/adversarial-review/trackers.md`
 
-Holds the formats shared by review and brainstorm. Review points to it as `${CLAUDE_SKILL_DIR}/trackers.md`; brainstorm as `${CLAUDE_SKILL_DIR}/../review/trackers.md`. Both SKILL.md files end with a `Depth:` line naming it. Sections:
+> **Changed 2026-09-25:** the `review` skill was renamed `adversarial-review` (f7f8615, after this spec was approved), so its paths in this spec now read `skills/adversarial-review/...` and `../adversarial-review/trackers.md`. The References line naming `skills/review/SKILL.md` at 995ca81 keeps the old path as history. Approved by the partner during the `.dietpowers/` code review.
+
+Holds the formats shared by review and brainstorm. Review points to it as `${CLAUDE_SKILL_DIR}/trackers.md`; brainstorm as `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`. Both SKILL.md files end with a `Depth:` line naming it. Sections:
 
 - **Working directory**: the directory and its `.gitignore`. If it cannot be written, or the project is not in a git work tree, or HEAD is detached, report it and carry on without a tracker; pausing is then unavailable, and the partner is told.
 - **Tracker format**. The tracker must let a fresh session with no conversation continue the run. Header: stage; the reviewed document (brainstorm: the request, then the spec path once written); branch; every value passed to the first reviewer (prompt file, and whichever of `SPEC_FILE_PATH`, `PLAN_FILE_PATH`, `SPEC_AND_PLAN_PATHS`, `REQUIREMENTS` verbatim, `BASE_SHA` apply); for a code review, `FIX_BASE` once recorded; `Second pass:` (review trackers only). A brainstorm header has `Spec:`, empty until the spec file is saved, instead of `Second pass:`. Paths are relative to the repository root. Each review item: a heading `### N. [status] <title> (<severity>, review <1|2>)`; Finding (the failure scenario and proposed fix, not a label); Verified (file:line or the calculation); Question (the question as asked, kept while the item is `open`; `notice only` for a minor fixed without asking); Decision (the choice and its reason, dated); Fix (what changed, and the commit or `uncommitted`). Each brainstorm item: a heading `### N. [open|answered] <title>`, the question as asked, and the answer. Text the partner is asked to approve (approaches, the design) is written into the tracker before the question about it.
@@ -54,7 +58,7 @@ Holds the formats shared by review and brainstorm. Review points to it as `${CLA
 
 > **Changed 2026-09-25:** resuming distinguishes review and brainstorm trackers (from one rule for both): the unchecked-item rule applies to review trackers only, brainstorm items get a status heading, and a brainstorm with no open item resumes at its earliest unfinished step. Why: code review found brainstorm resumes misrouted as unchecked findings. The skill change was committed first (6a85572) and these edits on their own afterwards. Approved by the partner in code review (findings 2 and 5).
 
-### Review (`skills/review/SKILL.md`)
+### Review (`skills/adversarial-review/SKILL.md`)
 
 - Description adds "or to resume a paused review".
 - Opening: replace the "One round of fixes and one re-review..." sentence with: review ends when nothing blocking is open, because a reviewer will always find something.
@@ -77,12 +81,14 @@ Holds the formats shared by review and brainstorm. Review points to it as `${CLA
 ### Brainstorm (`skills/brainstorm/SKILL.md`)
 
 - Description adds "or to resume a paused brainstorm".
-- First step: if the partner asked to resume, follow Resuming in `${CLAUDE_SKILL_DIR}/../review/trackers.md`.
+- First step: if the partner asked to resume, follow Resuming in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`.
 - Before the first question, create the tracker (stage `brainstorm`; the topic chosen now is reused for the spec filename). Record each question and answer, and the approaches and design before asking about them. Replies follow the tracker file. Fill in the header's `Spec:` line when the spec file is saved.
 
 ### Finish branch (`skills/finish-branch/SKILL.md`)
 
-- Step 6's review bullet becomes: from the trackers in `.claude/dietpowers/trackers/` whose header names this branch, each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
+> **Changed 2026-09-25:** trackers are read from `.dietpowers/trackers/`; see the note under Constraints.
+
+- Step 6's review bullet becomes: from the trackers in `.dietpowers/trackers/` whose header names this branch, each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
 - On a local merge, the final report to the partner lists the deferred, won't-fix and rejected findings from those trackers, one line each.
 - No skill deletes a tracker directly. Removing a worktree removes the trackers inside it; that is accepted.
 
@@ -109,20 +115,20 @@ Holds the formats shared by review and brainstorm. Review points to it as `${CLA
 1. `bash tests/skills/check-skills.sh` exits 0, and asserts:
    - no file under `skills/` contains `with the AskUserQuestion tool:` (the old paragraph) or `Review notes`;
    - every `SKILL.md` contains `Reply with`;
-   - `skills/review/trackers.md` exists and contains `.gitignore`, `Resuming` and `pause`;
-   - `skills/review/SKILL.md` and `skills/brainstorm/SKILL.md` have a `Depth:` line naming `trackers.md`, and the brainstorm path resolves;
+   - `skills/adversarial-review/trackers.md` exists and contains `.gitignore`, `Resuming` and `pause`;
+   - `skills/adversarial-review/SKILL.md` and `skills/brainstorm/SKILL.md` have a `Depth:` line naming `trackers.md`, and the brainstorm path resolves;
    - `spec-reviewer.md` and `plan-reviewer.md` contain `Severity: [blocker|major|minor]`; all three prompts contain `Out of scope`;
    - `README.md` contains none of `one re-review`, `section in the spec or plan`, `multiple choice`;
    - no file under `skills/` contains `Which option?`;
    - `execute-plan`, `tdd`, `find-root-cause`, `handle-feedback` and `prove-done` SKILL.md do not contain `if commits are approved`, `review` SKILL.md contains `code-step rule`, and `finish-branch` SKILL.md does not contain `git apply --cached`.
-2. Manual trial on cells with the dev companion, results logged in its problems.md. Precondition: the old 3d-tunnel review is finished, or its old `_pause.md` and tracker are moved into `.claude/dietpowers/trackers/_old/` by hand with the partner's go-ahead. Checks: questions arrive as plain text ending in `Reply with`; each blocker and major is asked before any fix; `pause` stops the sequence; "resume" in a fresh session re-asks the item verbatim with the lead-in; the fix check runs only after every item is decided; afterwards `git check-ignore -v` on a tracker path names `.claude/dietpowers/.gitignore`, and `git status --porcelain --untracked-files=all` lists nothing under `.claude/dietpowers/`.
+2. Manual trial on cells with the dev companion, results logged in its problems.md. Precondition: the old 3d-tunnel review is finished, or its old `_pause.md` and tracker are moved into `.dietpowers/trackers/_old/` by hand with the partner's go-ahead. Checks: questions arrive as plain text ending in `Reply with`; each blocker and major is asked before any fix; `pause` stops the sequence; "resume" in a fresh session re-asks the item verbatim with the lead-in; the fix check runs only after every item is decided; afterwards `git check-ignore -v` on a tracker path names `.dietpowers/.gitignore`, and `git status --porcelain --untracked-files=all` lists nothing under `.dietpowers/`.
 
 > **Changed 2026-09-25:** criterion 1 bans the old paragraph's text, not the tool name (from: any mention of `AskUserQuestion`). Why: the new paragraph names the tool it forbids, so the old test could never pass. Approved by the partner in plan review (finding 1).
 
 ## Assumptions
 
 - The plain-text rule applies to all ten skills; only review and brainstorm keep trackers and offer `pause`.
-- `${CLAUDE_SKILL_DIR}/../review/trackers.md` resolves in an installed plugin: skills sit side by side, and `skills/tdd/SKILL.md` already points to `../find-root-cause/`.
+- `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md` resolves in an installed plugin: skills sit side by side, and `skills/tdd/SKILL.md` already points to `../find-root-cause/`.
 - Deferring a blocker or major is allowed; the terminal state then doesn't recommend continuing.
 - A spec or plan fix check needs no diff: the reviewer rereads the one document. Only code fix checks use `FIX_BASE`.
 

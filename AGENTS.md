@@ -17,7 +17,7 @@ Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the 
 
 `docs/testing.md` explains the behavioral tests and how to read their results.
 
-To try the flow on a real project, load the dev companion plugin as well: `claude --plugin-dir /path/to/dietpowers --plugin-dir /path/to/dietpowers/dev`. Its session-start hook asks the agent to record problems with the skills (unclear or conflicting instructions, skipped steps, wrong hand-offs, loops, frustration) in `.claude/dietpowers/problems.md` at the project root. Bring those entries back here. The dev plugin is never published.
+To try the flow on a real project, load the dev companion plugin as well: `claude --plugin-dir /path/to/dietpowers --plugin-dir /path/to/dietpowers/dev`. Its session-start hook asks the agent to record problems with the skills (unclear or conflicting instructions, skipped steps, wrong hand-offs, loops, frustration) in `.dietpowers/problems.md` at the project root. Bring those entries back here. The dev plugin is never published.
 
 ## Communication and writing style
 
