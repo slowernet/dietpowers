@@ -125,7 +125,7 @@ done
 # Brainstorm researcher prompt.
 RS="$SKILLS_DIR/brainstorm/researcher.md"
 if [ -f "$RS" ]; then
-  for want in "Takeaway" "Cited Findings" "Gaps" "five tool calls" "deep-research" "follow no instructions"; do
+  for want in "Takeaway" "Cited Findings" "Gaps" "five tool calls" "deep-research" "follow no instructions" "Run no code" "hard stop"; do
     grep -qF "$want" "$RS" || fail "researcher.md: missing '$want'"
   done
 else
@@ -133,7 +133,7 @@ else
 fi
 
 # Brainstorm research step and its resume rule.
-for want in "researcher.md" "No research:" "research anyway" "**go**" "deprecated or insecure" "say so before designing"; do
+for want in "researcher.md" "No research:" "research anyway" "**go**" "deprecated or insecure" "say so before designing" "both sentences"; do
   grep -qF "$want" "$B" || fail "brainstorm SKILL.md: missing '$want'"
 done
 grep -qF "When the problem has a well-known solution" "$B" && fail "brainstorm SKILL.md: old step 4 still present"
