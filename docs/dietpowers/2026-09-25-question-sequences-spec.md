@@ -19,13 +19,15 @@ Later steps copy these values exactly.
 
 - Question ending: every question ends with a line naming its answers. On a tracker item (a brainstorm question or a review finding): `Reply with <a>, <b>, or pause.` On any other question: `Reply with <a> or <b>.` (or `<a>, <b>, or <c>`). Fixed questions get these endings: the commit question `Reply with yes or no.`; finish-branch's menus `Reply with 1, 2, or 3.` (detached HEAD: `Reply with 1 or 2.`) in place of `Which option?`; review's terminal question `Reply with continue, revise, or stop.`; execute-plan's `Reply with yes or no.`; handle-feedback's push question `Reply with yes or no.`
 - Resume lead-in: `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.`
-- Working directory: `.claude/dietpowers/` at the root of the git work tree. When the model creates it, it writes `.claude/dietpowers/.gitignore` containing the single line `*`, and writes that file if the directory exists without it.
-- Tracker path: `.claude/dietpowers/trackers/YYYY-MM-DD-<topic>-<stage>.md`. `<stage>` is `brainstorm`, `spec-review`, `plan-review` or `code-review`. `<topic>` is the topic in the spec's filename (`YYYY-MM-DD-<topic>-spec.md`); for another filename, its name stem; for a code review with no spec, the branch name with `/` replaced by `-`. On a detached HEAD there is no tracker (see Working directory). If the name is taken, append `-2`, `-3` and so on to the topic. Every run of a stage gets a new tracker.
+- Working directory: `.dietpowers/` at the root of the git work tree. When the model creates it, it writes `.dietpowers/.gitignore` containing the single line `*`, and writes that file if the directory exists without it.
+- Tracker path: `.dietpowers/trackers/YYYY-MM-DD-<topic>-<stage>.md`. `<stage>` is `brainstorm`, `spec-review`, `plan-review` or `code-review`. `<topic>` is the topic in the spec's filename (`YYYY-MM-DD-<topic>-spec.md`); for another filename, its name stem; for a code review with no spec, the branch name with `/` replaced by `-`. On a detached HEAD there is no tracker (see Working directory). If the name is taken, append `-2`, `-3` and so on to the topic. Every run of a stage gets a new tracker.
 - Severity grades: `blocker`, `major`, `minor`. Yardstick for specs and plans: "Would the plan or the code go wrong, or have to guess, if this stayed?" Yes means blocker or major; no means minor. Code reviewer mapping: CRITICAL and HIGH → blocker, MEDIUM → major, LOW → minor.
 - Review item statuses: `open` (awaiting a decision), `fix` (decided, awaiting the fix), `fixed`, `deferred`, `won't fix`, `rejected`, `duplicate of N`. Brainstorm item statuses: `open`, `answered`.
 - `Second pass:` values (review trackers only): `pending`, `done (N findings)`, `not run (<reason>)`.
 - Reviewer dispatches per review run: at most two (the first review and one fix check).
 - The published plugin stays hook-free.
+
+> **Changed 2026-09-25:** the working directory and tracker path moved from `.claude/dietpowers/` to `.dietpowers/` at the root of the git work tree; the self-ignoring `.gitignore` moves with it. Why: Claude Code protects `.claude/`, so tracker writes asked for permission in interactive sessions and were blocked in `claude -p` runs, even with allow rules (research-step trial). The skill change was committed first (ce833cc) and this note afterwards. Existing working state in dietpowers and cells was moved by hand. The Source and References lines below keep the old path as history; cells' problems.md is now at `.dietpowers/problems.md`. Approved by the partner ("just go with .dietpowers").
 
 ## Design
 
@@ -82,7 +84,9 @@ Holds the formats shared by review and brainstorm. Review points to it as `${CLA
 
 ### Finish branch (`skills/finish-branch/SKILL.md`)
 
-- Step 6's review bullet becomes: from the trackers in `.claude/dietpowers/trackers/` whose header names this branch, each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
+> **Changed 2026-09-25:** trackers are read from `.dietpowers/trackers/`; see the note under Constraints.
+
+- Step 6's review bullet becomes: from the trackers in `.dietpowers/trackers/` whose header names this branch, each fixed finding with how it was verified and its fix, and each deferred, won't-fix, rejected and duplicate finding with its reason.
 - On a local merge, the final report to the partner lists the deferred, won't-fix and rejected findings from those trackers, one line each.
 - No skill deletes a tracker directly. Removing a worktree removes the trackers inside it; that is accepted.
 
