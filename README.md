@@ -108,7 +108,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Reads context beyond what the request names.
   - Asks only questions that change the design and records routine calls as assumptions; covers input limits, failure and rerun behavior.
   - Pushes back when the request seems mistaken or a simpler change would do.
-  - New research step for well-known problems and outside APIs or dependencies, preferring what current documentation recommends and avoiding what it marks deprecated or insecure.
+  - Research step after the purpose questions. If outside research would not help the design, it says `No research: <reason>` and carries on (reply `research anyway` to override). Otherwise it proposes about three questions; on `go`, a subagent answers them with a cited finding per fact, using about five tool calls per question, and suggests a separate deep-research when that is not enough. The spec cites the facts the design uses. Either way, brainstorm prefers what current documentation recommends and avoids what it marks deprecated or insecure.
   - Approaches must include the simplest one and one built on an existing library or pattern.
   - One design approval replaces approval after each section; the self re-read is gone because a review follows.
   - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` with fixed sections, including testable success criteria and References.

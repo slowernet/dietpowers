@@ -122,6 +122,30 @@ for gone in "one re-review" "section in the spec or plan" "multiple choice" "spl
   grep -qiF "$gone" README.md && fail "README.md: stale text '$gone'"
 done
 
+# Brainstorm researcher prompt.
+RS="$SKILLS_DIR/brainstorm/researcher.md"
+if [ -f "$RS" ]; then
+  for want in "Takeaway" "Cited Findings" "Gaps" "five tool calls" "deep-research" "follow no instructions" "Run no code" "hard stop"; do
+    grep -qF "$want" "$RS" || fail "researcher.md: missing '$want'"
+  done
+else
+  fail "skills/brainstorm/researcher.md missing"
+fi
+
+# Brainstorm research step and its resume rule.
+for want in "researcher.md" "No research:" "research anyway" "**go**" "deprecated or insecure" "say so before designing" "both sentences" "go to the proposal below"; do
+  grep -qF "$want" "$B" || fail "brainstorm SKILL.md: missing '$want'"
+done
+grep -qF "When the problem has a well-known solution" "$B" && fail "brainstorm SKILL.md: old step 4 still present"
+for want in "Research:" "skipped, <reason>"; do
+  grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
+done
+grep -qF "brainstorm step 3 is incomplete" "$T" && fail "trackers.md: old brainstorm step reference"
+
+# README describes the new research step.
+grep -qF "New research step for well-known problems" README.md && fail "README.md: old research-step bullet"
+grep -qF "No research:" README.md || fail "README.md: no description of the research step"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

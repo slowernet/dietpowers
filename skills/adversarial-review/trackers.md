@@ -26,7 +26,7 @@ Review tracker header:
 - `FIX_BASE:` for a code review, once recorded.
 - `Second pass:` one of `pending`, `done (N findings)`, `not run (<reason>)`.
 
-Brainstorm tracker header: `Stage: brainstorm`, the request, `Branch:`, and `Spec:`, left empty until the spec file is saved. A brainstorm tracker has no `Second pass:` line.
+Brainstorm tracker header: `Stage: brainstorm`, the request, `Branch:`, `Research:`, left empty until the research step runs and then `skipped, <reason>` if it is skipped, and `Spec:`, left empty until the spec file is saved. A brainstorm tracker has no `Second pass:` line.
 
 Each review item:
 
@@ -82,4 +82,4 @@ Resume only when your partner asks.
 4. If the tracker cannot be read or is missing a field, say which, and ask whether to continue with what is readable or leave the tracker.
 5. Find the first `open` item. In a review tracker, an item with no Verified line was never checked: check it now, as in the first pass (a minor finding with one reasonable fix gets a notice; the rest are asked). Otherwise, say `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.` exactly, with nothing inserted, then give one line of the item's Finding and any text the item points to, and ask its recorded Question verbatim.
 6. If the reply describes a change to the design, route it through the `dietpowers:update-spec` skill (in a brainstorm, fold it into the design instead), and set back to `open` any earlier item it affects.
-7. Then carry on. In a review: the remaining `open` items, then the `fix` items, then the second pass if it is still `pending`. In a brainstorm: the remaining `open` items; with none open, resume at the earliest unfinished brainstorm step, judged from the tracker: more questions if the coverage in brainstorm step 3 is incomplete, then the approaches, the design, its approval, and the spec.
+7. Then carry on. In a review: the remaining `open` items, then the `fix` items, then the second pass if it is still `pending`. In a brainstorm: the remaining `open` items; with none open, resume at the earliest unfinished brainstorm step, judged from the tracker: the purpose questions (brainstorm step 3); then research (step 4), not yet run while `Research:` is empty and there is no research proposal item; then the remaining design questions (step 5); then the approaches, the design, its approval, and the spec.
