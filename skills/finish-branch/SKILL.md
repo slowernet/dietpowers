@@ -7,7 +7,7 @@ description: Integrates a finished branch by local merge or pull request, only w
 
 Integration is the step that touches shared state, so it waits for your partner's choice. When the choice is a pull request, the description should let a reviewer judge the work without rereading the conversation.
 
-Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, each with a bold label, recommended first, each with a one-line reason. End with a line naming the answers in bold, such as `Reply with **a**, **b**, or **c**.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it.
+Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, recommended first, each with a short bold label in words (never numbers or letters) and a one-line reason. End with a line naming those labels in the same order, such as `Reply with **new PR**, **straight to main**, or **drop it**.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it.
 
 1. If the `dietpowers:prove-done` skill just ran on this state of the branch, use its result; otherwise run the project's full test suite. If anything fails or a success criterion is unmet, report it and stop — the menu comes only after a green suite.
 2. Detect the workspace, capturing all three values now, before anything changes directory:
@@ -23,20 +23,20 @@ WORKTREE_PATH=$(git rev-parse --show-toplevel)
    If the spec or plan is uncommitted because commits were held back, propose commits before the menu: the spec, then the plan. List them with their messages and create them only after your partner approves; then set the plan's `Spec:` line to the spec's commit and its `Commits:` line to `approved`. If your partner declines, offer only to keep the branch as it is.
 4. If the branch already has an open pull request, skip the menu. Push the new commits once your partner has approved the push (the `dietpowers:handle-feedback` skill asks for it together with the replies; otherwise ask), report the URL, and if another skill invoked you, return to it. Otherwise, ask the integration question the same way as every other question: say the work is complete and what state it is in (base branch, commits, anything unmet), then list the options with their bold labels, recommending the pull request unless your partner has said otherwise, each with a one-line reason, and end with the `Reply with` line. Then wait. The integration decision is your partner's.
 
-On a named branch (a normal repo, or a worktree on a named branch), the options are:
+On a named branch (a normal repo, or a worktree on a named branch), the options, in this order when the pull request is recommended, are:
 
-- **1** Merge back to `<base-branch>` locally
-- **2** Push and create a pull request
-- **3** Keep the branch as it is, to handle later
+- **pull request**: push the branch and open a pull request against `<base-branch>`
+- **merge locally**: merge back to `<base-branch>` on this machine
+- **keep**: keep the branch as it is, to handle later
 
-ending `Reply with **1**, **2**, or **3**.`
+ending `Reply with **pull request**, **merge locally**, or **keep**.` If you recommend another option, put it first and reorder the ending to match.
 
 On a detached HEAD, which means an externally managed workspace, there is no merge option:
 
-- **1** Push as a new branch and create a pull request
-- **2** Keep it as it is, to handle later
+- **pull request**: push as a new branch and open a pull request
+- **keep**: keep it as it is, to handle later
 
-ending `Reply with **1** or **2**.`
+ending `Reply with **pull request** or **keep**.`
 
 5. **Merge locally:** first read this branch's trackers from `$WORKTREE_PATH/.dietpowers/trackers/` (those whose `Branch:` is this branch) and keep their deferred, won't-fix and rejected findings, since cleanup may remove the worktree. Then `cd` to the main repo root, then `git checkout <base>`, `git pull`, `git merge <feature>`. On a conflict, run `git merge --abort` and report. Run the tests on the merged result. If they fail, report and offer to undo the merge with `git reset --hard ORIG_HEAD`, which needs your partner's confirmation; the branch and worktree stay in place and nothing was pushed. Once green, clean up per step 7, then `git branch -d <feature>`. In your final report, list the findings you kept, one line each.
 6. **Push and PR:** `git push -u origin <feature>`, or from a detached HEAD `git push origin HEAD:refs/heads/<new-branch>`. Open the request against the base branch using the forge's CLI or the URL it prints on push. Write the description from what this run produced, fitted to the repo's PR template if it has one:

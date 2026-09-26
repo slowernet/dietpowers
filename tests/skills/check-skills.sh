@@ -60,10 +60,10 @@ if grep -rqF "with the AskUserQuestion tool:" "$SKILLS_DIR"; then
 fi
 for f in "$SKILLS_DIR"/*/SKILL.md; do
   grep -qF "Reply with" "$f" || fail "$f: no 'Reply with' question ending"
-  grep -qF "Reply with **a**, **b**, or **c**." "$f" || fail "$f: question paragraph does not bold the reply words"
+  grep -qF "short bold label in words" "$f" || fail "$f: question paragraph does not ask for word labels"
 done
 grep -rqF "Which option?" "$SKILLS_DIR" && fail "a menu still ends with 'Which option?'"
-grep -rqE "Reply with (yes|1|continue)[ ,]" "$SKILLS_DIR" && fail "a fixed question ending is not bolded"
+grep -rqE "Reply with (yes|continue|pull request)[ ,]" "$SKILLS_DIR" && fail "a fixed question ending is not bolded"
 
 # Code steps always commit; only the spec and plan may be held back.
 for n in execute-plan tdd find-root-cause handle-feedback prove-done; do
@@ -156,7 +156,8 @@ grep -qF ".dietpowers/.gitignore" dev/hooks/problem-log.md || fail "dev problem 
 
 # finish-branch asks its integration question like every other question, not as a fenced block.
 grep -qF "Print it exactly as written" "$F" && fail "finish-branch: menu still printed verbatim"
-grep -qF -- "- **2** Push and create a pull request" "$F" || fail "finish-branch: integration options are not bold-labelled"
+grep -qF "Reply with **pull request**, **merge locally**, or **keep**." "$F" || fail "finish-branch: integration options are not word-labelled"
+grep -qE "Reply with \*\*[0-9]" "$SKILLS_DIR"/*/SKILL.md && fail "a question still uses numbered reply labels"
 
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
