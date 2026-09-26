@@ -13,7 +13,7 @@
 
 ## Testing
 
-Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the only record of the mechanical rules (frontmatter keys and size, the ban on `@` links, references to renamed or deleted skills), so read its failure output.
+Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the only record of the mechanical rules (frontmatter keys and size, the ban on `@` links, references to renamed or deleted skills) and of the text the flow depends on (question endings, commit rules, the tracker file, reviewer severity and fix checks, the brainstorm research step, README wording), so read its failure output.
 
 `docs/testing.md` explains the behavioral tests and how to read their results.
 

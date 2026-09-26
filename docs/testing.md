@@ -22,7 +22,8 @@ The script checks that:
 - each `SKILL.md` has frontmatter with the keys `name` and `description`, and optionally `argument-hint`, and the frontmatter
   is under 1024 characters;
 - no `@`-link force-loads another skill (an `@` path makes Claude Code load that file at once);
-- no file under `skills/` references a renamed or deleted skill.
+- no file under `skills/` references a renamed or deleted skill;
+- the text the flow depends on is present, and replaced text is gone: plain-text questions ending in `Reply with`, the commit rules for code and for the spec and plan, `trackers.md` and the pointers to it, the reviewers' severity lines and fix-check sections, the brainstorm research step and `researcher.md`, and the README's descriptions of these.
 
 It exits 0, or prints one `FAIL:` line per violation.
 

@@ -22,7 +22,7 @@ I started from superpowers-slim because it had already done part of this work.
 ## The skill flow
 
 ```
-brainstorm                 design, one question at a time; spec written
+brainstorm                 purpose, research if it helps, design; spec written
 adversarial-review (spec)  hostile review; you decide what matters; fix; one fix check
 write-plan                 tasks: paths, interfaces, tests; no code
 adversarial-review (plan)  hostile review; you decide what matters; fix; one fix check
@@ -67,7 +67,7 @@ Ordered by how far each departs from what Superpowers users may expect.
 - **Code is reviewed once, over the whole branch**, with a test-suite run and a check for tests that cannot fail.
 - **Fixes are checked once more, then the loop stops.** Code fixes start with a failing test. Once every finding is decided and fixed, one fix check looks only at the fixes; anything it finds comes to you, and no further review runs. In subagent-driven mode, Superpowers allows up to five fix rounds per task.
 - **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer. Code is always committed on a feature branch, never on the base branch. Committing the spec and plan needs your approval once per piece of work, recorded in the plan; if you decline, they stay on disk and `finish-branch` proposes their commits at the end. Pushing and merging always ask.
-- **Brainstorming aims for the simplest well-grounded spec.** It looks up how the problem is usually solved, always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
+- **Brainstorming aims for the simplest well-grounded spec.** When outside practice matters it runs a short, cited research round (see `brainstorm` below), always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time, in plain text,** with the problem, the options, a recommendation and a reason in one message, ending with a `Reply with` line. You can answer with an option, your own idea, a question or an aside.
 - **Reviews and brainstorms can pause and resume.** Reply `pause` to any finding or design question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.claude/dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
