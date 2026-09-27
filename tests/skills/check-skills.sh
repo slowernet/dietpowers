@@ -159,6 +159,11 @@ grep -qF "Print it exactly as written" "$F" && fail "finish-branch: menu still p
 grep -qF "Reply with **pull request**, **merge locally**, or **keep**." "$F" || fail "finish-branch: integration options are not word-labelled"
 grep -qE "Reply with \*\*[0-9]" "$SKILLS_DIR"/*/SKILL.md && fail "a question still uses numbered reply labels"
 
+# Every skill says what it is about to do before a long stretch of work.
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+  grep -qF "say in one line what you are about to do" "$f" || fail "$f: no progress line before long work"
+done
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
