@@ -8,16 +8,16 @@ dietpowers is a fork of [tim-hub/superpowers-slim](https://github.com/tim-hub/su
 
 ## Motivation
 
-I've been a happy and grateful Superpowers user in Claude Code, but over time I developed a sense that the workflow had lost some efficiency. Late 2025 models often felt like pair programming with an enthusiastic puppy, but the baseline has improved, and my vague sense was that the capabilities Opus has gained are at times fighting against the scaffold. Most of all, I wanted to have a more interactive conversation with the agent that preserved my flow state. Specific shortcomings I noticed:
+I've been a happy (and grateful) Superpowers user for a while. Late 2025 models often felt like pair programming with an enthusiastic puppy, and the methodology and composable skills in the plugin brought needed discipline. But the model baseline has improved since, and I started to sense that aspects of the Superpowers workflow and implementation might be limiting my productivity. Specifically, I wanted:
 
-- **No enforced path through the flow.** Nothing made the agent move from one skill to the next in order, so I would miss steps or handle them sloppily (eg. running a review in the implementor's context, biasing the findings).
-- **Prompts written to support every coding agent diluted efficiency.** Supporting many agent tools meant the prompts and workflows were not tuned for the newest Opus models and harnesses. See below for details.
-- **Spec drift.** Decisions made after the spec was written did not  make it back into the spec.
-- **No required review of specs and plans.** Mistakes in a spec or plan passed straight into the code: garbage in, garbage out.
-- **Breaks between questions.** Gaps in the questioning broke my focus on intricate problems.
-- **No room to think inside a question.** Multiple-choice prompts left no natural place to digress, ask a follow-up or step away. dietpowers asks for one decision at a time, in plain text with the reasoning alongside, so I can explore a tangent, question the options, propose my own, or pause and pick up later.
+- **A clear path through the flow.** Each skill hands on to the next in order, so no step gets skipped, and each review runs in a fresh context that hasn't seen the implementation.
+- **A spec that stays true.** Decisions made after the spec is written go back into it.
+- **Rigorous review of specs and plans.** A hostile review of the spec and the plan catches mistakes before they reach the code, reducing GIGO.
+- **Enabling focus on when hard problems arise.** Questions come close together, so I can stay with an intricate problem mentally.
+- **Room to think inside a question.** One decision at a time, in plain text with the reasoning alongside, so I can explore a tangent, question the options, propose my own, or pause and pick up later.
+- **Prompts written for the newest Opus models.** The skills target only Claude Code and current Opus models, so the prompts and workflows can be tuned for them. (See below for details.)
 
-I started from superpowers-slim because it had already done part of this work. 
+I started from superpowers-slim because it had already done part of this work.
 
 ## The skill flow
 
@@ -38,7 +38,7 @@ update-spec                approved change to specified behavior, noted in the s
 
 ## Usage
 
-There is no session-start hook, so skills rarely start on their own. Start a piece of work by typing the skill as a slash command, followed by what you want:
+There is no session-start hook, so skills usually won't start on their own. Start a piece of work by typing the skill as a slash command, followed by what you want:
 
 ```
 /dietpowers:brainstorm add a CSV export to the reports page
@@ -57,16 +57,15 @@ Ordered by how far each departs from what Superpowers users may expect.
 
 - **Imperative skill names.** `brainstorm`, `write-plan`, `execute-plan`, `tdd`, `adversarial-review`, `prove-done`, `finish-branch`, `find-root-cause` and `handle-feedback` replace Superpowers' gerund-based naming convention; `adversarial-review` and `update-spec` are new; the review skill is named `adversarial-review` so it cannot be confused with Claude Code's built-in `/review`. Skills refer to each other by full name, such as `dietpowers:adversarial-review`, so bare names cannot collide with other commands.
 - **The spec stays the source of truth.** Any change to specified behavior, whether it comes up in planning, execution, review, debugging, PR feedback or from you, goes through one `update-spec` skill, which the other skills invoke once the spec is approved: you approve the change, only the affected sections change, a dated note under each changed section records what changed, why, and who approved it, and the spec change travels with the code change. A new goal or feature goes back to `brainstorm` instead. Before finishing, `prove-done` pairs each success criterion with the test that shows it and lists every change since approval, so you see drift in one place.
-- **Plan files carry no implementation code.** Superpowers writes every line into the plan, for an executor with "zero context for our codebase and questionable taste." Each task in the plan includes paths, signatures, behaviors and tests, and names the code change that would make each test fail. Our rationale:
+- **Plan files don't have implementation code.** Superpowers writes every line into the plan. In dietpowers, each task in the plan includes only paths, signatures, behaviors and tests, and names the code change that would make each test fail. Our rationale:
   - Superpowers plan code is written without being run, then rewritten during execution.
   - Opus 5.5 is "strongest on multistep work in a real repository, such as carrying a change through a large code base until its tests pass" ([Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5)).
   - Plan defects are often missing decisions, such as an ignored error-handling convention. Paths, interfaces, behaviors and tests capture those; code review catches code bugs later.
   - Shorter plans are faster to read and approve.
-  - The trade-off: less is fixed before you approve, and tests are written during execution. Code review checks for tests that could never fail.
 - **Spec, plan and code each get a hostile review.** An `adversarial-review` skill reviews the spec, the plan and the code, each with its own checklist. The reviewer is a fresh subagent on the same model, which has not seen the conversation.
 - **Code is reviewed once, over the whole branch**, with a test-suite run and a check for tests that cannot fail.
 - **Fixes are checked once more, then the loop stops.** Code fixes start with a failing test. Once every finding is decided and fixed, one fix check looks only at the fixes; anything it finds comes to you, and no further review runs. In subagent-driven mode, Superpowers allows up to five fix rounds per task.
-- **You approve each step.** After the spec, the plan, the implementation and the review, the flow asks whether to continue and recommends an answer. Code is always committed on a feature branch, never on the base branch. Committing the spec and plan needs your approval once per piece of work, recorded in the plan; if you decline, they stay on disk and `finish-branch` proposes their commits at the end. Pushing and merging always ask.
+- **Progress through the workflow is guided.** After each step, the flow asks whether to continue to the next, with the exception of reviews, which are automatic. 
 - **Brainstorming aims for the simplest well-grounded spec.** When outside practice matters it runs a short, cited research round (see `brainstorm` below), always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time, in plain text,** with the problem, the options, a recommendation and a reason in one message, ending with a `Reply with` line. You can answer with an option, your own idea, a question or an aside.
