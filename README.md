@@ -70,7 +70,7 @@ Ordered by how far each departs from what Superpowers users may expect.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time, in plain text,** with the problem, the options, a recommendation and a reason in one message, ending with a `Reply with` line. You can answer with an option, your own idea, a question or an aside.
 - **Reviews and brainstorms can pause and resume.** Reply `pause` to any finding or design question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
-- **Prompts tuned for Opus 5.5.** Skill and reviewer prompts were grounded against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill-vs-superpowers-slim).
+- **Prompts tuned for Opus 5.5.** Skill and reviewer prompts were grounded against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill).
 
 ### What superpowers-slim changed from superpowers
 
@@ -97,7 +97,7 @@ For local development:
 claude --plugin-dir /path/to/dietpowers --plugin-dir /path/to/dietpowers/dev
 ```
 
-## What changed in each skill vs superpowers-slim
+## What changed in each skill
 
 Every skill that asks you anything gained the same rule: one question at a time, in plain text rather than the question tool, recommended option first with a reason, ending with a `Reply with` line. Before long work, such as dispatching a reviewer or writing a spec or plan, and after each of your answers, the model says in one line what it will do next. Most also gained a line asking for short messages that lead with the question or outcome. Code steps always commit on the feature branch, asking once to create it if you are on the base branch. The spec and plan skills ask once per piece of work before their first commit ("I'll work on branch `<name>`. May I commit the spec and plan to it as we go?"), and the plan records the answer in a `Commits:` line; if you decline, the spec and plan stay on disk and `finish-branch` proposes their commits at the end. Nothing is pushed or merged without asking, and nothing is committed to `main` or `master`. Every description now says what the skill produces as well as when to use it, and the skills you start directly have an argument hint.
 
