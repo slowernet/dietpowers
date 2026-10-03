@@ -105,7 +105,9 @@ In step 4, the triage question from Constraints: before the integration question
 - **The file cannot be written** (the same cases as a tracker: not writable, not a git work tree, detached HEAD): say the item in one line in the conversation instead.
 - **The backlog cannot be read** (no `gh`, not signed in, no remote): triage offers only `keep` and `drop`, and says why.
 - **Filing or commenting fails**: the item stays `open`, with the error under Recommendation, its Question cleared and Decision empty.
-- **The partner names a notes file as the backlog**: `file new` appends the draft to it; the file is committed only if it is tracked and the partner agrees.
+- **The partner names a notes file as the backlog**: `file new` appends the draft to it. Triage commits nothing; it leaves the edit on disk and says so.
+
+> **Changed 2026-10-03:** triage never commits (from committing a tracked notes file when the partner agrees). Why: that commit had no branch rule and could land on `main` (plan review finding 3). Approved by the partner in the plan review ("never").
 - **Several worktrees**: each has its own `open-items.md` at its root; triage works on the current one. Removing a linked worktree loses its file; that is issue [#25](https://github.com/slowernet/dietpowers/issues/25).
 - **A triage paused partway**: the file holds the recorded Question; resuming asks it again.
 

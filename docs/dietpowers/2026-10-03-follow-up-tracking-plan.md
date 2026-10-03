@@ -1,6 +1,6 @@
 # Plan: open items and triage
 
-Spec: docs/dietpowers/2026-10-02-follow-up-tracking-spec.md @ 687020a
+Spec: docs/dietpowers/2026-10-02-follow-up-tracking-spec.md @ 687020a (one Changed note added 2026-10-03: triage never commits)
 Base: main
 Commits: approved
 
@@ -98,16 +98,17 @@ Global Constraints; the spec's Design section `skills/triage-open-items/SKILL.md
 - `skills/triage-open-items/SKILL.md`:
   - Frontmatter: `name: triage-open-items`; a description saying what it produces and when to use it, without summarising the steps, for example "Works through the open-items list with you and files, keeps or drops each item with your approval. Use when open items have piled up, when finish-branch offers triage, or to resume a paused triage."
   - Title and a short opening on why triage matters (later work found mid-flow is kept, matched against the backlog, and decided one item at a time).
-  - The question paragraph copied verbatim from `skills/update-spec/SKILL.md`, then the adding sentence, then a commit sentence: triage commits nothing, except a tracked notes-file backlog, and only after the partner agrees.
+  - The question paragraph copied verbatim from `skills/update-spec/SKILL.md`, then the adding sentence, then a commit sentence: triage commits nothing; a notes-file backlog edit is left on disk, and triage says so.
   - A sentence pointing to `## Open items`, `## Replies` and `## Resuming` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`.
-  - Steps 0 (resume, as in the other skills) and 1-7 as in the spec's Design, including the outcome question's ending from Global Constraints.
+  - Steps 0 (resume, as in the other skills) and 1-7 as in the spec's Design, including the outcome question's ending from Global Constraints. Step 6 records an item's Decision only after its outcome succeeds; on failure the item keeps an empty Decision and Question, with the error under Recommendation.
+  - If finish-branch invoked triage and the partner replies `pause`, triage also says that `/dietpowers:finish-branch` must be run again to integrate.
   - Terminal state: "if the `dietpowers:finish-branch` skill invoked you, return to it; otherwise stop."
   - `Depth: ../adversarial-review/trackers.md`.
 - `trackers.md`:
   - `## Replies` first sentence includes triage's item questions among those that offer `pause`.
-  - `## Resuming` gains an open-items case: `triage-open-items` resumes `.dietpowers/trackers/open-items.md`; no `Branch:` lookup; the file is unfinished while an item has a Question and no Decision; resume at that item with the lead-in and its recorded Question. Step 2's list of own stages adds it.
+  - `## Resuming` gains an open-items case: `triage-open-items` resumes `.dietpowers/trackers/open-items.md`; no `Branch:` lookup; the file is unfinished while an item has a Question and no Decision; resume at that item with the lead-in, one line of the item's Why (in place of a Finding), and its recorded Question. Then triage re-reads the backlog as in its step 2, skips its steps 3 and 4, and carries on at step 5 with the items that have a Recommendation and no Decision. Step 2's list of own stages adds it.
 - `finish-branch` step 4: before the integration question, and on the open-PR path before the push, if the open-items file has `open` items, ask "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke the `dietpowers:triage-open-items` skill, then continue.
-- `check-skills.sh`: the expected skill set adds `triage-open-items`; `skills/finish-branch/SKILL.md` contains `dietpowers:triage-open-items` and `Triage them now?`; `trackers.md` contains `triage-open-items`.
+- `check-skills.sh`: the expected skill set adds `triage-open-items`; `skills/finish-branch/SKILL.md` contains `dietpowers:triage-open-items` and `Triage them now?`; `trackers.md` contains `Question and no Decision`.
 - `AGENTS.md` line 3: "10 skills" becomes "11 skills".
 - README: the flow diagram gains `triage-open-items          open items: group, match the backlog, file, keep or drop` in the lower group; "What changed in each skill" gains a `triage-open-items` (new) entry; the finish-branch entry gains a line on the triage question.
 - `docs/testing.md`: "exactly the ten expected skills" becomes "exactly the eleven expected skills"; add the manual trial from the spec's Success criterion 2 to the "Manual trials" section.
@@ -116,7 +117,7 @@ Global Constraints; the spec's Design section `skills/triage-open-items/SKILL.md
 - "skill set mismatch": the expected list includes `triage-open-items`; fails until the directory exists.
 - Per-skill rules (`Reply with`, `short bold label in words`, `say in one line what you are about to do`, the open-items path) now also check the new skill; fails if its question paragraph or adding sentence is missing.
 - "finish-branch triage question": fails if `dietpowers:triage-open-items` or `Triage them now?` is missing.
-- "trackers.md names triage-open-items": fails if Resuming lacks the open-items case.
+- "trackers.md resume rule for open items": asserts `Question and no Decision`; fails if the Resuming open-items case is missing.
 - Add the assertions first and run the script: it must FAIL on the skill set and the finish-branch strings. Then build and confirm it passes.
 
 Command: `bash tests/skills/check-skills.sh`
@@ -134,14 +135,15 @@ Consumes the adding sentence and `## Open items` from Task 1.
 Global Constraints (deferring a review finding); References (adversarial-review steps 5 and 7).
 
 **Behavior**
-- Step 5: the options offered for a finding become "fix as proposed, another fix, **add to open items**, **leave here**, won't fix and reject". Both new options set the item's status to `deferred`; **add to open items** also adds the finding as an open item.
+- Step 5: the options offered for a finding become "fix as proposed, another fix, **add to open items**, **leave here**, won't fix and reject". Both new options set the item's status to `deferred`; **add to open items** also adds the finding as an open item. Add one sentence: review findings reach open items only through the **add to open items** answer; the adding sentence covers other later work noticed during a review.
 - Step 7: "for a finding under `Out of scope`, recommend defer unless it is a blocker" becomes: for a finding under `Out of scope`, offer **add to open items** and **leave here** without recommending either, unless it is a blocker, which is recommended for fixing.
-- `check-skills.sh`: `skills/adversarial-review/SKILL.md` contains `**add to open items**` and `**leave here**`, and does not contain `recommend defer unless it is a blocker`.
+- `check-skills.sh`: `skills/adversarial-review/SKILL.md` contains `**add to open items**`, `**leave here**` and `only through the **add to open items** answer`, and does not contain `recommend defer unless it is a blocker`.
 - README adversarial-review entry: a line saying a deferred finding can be added to open items or left in the tracker.
 
 **Tests**
 - "review defer options": fails if either label is missing.
 - "old defer recommendation gone": fails if `recommend defer unless it is a blocker` remains.
+- "review findings only by answer": asserts `only through the **add to open items** answer`; fails if the sentence is missing.
 - Add the assertions first, see them FAIL, then edit and confirm the script passes.
 
 Command: `bash tests/skills/check-skills.sh`
