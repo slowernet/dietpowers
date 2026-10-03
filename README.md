@@ -162,9 +162,9 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - When the spec and plan were held back, proposes their commits before the menu and creates them only after you approve; declining leaves only "keep".
   - On a merge conflict, aborts the merge; if tests fail after a local merge, offers to undo it with your confirmation.
   - Asks the integration menu as one question, recommending the pull request unless you've said otherwise.
-  - Writes the PR description from the run: what changed and why with a spec link, the commits grouped by plan task, each success criterion with its evidence, the spec's `Changed` notes, the review record from this branch's trackers (fixed findings with their evidence; deferred, won't-fix, rejected and duplicate findings with their reasons), and open items. After a local merge, the final report lists the deferred, won't-fix and rejected findings.
+  - Writes the PR description from the run: what changed and why with a spec link, the commits grouped by plan task, each success criterion with its evidence, the spec's `Changed` notes, the review record from this branch's trackers (fixed findings with their evidence; deferred, won't-fix, rejected and duplicate findings with their reasons), and anything left open. After a local merge, the final report lists the deferred, won't-fix and rejected findings.
   - When a pull request is already open, pushes (after your approval) instead of showing the menu, and returns to the skill that invoked it.
-  - When there are open items, asks "Triage them now?" before the menu or the push.
+  - When there are open items, asks "Triage them now?" before the menu or the push; on the PR-feedback path `handle-feedback` asks it instead, after posting its replies.
   - Hands off to `handle-feedback` when PR comments arrive.
 - **`handle-feedback`** (was `receiving-code-review`)
   - Opens with why: feedback is a claim to check, answered with changes and evidence.
@@ -172,7 +172,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Scoped to feedback from people and pull requests.
   - An item that could be read two ways blocks only itself and what depends on it.
   - Changes to specified behavior go through `update-spec`; each fix starts with a test that reproduces the problem.
-  - Commits each fix with its test; asks one question, "Push the fixes and post these replies?"; posts in-thread only after `prove-done` and `finish-branch` have pushed the fixes.
+  - Commits each fix with its test; asks one question, "Push the fixes and post these replies?"; posts in-thread only after `prove-done` and `finish-branch` have pushed the fixes; then, when there are open items, asks "Triage them now?".
 - **`update-spec`** (new)
   - The one way specified behavior changes once you have approved the spec: states the change, gets approval, edits only the affected sections plus the plan's matching tasks, Global Constraints and References, adds a dated `Changed` note under each edited section, and commits with the code.
   - A declined change edits nothing, and the calling skill drops it, or stops and asks when it cannot go on without it.

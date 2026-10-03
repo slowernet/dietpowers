@@ -190,6 +190,16 @@ for want in "**add to open items**" "**leave here**" "only through the **add to 
 done
 grep -qF "recommend defer unless it is a blocker" "$R" && fail "review SKILL.md: old defer recommendation"
 
+# Code review fixes for open items: triage after replies on the feedback path; resume edges; README wording.
+grep -qF "Triage them now?" "$SKILLS_DIR/handle-feedback/SKILL.md" || fail "handle-feedback: no triage question after the replies"
+grep -qF "unless the \`dietpowers:handle-feedback\` skill invoked you" "$F" || fail "finish-branch: triage question not skipped on the feedback path"
+grep -qF "listing **add to open items** and **leave here** first" "$R" || fail "review SKILL.md: out-of-scope findings lose step 5's options"
+for want in "there is no paused triage" "failed filing"; do
+  grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
+done
+grep -qF "in group order" "$SKILLS_DIR/triage-open-items/SKILL.md" || fail "triage-open-items: groups not written to the file"
+grep -qF "and open items" README.md && fail "README.md: 'open items' used for anything left open"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

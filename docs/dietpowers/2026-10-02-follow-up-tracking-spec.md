@@ -34,7 +34,7 @@ Later steps copy these values exactly.
 - Backlog location: from the project instructions or memory. If neither names one, triage asks once (for example GitHub issues, another tracker, or a notes file) and offers to save the answer to memory.
 - Deferring a review finding: adversarial-review's finding question offers `**add to open items**` (the finding is added as an open item and stays `deferred` in the review tracker) and `**leave here**` (it stays only in the review tracker and the PR description) in place of a single defer.
 - Skill name `triage-open-items`, at `skills/triage-open-items/SKILL.md`, invoked as `/dietpowers:triage-open-items`.
-- finish-branch question, asked when the file has `open` items, before the integration question, or before the push when the branch already has an open pull request: "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke `dietpowers:triage-open-items`, which returns to finish-branch.
+- finish-branch question, asked when the file has `open` items, before the integration question, or before the push when the branch already has an open pull request, unless `dietpowers:handle-feedback` invoked finish-branch; handle-feedback then asks the same question after posting its replies: "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke `dietpowers:triage-open-items`, which returns to finish-branch.
 
 ## Design
 
@@ -44,7 +44,7 @@ Anatomy as in AGENTS.md: title; a short opening on why triage matters; the share
 
 1. Read `.dietpowers/trackers/open-items.md`. If it is missing or has no `open` or `kept` items, say so and stop.
 2. Find the backlog location. Read the backlog's open items: `gh issue list --state open` for GitHub issues; for another place, what the partner points to. If it cannot be read, say so; triage still runs, and `file new` and `add to #N` are not offered.
-3. Study the list. Group related items, and merge items that describe the same thing into one, keeping all their evidence. Show the groups and merges in one message. This needs no question.
+3. Study the list. Group related items, and merge items that describe the same thing into one, keeping all their evidence. Write the items back to the file in group order, and show the groups and merges in one message. This needs no question.
 4. Clear the Recommendation, Question and Decision of every item. Then, for each item, compare it with the backlog for duplicates and close matches, and write the Recommendation into the item: the outcome with a one-line reason, and for `file new` or `add to #N`, the draft title and body or comment.
 5. Ask about one item at a time, in the order of the groups, recording each Question before asking it. The partner may edit the draft in the reply.
 6. Carry out each answer before the next question. Remove the item from the file once its outcome is done. If filing or commenting fails, leave the item `open`, record the error under Recommendation, clear its Question so it does not look paused, leave Decision empty, and say so.
@@ -140,3 +140,4 @@ In step 4, the triage question from Constraints: before the integration question
 
 > **Changed 2026-10-03 (spec review):** a `Next:` counter; deferred findings offer **add to open items** or **leave here**; removed design text is carried in the item; an open-items case in Resuming and Replies; a fresh triage clears old fields; the triage question also on the existing-PR path; `add to #N` not offered for a notes file. Approved by the partner in the spec review.
 > **Changed 2026-10-03 (fix check):** the defer options are named **add to open items** and **leave here**; out-of-scope findings get no recommendation between them unless they are blockers; the failure section and template match the earlier fixes; a failed filing clears its Question; a new file starts at `Next: 2`. Approved by the partner in the spec review.
+> **Changed 2026-10-03 (code review):** on the PR-feedback path the triage question moves from finish-branch (before the push) to handle-feedback (after the replies are posted), so pausing triage cannot strand the push or the replies; triage writes items back in group order; resuming skips items whose filing failed, and says so when nothing is paused. Approved by the partner in the code review ("after replies").
