@@ -164,6 +164,20 @@ for f in "$SKILLS_DIR"/*/SKILL.md; do
   grep -qF "say in one line what you are about to do" "$f" || fail "$f: no progress line before long work"
 done
 
+# Open items: every skill queues later work in one tracker; follow-ups no longer go in the spec's Out of scope.
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+  grep -qF ".dietpowers/trackers/open-items.md" "$f" || fail "$f: no open-items sentence"
+done
+for want in "## Open items" "Next: N" "**file new**" "**add to #N**" "**keep**" "**drop**"; do
+  grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
+done
+for gone in "in the spec's Out of scope section as follow-ups" "Out of scope, including follow-ups" \
+  "list it in the spec's Out of scope as a follow-up" "as a follow-up in the spec's Out of scope section" "to Out of scope as follow-ups"; do
+  if grep -rqF "$gone" "$SKILLS_DIR"; then
+    fail "old follow-up text still present: '$gone'"
+  fi
+done
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

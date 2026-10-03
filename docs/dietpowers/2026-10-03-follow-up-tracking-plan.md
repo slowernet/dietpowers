@@ -50,7 +50,7 @@ Commits: approved
 
 ## Tasks
 
-### - [ ] Task 1: The open-items queue
+### - [x] Task 1: The open-items queue
 
 **Files**
 - Modify `skills/adversarial-review/trackers.md`.

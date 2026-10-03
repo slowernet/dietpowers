@@ -70,6 +70,7 @@ Ordered by how far each departs from what Superpowers users may expect.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time, in plain text,** with the problem, the options, a recommendation and a reason in one message, ending with a `Reply with` line. You can answer with an option, your own idea, a question or an aside.
 - **Reviews and brainstorms can pause and resume.** Reply `pause` to any finding or design question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
+- **Later work has one queue.** Anything worth doing later, found at any point in the flow, goes to one open-items list instead of the spec's Out of scope section; a triage skill works through it with you against your backlog.
 - **Prompts tuned for Opus 5.5.** Skill and reviewer prompts were grounded against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill).
 
 ### What superpowers-slim changed from superpowers
@@ -99,7 +100,7 @@ claude --plugin-dir /path/to/dietpowers --plugin-dir /path/to/dietpowers/dev
 
 ## What changed in each skill
 
-Every skill that asks you anything gained the same rule: one question at a time, in plain text rather than the question tool, recommended option first with a reason, ending with a `Reply with` line. Before long work, such as dispatching a reviewer or writing a spec or plan, and after each of your answers, the model says in one line what it will do next. Most also gained a line asking for short messages that lead with the question or outcome. Code steps always commit on the feature branch, asking once to create it if you are on the base branch. The spec and plan skills ask once per piece of work before their first commit ("I'll work on branch `<name>`. May I commit the spec and plan to it as we go?"), and the plan records the answer in a `Commits:` line; if you decline, the spec and plan stay on disk and `finish-branch` proposes their commits at the end. Nothing is pushed or merged without asking, and nothing is committed to `main` or `master`. Every description now says what the skill produces as well as when to use it, and the skills you start directly have an argument hint.
+Every skill that asks you anything gained the same rule: one question at a time, in plain text rather than the question tool, recommended option first with a reason, ending with a `Reply with` line. Before long work, such as dispatching a reviewer or writing a spec or plan, and after each of your answers, the model says in one line what it will do next. Most also gained a line asking for short messages that lead with the question or outcome. Code steps always commit on the feature branch, asking once to create it if you are on the base branch. The spec and plan skills ask once per piece of work before their first commit ("I'll work on branch `<name>`. May I commit the spec and plan to it as we go?"), and the plan records the answer in a `Commits:` line; if you decline, the spec and plan stay on disk and `finish-branch` proposes their commits at the end. Nothing is pushed or merged without asking, and nothing is committed to `main` or `master`. Every description now says what the skill produces as well as when to use it, and the skills you start directly have an argument hint. When any skill finds later work that the current work does not include, it adds it to an open-items list in `.dietpowers/trackers/open-items.md` without asking, and says so in one line.
 
 - **`brainstorm`** (was `brainstorming`)
   - Description says what it produces and when to use it; "You MUST" and the summary of steps are gone.
@@ -111,7 +112,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Approaches must include the simplest one and one built on an existing library or pattern.
   - One design approval replaces approval after each section; the self re-read is gone because a review follows.
   - Writes `docs/dietpowers/YYYY-MM-DD-<topic>-spec.md` with fixed sections, including testable success criteria and References.
-  - When a request spans several subsystems, lists the other parts as follow-ups in the spec's Out of scope section.
+  - When a request spans several subsystems, adds the other parts as open items, each to get its own spec later; a suggested deep-research becomes an open item too.
   - Hands off to `adversarial-review` instead of `writing-plans`.
   - Records each question, the approaches and the design in a tracker, so you can reply `pause` and resume later.
 - **`adversarial-review`** (new; replaces `requesting-code-review`)
@@ -127,7 +128,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
 - **`write-plan`** (was `writing-plans`)
   - No implementation code and no TDD micro-steps.
   - Header: `Spec: <path> @ <commit>` marking the approved spec (or `@ uncommitted`), `Base:` branch, `Commits:` approved or held back, then goal, architecture, Global Constraints and shared References.
-  - A spec that spans several subsystems goes back through `update-spec`, which moves all but one to follow-ups; one plan per spec.
+  - A spec that spans several subsystems goes back through `update-spec`, which removes all but one from the spec and adds each as an open item carrying its removed text; one plan per spec.
   - Each task: Files, Interfaces, Context, Behavior, and Tests naming the change that would make each fail, plus the command to run them.
   - Names an existing file for each new one to imitate.
   - The banned-phrase list, the self re-read and the subagent-era lines are gone.
@@ -173,7 +174,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - The one way specified behavior changes once you have approved the spec: states the change, gets approval, edits only the affected sections plus the plan's matching tasks, Global Constraints and References, adds a dated `Changed` note under each edited section, and commits with the code.
   - A declined change edits nothing, and the calling skill drops it, or stops and asks when it cannot go on without it.
   - With no approved spec, says so and stops.
-  - For a new goal or feature, asks whether to record it as a follow-up and carry on, or to pause and start it with `brainstorm`.
+  - For a new goal or feature, asks whether to add it as an open item and carry on, or to pause and start it with `brainstorm`.
   - Called from `write-plan`, `execute-plan`, `adversarial-review`, `tdd`, `handle-feedback`, `find-root-cause` and `prove-done`, or directly by you.
 - **`find-root-cause`** (was `systematic-debugging`)
   - Opens with why the cause comes before the fix.

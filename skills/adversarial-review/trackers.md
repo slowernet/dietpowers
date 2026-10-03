@@ -61,6 +61,27 @@ Example review item:
 - Fix:
 ```
 
+## Open items
+
+Open items are later work: something worth doing that the current work does not include, found at any point in the flow. They are queued in `.dietpowers/trackers/open-items.md`, which follows `## Working directory` above. When that directory cannot be written, say the item in one line in the conversation instead. Adding an item asks nothing.
+
+The file starts with the title `# Open items`, then the line `Next: N`, the number the next added item takes. When an add creates the file, it writes the title, then `Next: 2`, then item 1. Each add uses the number and increments it, so numbers are never reused. A merged item keeps the lowest of its numbers.
+
+Each item:
+
+```markdown
+### N. [open] <title>
+- Found: YYYY-MM-DD, branch <branch>, <skill>
+- Why: what to do later and why, with its evidence (paths, links, and any designed text it removes from the spec, word for word)
+- Recommendation:
+- Question:
+- Decision:
+```
+
+Statuses: `open` (not yet triaged) and `kept`.
+
+The `dietpowers:triage-open-items` skill works through the file. Its outcomes, one per item: **file new** (open a new item in the backlog), **add to #N** (comment on a matching backlog item, naming it), **keep** (the item stays, status `kept`, and is offered again in the next triage) and **drop**. For a notes-file backlog, **add to #N** is not offered. An item leaves the file once its outcome is carried out: after the new backlog item or comment exists, or at once for **drop**.
+
 ## Replies
 
 Offer `pause` only on tracker items: brainstorm's questions and review's finding questions. The commit, menu and terminal questions do not offer it.
