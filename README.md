@@ -50,13 +50,14 @@ Each skill hands on to the next, and the flow asks before moving on after each r
 ```
 /dietpowers:adversarial-review the code on this branch against docs/dietpowers/2026-09-24-csv-export-plan.md
 /dietpowers:find-root-cause the export test fails on empty reports
+/dietpowers:triage-open-items
 ```
 
 ## How dietpowers differs from its upstreams
 
 Ordered by how far each departs from what Superpowers users may expect.
 
-- **Imperative skill names.** `brainstorm`, `write-plan`, `execute-plan`, `tdd`, `adversarial-review`, `prove-done`, `finish-branch`, `find-root-cause` and `handle-feedback` replace Superpowers' gerund-based naming convention; `adversarial-review` and `update-spec` are new; the review skill is named `adversarial-review` so it cannot be confused with Claude Code's built-in `/review`. Skills refer to each other by full name, such as `dietpowers:adversarial-review`, so bare names cannot collide with other commands.
+- **Imperative skill names.** `brainstorm`, `write-plan`, `execute-plan`, `tdd`, `adversarial-review`, `prove-done`, `finish-branch`, `find-root-cause` and `handle-feedback` replace Superpowers' gerund-based naming convention; `adversarial-review`, `update-spec` and `triage-open-items` are new; the review skill is named `adversarial-review` so it cannot be confused with Claude Code's built-in `/review`. Skills refer to each other by full name, such as `dietpowers:adversarial-review`, so bare names cannot collide with other commands.
 - **The spec stays the source of truth.** Any change to specified behavior, whether it comes up in planning, execution, review, debugging, PR feedback or from you, goes through one `update-spec` skill, which the other skills invoke once the spec is approved: you approve the change, only the affected sections change, a dated note under each changed section records what changed, why, and who approved it, and the spec change travels with the code change. A new goal or feature goes back to `brainstorm` instead. Before finishing, `prove-done` pairs each success criterion with the test that shows it and lists every change since approval, so you see drift in one place.
 - **Plan files don't have implementation code.** Superpowers writes every line into the plan. In dietpowers, each task in the plan includes only paths, signatures, behaviors and tests, and names the code change that would make each test fail. Our rationale:
   - Superpowers plan code is written without being run, then rewritten during execution.
@@ -70,7 +71,7 @@ Ordered by how far each departs from what Superpowers users may expect.
 - **Brainstorming aims for the simplest well-grounded spec.** When outside practice matters it runs a short, cited research round (see `brainstorm` below), always offers the simplest approach and one built on existing libraries or patterns, pushes back on requests with a simpler route, asks only questions that change the design, and writes a spec with fixed sections: constraints, inputs and failure behavior, testable success criteria.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time, in plain text,** with the problem, the options, a recommendation and a reason in one message, ending with a `Reply with` line. You can answer with an option, your own idea, a question or an aside.
-- **Reviews and brainstorms can pause and resume.** Reply `pause` to any finding or design question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
+- **Reviews, brainstorms and triage can pause and resume.** Reply `pause` to any finding, design question or triage question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
 - **Later work has one queue.** Anything worth doing later, found at any point in the flow, goes to one open-items list instead of the spec's Out of scope section; a triage skill works through it with you against your backlog.
 - **Prompts tuned for Opus 5.5.** Skill and reviewer prompts were grounded against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill).
 
@@ -117,9 +118,9 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Hands off to `adversarial-review` instead of `writing-plans`.
   - Records each question, the approaches and the design in a tracker, so you can reply `pause` and resume later.
 - **`adversarial-review`** (new; replaces `requesting-code-review`)
-  - A finding you defer is either added to the open-items list (**add to open items**) or left in the review tracker (**leave here**), as you choose; out-of-scope findings from the fix check get no recommendation between the two unless they are blockers.
   - Reviews a spec, plan or code with a matching prompt, in a fresh subagent on the same model that reads its own prompt file, and waits for its report. It reads the work from disk, so it does not need anything committed.
   - The reviewer grades each finding blocker, major or minor. Minor findings with one obvious fix are fixed with a one-line notice; every blocker and major, and any finding it wants to reject or fix more than one way, comes to you one at a time with a recommendation.
+  - A finding you defer is either added to the open-items list (**add to open items**) or left in the review tracker (**leave here**), as you choose; out-of-scope findings from the fix check get no recommendation between the two unless they are blockers.
   - Records every finding, the evidence, the question and your decision in a tracker, so you can reply `pause` and resume later.
   - Edits a spec or plan under review directly; code fixes start with a failing test; a fix that changes the approved spec goes through `update-spec`.
   - Once every finding is decided and fixed, runs one fix check that looks only at the fixes, then stops.

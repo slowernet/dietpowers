@@ -78,7 +78,7 @@ The other prompts in `prompts/` can be run one at a time with `run-test.sh <skil
 
 ## Manual trials
 
-To test resuming a paused review or brainstorm, pause in one session, then say `resume` in a new session, so the skill has to work from the tracker file alone. Over ACP there is no `/clear`; open a new session instead. Afterwards, `git check-ignore -v .dietpowers/trackers/<tracker>` should name `.dietpowers/.gitignore`.
+To test resuming a paused review, brainstorm or triage, pause in one session, then say `resume` in a new session, so the skill has to work from the tracker file alone. Over ACP there is no `/clear`; open a new session instead. Afterwards, `git check-ignore -v .dietpowers/trackers/<tracker>` should name `.dietpowers/.gitignore`.
 
 To test open items and triage:
 
@@ -87,6 +87,7 @@ To test open items and triage:
 - With a GitHub backlog holding a close match, it should recommend **add to #N** for that item.
 - After answers of **file new**, **keep** and **drop**, only the kept item should remain in the file, and the new issue should exist.
 - At `finish-branch` with an open item, the triage question should come before the integration question.
+- On the PR-feedback path, `handle-feedback` should ask the triage question after posting its replies, and `finish-branch` should not ask it.
 
 ## Reading behavioral results
 
