@@ -80,7 +80,7 @@ Global Constraints; References (trackers.md, shared paragraphs, current follow-u
 
 Command: `bash tests/skills/check-skills.sh`
 
-### - [ ] Task 2: The triage-open-items skill and finish-branch's question
+### - [x] Task 2: The triage-open-items skill and finish-branch's question
 
 **Files**
 - Create `skills/triage-open-items/SKILL.md`, imitating the anatomy of `skills/update-spec/SKILL.md`.
@@ -121,6 +121,8 @@ Global Constraints; the spec's Design section `skills/triage-open-items/SKILL.md
 - Add the assertions first and run the script: it must FAIL on the skill set and the finish-branch strings. Then build and confirm it passes.
 
 Command: `bash tests/skills/check-skills.sh`
+
+Departure: the triage question sits at the start of finish-branch step 4, so it precedes both the menu and the open-PR push with one sentence. `docs/testing.md`'s "Manual trials of pause and resume" heading became "Manual trials" (nothing links to it).
 
 ### - [ ] Task 3: Review deferrals can join the queue
 

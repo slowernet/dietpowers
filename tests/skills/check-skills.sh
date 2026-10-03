@@ -14,7 +14,7 @@ DELETED="using-superpowers using-git-worktrees subagent-driven-development dispa
 EXPECTED=$(printf '%s\n' \
   adversarial-review brainstorm execute-plan finish-branch \
   handle-feedback find-root-cause \
-  tdd prove-done update-spec write-plan \
+  tdd prove-done update-spec write-plan triage-open-items \
   | sort | tr '\n' ' ')
 # -not -name '.*' — local tooling leaves untracked dirs like skills/.claude behind,
 # and the "$SKILLS_DIR"/*/ glob below already skips them.
@@ -177,6 +177,12 @@ for gone in "in the spec's Out of scope section as follow-ups" "Out of scope, in
     fail "old follow-up text still present: '$gone'"
   fi
 done
+
+# Triage: finish-branch offers it, and a paused triage can be resumed.
+for want in "dietpowers:triage-open-items" "Triage them now?"; do
+  grep -qF "$want" "$F" || fail "finish-branch: missing '$want'"
+done
+grep -qF "Question and no Decision" "$T" || fail "trackers.md: no resume rule for open items"
 
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"

@@ -34,6 +34,7 @@ finish-branch              full suite green, then merge, PR or keep
 find-root-cause            root cause, failing test, one fix at the source
 handle-feedback            feedback from people, such as PR comments
 update-spec                approved change to specified behavior, noted in the spec
+triage-open-items          open items: group, match the backlog, file, keep or drop
 ```
 
 ## Usage
@@ -162,6 +163,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Asks the integration menu as one question, recommending the pull request unless you've said otherwise.
   - Writes the PR description from the run: what changed and why with a spec link, the commits grouped by plan task, each success criterion with its evidence, the spec's `Changed` notes, the review record from this branch's trackers (fixed findings with their evidence; deferred, won't-fix, rejected and duplicate findings with their reasons), and open items. After a local merge, the final report lists the deferred, won't-fix and rejected findings.
   - When a pull request is already open, pushes (after your approval) instead of showing the menu, and returns to the skill that invoked it.
+  - When there are open items, asks "Triage them now?" before the menu or the push.
   - Hands off to `handle-feedback` when PR comments arrive.
 - **`handle-feedback`** (was `receiving-code-review`)
   - Opens with why: feedback is a claim to check, answered with changes and evidence.
@@ -176,6 +178,10 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - With no approved spec, says so and stops.
   - For a new goal or feature, asks whether to add it as an open item and carry on, or to pause and start it with `brainstorm`.
   - Called from `write-plan`, `execute-plan`, `adversarial-review`, `tdd`, `handle-feedback`, `find-root-cause` and `prove-done`, or directly by you.
+- **`triage-open-items`** (new)
+  - Works through `.dietpowers/trackers/open-items.md`: groups related items and merges duplicates, reads the backlog (from your project instructions or memory, asking once if neither says) and recommends, per item, **file new**, **add to #N**, **keep** or **drop**.
+  - Asks one item at a time and carries out each answer before the next; items with an outcome leave the list, kept items stay for the next triage.
+  - Commits nothing; can be paused and resumed like a review.
 - **`find-root-cause`** (was `systematic-debugging`)
   - Opens with why the cause comes before the fix.
   - A bug in the spec goes through `update-spec` before the fix.
