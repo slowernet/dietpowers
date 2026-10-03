@@ -1,72 +1,129 @@
-# Record follow-ups where the project tracks work
+# Open items and triage
 
-Source: issue [#24](https://github.com/slowernet/dietpowers/issues/24) and the brainstorm recorded in `.dietpowers/trackers/2026-10-02-follow-up-tracking-brainstorm.md`.
+Source: issue [#24](https://github.com/slowernet/dietpowers/issues/24) and the brainstorm and spec review recorded in `.dietpowers/trackers/2026-10-02-follow-up-tracking-*.md`.
 
 ## Goal
 
-The skills stop assuming where later work is recorded. Today `brainstorm`, `write-plan` and `update-spec` put follow-ups in the spec's Out of scope section; where follow-ups belong (an issue tracker, a notes file, the spec) varies by person and project. These three skills instead record follow-ups where the project instructions or the model's memory say work is tracked, and ask once when nothing says. Each follow-up is drafted and the partner approves it before it is filed, since filing in an issue tracker publishes it. The spec's Out of scope section goes back to holding what the feature excludes.
+Things worth doing later turn up at any point in the flow: a subsystem split off at a scope check, a suggested deep-research, an idea while building, a problem a reviewer notices outside the change. Today the skills put some of them in the spec's Out of scope section, which mixes later work into the spec, and the rest are lost when the session ends. Where later work belongs (an issue tracker, a notes file) varies by person and project.
+
+Every skill instead adds such an item to one open-items tracker, without asking. A new skill, `dietpowers:triage-open-items`, works through that list with the partner: it groups and de-duplicates the items, checks the project's backlog for matches, and recommends an outcome for each. Items with a final outcome leave the list. `finish-branch` offers triage before integrating. The spec's Out of scope section holds only what the feature excludes.
+
+> **Changed 2026-10-03:** from each skill drafting a follow-up and asking to file it where the project tracks work, to an open-items tracker that a triage skill works through. Why: follow-ups arise anywhere in the flow, and the first design had no place to hold them until they were filed (spec review findings 1-9). Approved by the partner in the spec review.
 
 ## Constraints
 
 Later steps copy these values exactly.
 
-- Shared paragraph, the same in the opening of `skills/brainstorm/SKILL.md`, `skills/write-plan/SKILL.md` and `skills/update-spec/SKILL.md`, placed after the commit paragraph:
+- Open-items file: `.dietpowers/trackers/open-items.md`. It follows `## Working directory` in `skills/adversarial-review/trackers.md` (gitignored, outside `.claude/`), and its format is a new `## Open items` section in that file.
+- Adding sentence, the same in every `SKILL.md`, after the question paragraph: "When you find something worth doing later that this work does not include, add it as an item to `.dietpowers/trackers/open-items.md`, following `## Open items` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`, and say so in one line." Adding asks nothing. In `skills/adversarial-review/SKILL.md` the trackers path is the skill's own `${CLAUDE_SKILL_DIR}/trackers.md`.
+- Item format:
 
-  > Record follow-ups, later work this piece of work does not include, where the project instructions or your memory say work is tracked. If neither says, ask once where follow-ups go, for example an issue tracker, a notes file or the spec's Out of scope section, and offer to save the answer to memory. Draft each follow-up as a title and a few lines on why, with its evidence, and ask before filing it; if your partner declines, list it in your report instead.
+  ```markdown
+  ### N. [open] <title>
+  - Found: YYYY-MM-DD, branch <branch>, <skill>
+  - Why: what to do later and why, with its evidence (paths, links, the spec commit that holds any designed text)
+  - Recommendation:
+  - Question:
+  - Decision:
+  ```
 
-- A follow-up is later work: a subsystem split off at a scope check, a suggested deep-research, or a new goal or feature found while changing a spec. Review findings marked `deferred` are not follow-ups; they stay in the review tracker and the PR description as today.
-- Brainstorm gathers its follow-ups and asks once whether to file them, before it commits the spec.
+  `N` counts up and is never reused. Statuses: `open` (not yet triaged) and `kept`.
+- Outcomes, one per item, recommended first in the triage question: `**file new**` (open a new item in the backlog), `**add to #N**` (comment on a matching backlog item, naming it), `**keep**` (stays in the file, status `kept`), `**drop**`. The question ends `Reply with <outcomes in bold>, or **pause**.`
+- An item leaves the file once its outcome is carried out: after the new backlog item or comment exists, or at once for `drop`. A `kept` item stays, and is offered again in the next triage.
+- Backlog location: from the project instructions or memory. If neither names one, triage asks once (for example GitHub issues, another tracker, or a notes file) and offers to save the answer to memory.
+- Skill name `triage-open-items`, at `skills/triage-open-items/SKILL.md`, invoked as `/dietpowers:triage-open-items`.
+- finish-branch question, asked before the integration question when the file has `open` items: "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke `dietpowers:triage-open-items`, which returns to finish-branch.
 
 ## Design
 
-### `skills/brainstorm/SKILL.md`
+### `skills/triage-open-items/SKILL.md` (new)
 
-- The shared paragraph after the commit paragraph.
-- Step 2: "split it: brainstorm only the first, and record the others as follow-ups, each to get its own spec later."
-- Step 4: "If the report suggests a deep-research, pass that on and record it as a follow-up."
-- Step 9: the section list reads "Out of scope" instead of "Out of scope, including follow-ups", and the step says to ask once whether to file the brainstorm's follow-ups before committing the spec.
+Anatomy as in AGENTS.md: title; a short opening on why triage matters; the shared question, commit and adding paragraphs; numbered steps; terminal state; `Depth:` line pointing at `../adversarial-review/trackers.md`.
 
-### `skills/write-plan/SKILL.md`
+1. Read `.dietpowers/trackers/open-items.md`. If it is missing or has no `open` or `kept` items, say so and stop.
+2. Find the backlog location. Read the backlog's open items: `gh issue list --state open` for GitHub issues; for another place, what the partner points to. If it cannot be read, say so; triage still runs, and `file new` and `add to #N` are not offered.
+3. Study the list. Group related items, and merge items that describe the same thing into one, keeping all their evidence. Show the groups and merges in one message. This needs no question.
+4. For each item, compare it with the backlog for duplicates and close matches, and write the Recommendation into the item: the outcome with a one-line reason, and for `file new` or `add to #N`, the draft title and body or comment.
+5. Ask about one item at a time, in the order of the groups, recording each Question before asking it. The partner may edit the draft in the reply.
+6. Carry out each answer before the next question. Remove the item from the file once its outcome is done. If filing or commenting fails, leave the item `open`, record the error under Decision, and say so.
+7. Report: what was filed (with links), added to, kept and dropped.
 
-- The shared paragraph after the commit paragraph.
-- Step 1: "invoke the `dietpowers:update-spec` skill to move all but one out of the spec and record them as follow-ups, then plan the one that remains."
+Terminal state: if `dietpowers:finish-branch` invoked you, return to it; otherwise stop.
 
-### `skills/update-spec/SKILL.md`
+Pause and resume follow `## Replies` and `## Resuming` in `trackers.md`. Resuming an open-items triage starts at step 5 with the first item that has a Question recorded and no Decision.
 
-- The shared paragraph after the commit paragraph.
-- Step 2: "ask your partner whether to record it as a follow-up and carry on (recommended), or to pause the current work and start it now with the `dietpowers:brainstorm` skill."
+### `skills/adversarial-review/trackers.md`
+
+- New `## Open items` section: the file path, the item format, the statuses, the removal rule and the outcomes, as in Constraints.
+- `## Resuming` step 2 adds that `triage-open-items` resumes `open-items.md`.
+
+### Every `SKILL.md`
+
+The adding sentence from Constraints, after the question paragraph.
+
+### Places that record follow-ups today
+
+- `skills/brainstorm/SKILL.md` step 2: "split it: brainstorm only the first, and add each of the others as an open item, to get its own spec later."
+- Step 4: "If the report suggests a deep-research, pass that on and add it as an open item."
+- Step 9: the section list reads "Out of scope" instead of "Out of scope, including follow-ups".
+- `skills/write-plan/SKILL.md` step 1: "invoke the `dietpowers:update-spec` skill to remove all but one from the spec and add each of the others as an open item, with the spec commit that holds its design, then plan the one that remains."
+- `skills/update-spec/SKILL.md` step 2: "ask your partner whether to add it as an open item and carry on (recommended), or to pause the current work and start it now with the `dietpowers:brainstorm` skill."
+
+### `skills/finish-branch/SKILL.md`
+
+Before the integration question in step 4, the triage question from Constraints.
 
 ### Docs and tests
 
-- `README.md`: line 114 (brainstorm: "lists the other parts as follow-ups in the spec's Out of scope section"), line 130 (write-plan: "moves all but one to follow-ups") and line 176 (update-spec: "record it as a follow-up") say follow-ups are recorded where the project tracks work, asking once if nothing says. The "What changed in each skill" intro paragraph gains one sentence on the shared paragraph.
-- `tests/skills/check-skills.sh`: asserts that each of the three skills contains `where the project instructions or your memory say work is tracked`, and that no file under `skills/` contains `in the spec's Out of scope section as follow-ups`, `Out of scope, including follow-ups`, `list it in the spec's Out of scope as a follow-up` or `as a follow-up in the spec's Out of scope section`.
-- `docs/testing.md`: the manual trial in Success criterion 2, and the structural gate list names the follow-up paragraph.
+- `tests/skills/check-skills.sh`:
+  - the expected skill set adds `triage-open-items`;
+  - every `SKILL.md` contains `.dietpowers/trackers/open-items.md`;
+  - `trackers.md` contains `## Open items`, `**file new**`, `**add to #N**`, `**keep**` and `**drop**`;
+  - `skills/finish-branch/SKILL.md` contains `dietpowers:triage-open-items` and `Triage them now?`;
+  - no file under `skills/` contains `in the spec's Out of scope section as follow-ups`, `Out of scope, including follow-ups`, `list it in the spec's Out of scope as a follow-up`, `as a follow-up in the spec's Out of scope section` or `to Out of scope as follow-ups`.
+- `AGENTS.md`: "10 skills" becomes "11 skills".
+- `README.md`:
+  - the flow diagram gains a `triage-open-items` line;
+  - "How dietpowers differs" gains a bullet on open items;
+  - "What changed in each skill" gains a `triage-open-items` entry and the sentence on adding open items in its intro;
+  - the brainstorm, write-plan and update-spec bullets that mention follow-ups in Out of scope (lines 114, 130, 176) say open items;
+  - the finish-branch bullets mention the triage question.
+- `docs/testing.md`: "exactly the ten expected skills" becomes eleven; the gate list names open items; the manual trial in Success criterion 2.
 
 ## Inputs and failure behavior
 
-- **Nothing names a place**: ask once, offering examples; offer to save the answer to memory. Without auto memory the question repeats each session; a line in `CLAUDE.md` fixes that for everyone on the project.
-- **The named place is an issue tracker that cannot be reached** (no `gh`, no remote, not signed in): say so, and list the drafts in the report for the partner to file.
-- **The partner declines a draft**: list it in the report only.
-- **The answer is "the spec's Out of scope"**: follow-ups go there, as today.
+- **The file cannot be written** (the same cases as a tracker: not writable, not a git work tree, detached HEAD): say the item in one line in the conversation instead.
+- **The backlog cannot be read** (no `gh`, not signed in, no remote): triage offers only `keep` and `drop`, and says why.
+- **Filing or commenting fails**: the item stays `open`, with the error under Decision.
+- **The partner names a notes file as the backlog**: `file new` appends the draft to it; the file is committed only if it is tracked and the partner agrees.
+- **Several worktrees**: each has its own `open-items.md` at its root; triage works on the current one.
+- **A triage paused partway**: the file holds the recorded Question; resuming asks it again.
 
 ## Success criteria
 
 1. `bash tests/skills/check-skills.sh` exits 0 and asserts the strings in Docs and tests, present and absent.
-2. Manual trial: in a project whose instructions and memory name no place for follow-ups, run brainstorm on a request with two independent parts. At the scope check it records the second part as a follow-up; before committing the spec it asks where follow-ups go and offers to remember the answer, then shows a draft and asks before filing it. In a project whose memory names GitHub issues, it shows the draft and files an issue only after the partner agrees.
+2. Manual trial:
+   - During brainstorm on a request with two independent parts, the second part is added to `open-items.md` with a one-line notice and no question.
+   - `/dietpowers:triage-open-items` with three items, two of them about the same thing, merges those two.
+   - With a GitHub backlog holding a close match, it recommends `add to #N` for that item.
+   - After answers of `file new`, `keep` and `drop`, only the kept item remains in the file, and the new issue exists.
+   - At `finish-branch` with an open item, the triage question comes before the integration question.
 3. `docs/testing.md` describes trial 2.
 
 ## Assumptions
 
-- Claude Code loads `CLAUDE.md`, `AGENTS.md` and the memory index into every session, so the skill needs no step to look them up.
-- Other skills that mention open items (`execute-plan` step 8, `finish-branch`'s "anything left open", `adversarial-review`'s deferred findings) stay as they are.
+- Claude Code loads `CLAUDE.md`, `AGENTS.md` and the memory index into every session, so the backlog location needs no lookup step.
+- Review findings marked `deferred` stay in the review tracker and the PR description; a skill adds one as an open item only when the partner asks.
+- `gh issue list` and `gh issue create`/`gh issue comment` are the GitHub commands; another backlog is handled through what the partner points to.
 
 ## References
 
-- `skills/brainstorm/SKILL.md` steps 2, 4 and 9; `skills/write-plan/SKILL.md` step 1; `skills/update-spec/SKILL.md` step 2: the five places that record follow-ups in the spec's Out of scope today.
-- The commit paragraph shared by the same skills: the pattern the follow-up paragraph copies (same text in each opening).
-- `README.md` lines 114, 130, 176.
+- `skills/adversarial-review/trackers.md`: `## Working directory` (gitignored `.dietpowers/`), `## Replies` (`pause`), `## Resuming`.
+- The current follow-up text: `skills/brainstorm/SKILL.md` steps 2, 4, 9; `skills/write-plan/SKILL.md` step 1; `skills/update-spec/SKILL.md` step 2; `README.md` lines 114, 130, 176.
+- `tests/skills/check-skills.sh` lines 14-26: the expected skill set.
+- `AGENTS.md` skill anatomy, and the rule that a skill's description says what it produces and when to use it.
 
 ## Out of scope
 
-- Filing review findings marked `deferred` as follow-ups.
-- Changes to `execute-plan`, `finish-branch` and `adversarial-review`.
+- Filing review findings marked `deferred` automatically.
+- Sharing one open-items file across worktrees.
