@@ -14,7 +14,7 @@ DELETED="using-superpowers using-git-worktrees subagent-driven-development dispa
 EXPECTED=$(printf '%s\n' \
   adversarial-review brainstorm execute-plan finish-branch \
   handle-feedback find-root-cause \
-  tdd prove-done update-spec write-plan \
+  tdd prove-done update-spec write-plan triage-open-items \
   | sort | tr '\n' ' ')
 # -not -name '.*' — local tooling leaves untracked dirs like skills/.claude behind,
 # and the "$SKILLS_DIR"/*/ glob below already skips them.
@@ -163,6 +163,44 @@ grep -qE "Reply with \*\*[0-9]" "$SKILLS_DIR"/*/SKILL.md && fail "a question sti
 for f in "$SKILLS_DIR"/*/SKILL.md; do
   grep -qF "say in one line what you are about to do" "$f" || fail "$f: no progress line before long work"
 done
+
+# Open items: every skill queues later work in one tracker; follow-ups no longer go in the spec's Out of scope.
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+  grep -qF ".dietpowers/trackers/open-items.md" "$f" || fail "$f: no open-items sentence"
+done
+for want in "## Open items" "Next: N" "**file new**" "**add to #N**" "**keep**" "**drop**"; do
+  grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
+done
+for gone in "in the spec's Out of scope section as follow-ups" "Out of scope, including follow-ups" \
+  "list it in the spec's Out of scope as a follow-up" "as a follow-up in the spec's Out of scope section" "to Out of scope as follow-ups"; do
+  if grep -rqF "$gone" "$SKILLS_DIR"; then
+    fail "old follow-up text still present: '$gone'"
+  fi
+done
+
+# Triage: finish-branch offers it, and a paused triage can be resumed.
+for want in "dietpowers:triage-open-items" "Triage them now?"; do
+  grep -qF "$want" "$F" || fail "finish-branch: missing '$want'"
+done
+grep -qF "Question and no Decision" "$T" || fail "trackers.md: no resume rule for open items"
+
+# Review: a deferred finding is added to open items or left in the tracker, by the partner's answer.
+for want in "**add to open items**" "**leave here**" "only through the **add to open items** answer"; do
+  grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
+done
+grep -qF "recommend defer unless it is a blocker" "$R" && fail "review SKILL.md: old defer recommendation"
+
+# Code review fixes for open items: triage after replies on the feedback path; resume edges; README wording.
+grep -qF "Triage them now?" "$SKILLS_DIR/handle-feedback/SKILL.md" || fail "handle-feedback: no triage question after the replies"
+grep -qF "unless the \`dietpowers:handle-feedback\` skill invoked you" "$F" || fail "finish-branch: triage question not skipped on the feedback path"
+grep -qF "listing **add to open items** and **leave here** first" "$R" || fail "review SKILL.md: out-of-scope findings lose step 5's options"
+for want in "there is no paused triage" "failed filing"; do
+  grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
+done
+grep -qF "in group order" "$SKILLS_DIR/triage-open-items/SKILL.md" || fail "triage-open-items: groups not written to the file"
+grep -qF "and open items" README.md && fail "README.md: 'open items' used for anything left open"
+
+grep -qF "for a blocker, recommend fixing and list fix first" "$R" || fail "review SKILL.md: out-of-scope blocker not recommended first"
 
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"

@@ -18,12 +18,12 @@ bash tests/skills/check-skills.sh
 
 The script checks that:
 
-- the skill set is exactly the ten expected skills;
+- the skill set is exactly the eleven expected skills;
 - each `SKILL.md` has frontmatter with the keys `name` and `description`, and optionally `argument-hint`, and the frontmatter
   is under 1024 characters;
 - no `@`-link force-loads another skill (an `@` path makes Claude Code load that file at once);
 - no file under `skills/` references a renamed or deleted skill;
-- the text the flow depends on is present, and replaced text is gone: plain-text questions ending in `Reply with`, the commit rules for code and for the spec and plan, `trackers.md` and the pointers to it, the reviewers' severity lines and fix-check sections, the brainstorm research step and `researcher.md`, and the README's descriptions of these.
+- the text the flow depends on is present, and replaced text is gone: plain-text questions ending in `Reply with`, the commit rules for code and for the spec and plan, `trackers.md` and the pointers to it, the reviewers' severity lines and fix-check sections, the brainstorm research step and `researcher.md`, the open-items sentence in every skill and the `## Open items` format in `trackers.md`, and the README's descriptions of these.
 
 It exits 0, or prints one `FAIL:` line per violation.
 
@@ -76,9 +76,18 @@ start implementing immediately").
 The other prompts in `prompts/` can be run one at a time with `run-test.sh <skill> <prompt-file>`.
 `run-multiturn-test.sh` and `run-extended-multiturn-test.sh` carry their own prompts.
 
-## Manual trials of pause and resume
+## Manual trials
 
-To test resuming a paused review or brainstorm, pause in one session, then say `resume` in a new session, so the skill has to work from the tracker file alone. Over ACP there is no `/clear`; open a new session instead. Afterwards, `git check-ignore -v .dietpowers/trackers/<tracker>` should name `.dietpowers/.gitignore`.
+To test resuming a paused review, brainstorm or triage, pause in one session, then say `resume` in a new session, so the skill has to work from the tracker file alone. Over ACP there is no `/clear`; open a new session instead. Afterwards, `git check-ignore -v .dietpowers/trackers/<tracker>` should name `.dietpowers/.gitignore`.
+
+To test open items and triage:
+
+- During brainstorm on a request with two independent parts, the second part should be added to `.dietpowers/trackers/open-items.md` with a one-line notice and no question.
+- `/dietpowers:triage-open-items` with three items, two of them about the same thing, should merge those two.
+- With a GitHub backlog holding a close match, it should recommend **add to #N** for that item.
+- After answers of **file new**, **keep** and **drop**, only the kept item should remain in the file, and the new issue should exist.
+- At `finish-branch` with an open item, the triage question should come before the integration question.
+- On the PR-feedback path, `handle-feedback` should ask the triage question after posting its replies, and `finish-branch` should not ask it.
 
 ## Reading behavioral results
 
