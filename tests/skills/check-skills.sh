@@ -184,6 +184,12 @@ for want in "dietpowers:triage-open-items" "Triage them now?"; do
 done
 grep -qF "Question and no Decision" "$T" || fail "trackers.md: no resume rule for open items"
 
+# Review: a deferred finding is added to open items or left in the tracker, by the partner's answer.
+for want in "**add to open items**" "**leave here**" "only through the **add to open items** answer"; do
+  grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
+done
+grep -qF "recommend defer unless it is a blocker" "$R" && fail "review SKILL.md: old defer recommendation"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

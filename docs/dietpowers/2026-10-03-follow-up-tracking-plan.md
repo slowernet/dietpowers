@@ -124,7 +124,7 @@ Command: `bash tests/skills/check-skills.sh`
 
 Departure: the triage question sits at the start of finish-branch step 4, so it precedes both the menu and the open-PR push with one sentence. `docs/testing.md`'s "Manual trials of pause and resume" heading became "Manual trials" (nothing links to it).
 
-### - [ ] Task 3: Review deferrals can join the queue
+### - [x] Task 3: Review deferrals can join the queue
 
 **Files**
 - Modify `skills/adversarial-review/SKILL.md` (steps 5 and 7).
