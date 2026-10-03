@@ -100,12 +100,12 @@ Global Constraints; the spec's Design section `skills/triage-open-items/SKILL.md
   - Title and a short opening on why triage matters (later work found mid-flow is kept, matched against the backlog, and decided one item at a time).
   - The question paragraph copied verbatim from `skills/update-spec/SKILL.md`, then the adding sentence, then a commit sentence: triage commits nothing; a notes-file backlog edit is left on disk, and triage says so.
   - A sentence pointing to `## Open items`, `## Replies` and `## Resuming` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`.
-  - Steps 0 (resume, as in the other skills) and 1-7 as in the spec's Design, including the outcome question's ending from Global Constraints. Step 6 records an item's Decision only after its outcome succeeds; on failure the item keeps an empty Decision and Question, with the error under Recommendation.
-  - If finish-branch invoked triage and the partner replies `pause`, triage also says that `/dietpowers:finish-branch` must be run again to integrate.
+  - Steps 0 (resume, as in the other skills) and 1-7 as in the spec's Design, including the outcome question's ending from Global Constraints. Step 6 records an item's Decision only after its outcome succeeds; on failure it clears the item's Decision and Question, with the error under Recommendation.
+  - If finish-branch invoked triage and the partner replies `pause`, triage also says to resume the triage first and then run `/dietpowers:finish-branch` again to integrate.
   - Terminal state: "if the `dietpowers:finish-branch` skill invoked you, return to it; otherwise stop."
   - `Depth: ../adversarial-review/trackers.md`.
 - `trackers.md`:
-  - `## Replies` first sentence includes triage's item questions among those that offer `pause`.
+  - `## Replies` first sentence includes triage's item questions among those that offer `pause`, and the bullet on answers adds that triage records the Decision only after the outcome succeeds.
   - `## Resuming` gains an open-items case: `triage-open-items` resumes `.dietpowers/trackers/open-items.md`; no `Branch:` lookup; the file is unfinished while an item has a Question and no Decision; resume at that item with the lead-in, one line of the item's Why (in place of a Finding), and its recorded Question. Then triage re-reads the backlog as in its step 2, skips its steps 3 and 4, and carries on at step 5 with the items that have a Recommendation and no Decision. Step 2's list of own stages adds it.
 - `finish-branch` step 4: before the integration question, and on the open-PR path before the push, if the open-items file has `open` items, ask "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke the `dietpowers:triage-open-items` skill, then continue.
 - `check-skills.sh`: the expected skill set adds `triage-open-items`; `skills/finish-branch/SKILL.md` contains `dietpowers:triage-open-items` and `Triage them now?`; `trackers.md` contains `Question and no Decision`.
