@@ -4,7 +4,7 @@ Source: issue [#24](https://github.com/slowernet/dietpowers/issues/24) and the b
 
 ## Goal
 
-Things worth doing later turn up at any point in the flow: a subsystem split off at a scope check, a suggested deep-research, an idea while building, a problem a reviewer notices outside the change. Today the skills put some of them in the spec's Out of scope section, which mixes later work into the spec, and the rest are lost when the session ends. Where later work belongs (an issue tracker, a notes file) varies by person and project.
+Things worth doing later turn up at any point in the flow: a subsystem split off at a scope check, a suggested deep-research, an idea while building, a review finding the partner defers. Today the skills put some of them in the spec's Out of scope section, which mixes later work into the spec, and the rest are lost when the session ends. Where later work belongs (an issue tracker, a notes file) varies by person and project.
 
 Every skill instead adds such an item to one open-items tracker, without asking. A new skill, `dietpowers:triage-open-items`, works through that list with the partner: it groups and de-duplicates the items, checks the project's backlog for matches, and recommends an outcome for each. Items with a final outcome leave the list. `finish-branch` offers triage before integrating. The spec's Out of scope section holds only what the feature excludes.
 
@@ -27,12 +27,14 @@ Later steps copy these values exactly.
   - Decision:
   ```
 
-  `N` counts up and is never reused. Statuses: `open` (not yet triaged) and `kept`.
+  The file's first line after its title is `Next: N`, the number the next added item takes; each add uses it and increments it, so numbers are never reused. A merged item keeps the lowest of its numbers. Statuses: `open` (not yet triaged) and `kept`.
 - Outcomes, one per item, recommended first in the triage question: `**file new**` (open a new item in the backlog), `**add to #N**` (comment on a matching backlog item, naming it), `**keep**` (stays in the file, status `kept`), `**drop**`. The question ends `Reply with <outcomes in bold>, or **pause**.`
 - An item leaves the file once its outcome is carried out: after the new backlog item or comment exists, or at once for `drop`. A `kept` item stays, and is offered again in the next triage.
+- For a notes-file backlog, `add to #N` is not offered.
 - Backlog location: from the project instructions or memory. If neither names one, triage asks once (for example GitHub issues, another tracker, or a notes file) and offers to save the answer to memory.
+- Deferring a review finding: adversarial-review's finding question offers `**defer to open items**` (the finding is added as an open item and stays `deferred` in the review tracker) and `**defer here**` (it stays only in the review tracker and the PR description) in place of a single defer.
 - Skill name `triage-open-items`, at `skills/triage-open-items/SKILL.md`, invoked as `/dietpowers:triage-open-items`.
-- finish-branch question, asked before the integration question when the file has `open` items: "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke `dietpowers:triage-open-items`, which returns to finish-branch.
+- finish-branch question, asked when the file has `open` items, before the integration question, or before the push when the branch already has an open pull request: "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke `dietpowers:triage-open-items`, which returns to finish-branch.
 
 ## Design
 
@@ -43,19 +45,20 @@ Anatomy as in AGENTS.md: title; a short opening on why triage matters; the share
 1. Read `.dietpowers/trackers/open-items.md`. If it is missing or has no `open` or `kept` items, say so and stop.
 2. Find the backlog location. Read the backlog's open items: `gh issue list --state open` for GitHub issues; for another place, what the partner points to. If it cannot be read, say so; triage still runs, and `file new` and `add to #N` are not offered.
 3. Study the list. Group related items, and merge items that describe the same thing into one, keeping all their evidence. Show the groups and merges in one message. This needs no question.
-4. For each item, compare it with the backlog for duplicates and close matches, and write the Recommendation into the item: the outcome with a one-line reason, and for `file new` or `add to #N`, the draft title and body or comment.
+4. Clear the Recommendation, Question and Decision of every item. Then, for each item, compare it with the backlog for duplicates and close matches, and write the Recommendation into the item: the outcome with a one-line reason, and for `file new` or `add to #N`, the draft title and body or comment.
 5. Ask about one item at a time, in the order of the groups, recording each Question before asking it. The partner may edit the draft in the reply.
-6. Carry out each answer before the next question. Remove the item from the file once its outcome is done. If filing or commenting fails, leave the item `open`, record the error under Decision, and say so.
+6. Carry out each answer before the next question. Remove the item from the file once its outcome is done. If filing or commenting fails, leave the item `open`, record the error under Recommendation with Decision empty, and say so.
 7. Report: what was filed (with links), added to, kept and dropped.
 
 Terminal state: if `dietpowers:finish-branch` invoked you, return to it; otherwise stop.
 
-Pause and resume follow `## Replies` and `## Resuming` in `trackers.md`. Resuming an open-items triage starts at step 5 with the first item that has a Question recorded and no Decision.
+Pause and resume follow `## Replies` and `## Resuming` in `trackers.md`. The skill's description says it also resumes a paused triage.
 
 ### `skills/adversarial-review/trackers.md`
 
 - New `## Open items` section: the file path, the item format, the statuses, the removal rule and the outcomes, as in Constraints.
-- `## Resuming` step 2 adds that `triage-open-items` resumes `open-items.md`.
+- `## Replies`: triage's item questions offer `pause`, like brainstorm's and review's.
+- `## Resuming` gains an open-items case: `triage-open-items` resumes `open-items.md`; it needs no `Branch:` lookup; the file is unfinished while an item has a Question and no Decision; resuming starts at that item with the usual lead-in and its recorded Question.
 
 ### Every `SKILL.md`
 
@@ -66,12 +69,16 @@ The adding sentence from Constraints, after the question paragraph.
 - `skills/brainstorm/SKILL.md` step 2: "split it: brainstorm only the first, and add each of the others as an open item, to get its own spec later."
 - Step 4: "If the report suggests a deep-research, pass that on and add it as an open item."
 - Step 9: the section list reads "Out of scope" instead of "Out of scope, including follow-ups".
-- `skills/write-plan/SKILL.md` step 1: "invoke the `dietpowers:update-spec` skill to remove all but one from the spec and add each of the others as an open item, with the spec commit that holds its design, then plan the one that remains."
+- `skills/write-plan/SKILL.md` step 1: "invoke the `dietpowers:update-spec` skill to remove all but one from the spec and add each of the others as an open item whose Why holds its removed sections word for word, then plan the one that remains."
 - `skills/update-spec/SKILL.md` step 2: "ask your partner whether to add it as an open item and carry on (recommended), or to pause the current work and start it now with the `dietpowers:brainstorm` skill."
 
 ### `skills/finish-branch/SKILL.md`
 
-Before the integration question in step 4, the triage question from Constraints.
+In step 4, the triage question from Constraints: before the integration question, or before the push when a pull request is already open.
+
+### `skills/adversarial-review/SKILL.md`
+
+Step 5's options for a finding replace defer with **defer to open items** and **defer here**, as in Constraints.
 
 ### Docs and tests
 
@@ -80,6 +87,8 @@ Before the integration question in step 4, the triage question from Constraints.
   - every `SKILL.md` contains `.dietpowers/trackers/open-items.md`;
   - `trackers.md` contains `## Open items`, `**file new**`, `**add to #N**`, `**keep**` and `**drop**`;
   - `skills/finish-branch/SKILL.md` contains `dietpowers:triage-open-items` and `Triage them now?`;
+  - `skills/adversarial-review/SKILL.md` contains `**defer to open items**` and `**defer here**`;
+  - `trackers.md` contains `Next: N`;
   - no file under `skills/` contains `in the spec's Out of scope section as follow-ups`, `Out of scope, including follow-ups`, `list it in the spec's Out of scope as a follow-up`, `as a follow-up in the spec's Out of scope section` or `to Out of scope as follow-ups`.
 - `AGENTS.md`: "10 skills" becomes "11 skills".
 - `README.md`:
@@ -96,7 +105,7 @@ Before the integration question in step 4, the triage question from Constraints.
 - **The backlog cannot be read** (no `gh`, not signed in, no remote): triage offers only `keep` and `drop`, and says why.
 - **Filing or commenting fails**: the item stays `open`, with the error under Decision.
 - **The partner names a notes file as the backlog**: `file new` appends the draft to it; the file is committed only if it is tracked and the partner agrees.
-- **Several worktrees**: each has its own `open-items.md` at its root; triage works on the current one.
+- **Several worktrees**: each has its own `open-items.md` at its root; triage works on the current one. Removing a linked worktree loses its file; that is issue [#25](https://github.com/slowernet/dietpowers/issues/25).
 - **A triage paused partway**: the file holds the recorded Question; resuming asks it again.
 
 ## Success criteria
@@ -113,7 +122,6 @@ Before the integration question in step 4, the triage question from Constraints.
 ## Assumptions
 
 - Claude Code loads `CLAUDE.md`, `AGENTS.md` and the memory index into every session, so the backlog location needs no lookup step.
-- Review findings marked `deferred` stay in the review tracker and the PR description; a skill adds one as an open item only when the partner asks.
 - `gh issue list` and `gh issue create`/`gh issue comment` are the GitHub commands; another backlog is handled through what the partner points to.
 
 ## References
@@ -125,5 +133,6 @@ Before the integration question in step 4, the triage question from Constraints.
 
 ## Out of scope
 
-- Filing review findings marked `deferred` automatically.
-- Sharing one open-items file across worktrees.
+- Sharing one open-items file across worktrees, and keeping it when a linked worktree is removed (#25).
+
+> **Changed 2026-10-03 (spec review):** a `Next:` counter; deferred findings offer **defer to open items** or **defer here**; removed design text is carried in the item; an open-items case in Resuming and Replies; a fresh triage clears old fields; the triage question also on the existing-PR path; `add to #N` not offered for a notes file. Approved by the partner in the spec review.
