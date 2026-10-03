@@ -30,7 +30,7 @@ Commits: approved
 - Backlog location: from the project instructions or memory. If neither names one, triage asks once (for example GitHub issues, another tracker, or a notes file) and offers to save the answer to memory.
 - Deferring a review finding: adversarial-review's finding question offers `**add to open items**` (the finding is added as an open item and stays `deferred` in the review tracker) and `**leave here**` (it stays only in the review tracker and the PR description) in place of a single defer.
 - Skill name `triage-open-items`, at `skills/triage-open-items/SKILL.md`, invoked as `/dietpowers:triage-open-items`.
-- finish-branch question, asked when the file has `open` items, before the integration question, or before the push when the branch already has an open pull request, unless `dietpowers:handle-feedback` invoked finish-branch; handle-feedback then asks the same question after posting its replies: "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke `dietpowers:triage-open-items`, which returns to finish-branch.
+- finish-branch question, asked when the file has `open` items, before the integration question, or before the push when the branch already has an open pull request, unless `dietpowers:handle-feedback` invoked finish-branch; handle-feedback then asks the same question after posting its replies: "There are <N> open items. Triage them now? Reply with **triage** or **later**." On `triage`, invoke `dietpowers:triage-open-items`, which returns to finish-branch when finish-branch invoked it, and otherwise stops.
 
 ## References
 

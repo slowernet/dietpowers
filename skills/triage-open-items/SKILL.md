@@ -1,6 +1,6 @@
 ---
 name: triage-open-items
-description: Works through the open-items list with you, matching each item against your backlog, and files, keeps or drops it with your approval. Use when open items have piled up, when finish-branch offers triage, or to resume a paused triage.
+description: Works through the open-items list with you, matching each item against your backlog, and files, keeps or drops it with your approval. Use when open items have piled up, when finish-branch or handle-feedback offers triage, or to resume a paused triage.
 ---
 
 # Triage Open Items

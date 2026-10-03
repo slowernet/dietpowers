@@ -200,6 +200,8 @@ done
 grep -qF "in group order" "$SKILLS_DIR/triage-open-items/SKILL.md" || fail "triage-open-items: groups not written to the file"
 grep -qF "and open items" README.md && fail "README.md: 'open items' used for anything left open"
 
+grep -qF "for a blocker, recommend fixing and list fix first" "$R" || fail "review SKILL.md: out-of-scope blocker not recommended first"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"
