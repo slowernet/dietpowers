@@ -42,7 +42,9 @@ Later steps copy these values exactly.
 - **`skills/adversarial-review/SKILL.md`**:
   - Step 5 begins with the pointer, so it covers both the judgement that a minor finding has one reasonable fix and the options put to the partner. Step 7 handles second-pass findings as in step 5, so the pointer covers them too.
   - Step 7 loses its out-of-scope sentence.
-  - The `Depth:` line stays `Depth: trackers.md`, since the pointer names the shared file in full.
+  - The `Depth:` line names both shared files: `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md`, as AGENTS.md's rule says.
+
+    > **Changed 2026-10-04 (code review):** from "stays `Depth: trackers.md`" to naming both shared files. Why: the trackers.md move changed the line, and AGENTS.md's new rule lists shared files on it (code review findings 1 and 2). Approved under the review's notice rule.
 - **`tests/skills/check-skills.sh`**:
   - asserts that `shared/making-recommendations.md` exists and contains `Recommend the clearest correct option`;
   - asserts that the line of `skills/adversarial-review/SKILL.md` starting `5.` contains `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md`, and that no line starting `6.` does;

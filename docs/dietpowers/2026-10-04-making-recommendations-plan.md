@@ -53,7 +53,7 @@ Global Constraints; References.
 
 **Behavior**
 - `shared/making-recommendations.md` contains exactly the file content in Global Constraints.
-- `skills/adversarial-review/SKILL.md` step 5's first line becomes "5. Decide which findings go to your partner. First read `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` and follow it; if it cannot be read, say so once and carry on." No other step contains the path. The `Depth:` line stays `Depth: trackers.md`.
+- `skills/adversarial-review/SKILL.md` step 5's first line becomes "5. Decide which findings go to your partner. First read `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` and follow it; if it cannot be read, say so once and carry on." No other step contains the path. The `Depth:` line stays `Depth: trackers.md` (superseded by Task 2 and the code review: it names both shared files).
 - Step 7's sentence becomes exactly the wording in Global Constraints; the rest of step 7 is unchanged.
 - `check-skills.sh`:
   - adds: `shared/making-recommendations.md` exists and contains `Recommend the clearest correct option`;

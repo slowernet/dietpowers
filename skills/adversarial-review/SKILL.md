@@ -36,4 +36,4 @@ Terminal state: the review is done when no blocker or major item is `open` or `f
 
 If your partner chooses to revise, make the changes and run this skill again on the revised work, as a new run with a new tracker. If they choose to stop, report what is on disk and what is uncommitted, and stop.
 
-Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md
+Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md

@@ -97,7 +97,7 @@ grep -qF "git diff [FIX_BASE] HEAD" "$SKILLS_DIR/adversarial-review/code-reviewe
 
 # Review: tracker, pause, fix check; no Review notes append or old consultation rule.
 R="$SKILLS_DIR/adversarial-review/SKILL.md"
-for want in ", or **pause**." "## Tracker format" 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md' "Second pass" "if it has none"; do
+for want in ", or **pause**." "## Tracker format" 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' "Second pass" "if it has none"; do
   grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
 done
 grep -rqF "Review notes" "$SKILLS_DIR" && fail "a skill still appends Review notes"
