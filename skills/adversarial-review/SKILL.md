@@ -10,13 +10,13 @@ A reviewer that has not seen this conversation judges the work itself, not the r
 
 Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, recommended first, each with a short bold label in words (never numbers or letters) and a one-line reason. End with a line naming those labels in the same order, such as `Reply with **new PR**, **straight to main**, or **drop it**.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it. Before a stretch of work that takes more than a moment, such as dispatching a reviewer, writing a spec or plan, or fixing findings, say in one line what you are about to do; after your partner answers, say what comes next before starting it.
 
-When you find something worth doing later that this work does not include, add it as an item to `.dietpowers/trackers/open-items.md`, following `## Open items` in `${CLAUDE_SKILL_DIR}/trackers.md`, and say so in one line.
+When you find something worth doing later that this work does not include, add it as an item to `.dietpowers/trackers/open-items.md`, following `## Open items` in `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`, and say so in one line.
 
 Commits follow two rules. Fixes in a code review follow the code-step rule: commit on the feature branch as you go; if you are on `main`, `master` or the plan's `Base:` branch, first ask once: "I'll create branch `<name>` for this work. Reply with **yes** or **no**.", and do no code work until a branch is agreed. Fixes in a spec or plan review follow the document rule: check the plan's `Commits:` line or your partner's earlier answer, and if neither settles it, ask once: "I'll work on branch `<name>`. May I commit the spec and plan to it as we go? Nothing is pushed or merged without asking. Reply with **yes** or **no**." Whatever the answer, move the work to that branch; never commit to `main` or `master`. If your partner declines, leave spec and plan edits on disk; the `dietpowers:finish-branch` skill proposes those commits at the end.
 
-Record the review in a tracker, following `## Working directory` and `## Tracker format` in `${CLAUDE_SKILL_DIR}/trackers.md`; replies to your questions follow its `## Replies`.
+Record the review in a tracker, following `## Working directory` and `## Tracker format` in `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`; replies to your questions follow its `## Replies`.
 
-0. If your partner asked to resume, follow `## Resuming` in `${CLAUDE_SKILL_DIR}/trackers.md`, then carry on from the step it leads to.
+0. If your partner asked to resume, follow `## Resuming` in `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`, then carry on from the step it leads to.
 1. Pick the prompt file for the target from this skill's directory, `${CLAUDE_SKILL_DIR}`: `spec-reviewer.md` for a spec (needs `SPEC_FILE_PATH`), `plan-reviewer.md` for a plan (`PLAN_FILE_PATH`, `SPEC_FILE_PATH`), `code-reviewer.md` for code (`SPEC_AND_PLAN_PATHS` or a one-paragraph `REQUIREMENTS`, and `BASE_SHA=$(git merge-base HEAD <base>)`, with `<base>` from the plan's `Base:` line, or ask). Do not read the prompt file yourself. The reviewer grades each finding.
 2. Save all work to disk, and commit it: code always, a spec or plan if commits are approved. The reviewer reads the files on disk and git history, never this conversation.
 3. Dispatch a `general-purpose` subagent whose whole prompt is: "Read `${CLAUDE_SKILL_DIR}/<prompt file>` and follow it," then the placeholder values. Run it on the same model as this session, and wait for its report before doing anything else. Send nothing else: never your session history, never a pasted diff.
@@ -36,4 +36,4 @@ Terminal state: the review is done when no blocker or major item is `open` or `f
 
 If your partner chooses to revise, make the changes and run this skill again on the revised work, as a new run with a new tracker. If they choose to stop, report what is on disk and what is uncommitted, and stop.
 
-Depth: trackers.md
+Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md

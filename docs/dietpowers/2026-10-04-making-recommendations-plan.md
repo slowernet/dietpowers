@@ -74,7 +74,7 @@ Global Constraints; References.
 
 Command: `bash tests/skills/check-skills.sh`
 
-### - [ ] Task 2: Move trackers.md to shared/ and adopt the convention
+### - [x] Task 2: Move trackers.md to shared/ and adopt the convention
 
 > **Changed 2026-10-04:** task added with the spec change folding in the `trackers.md` move; see the note under the spec's Constraints.
 

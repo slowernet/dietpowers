@@ -75,14 +75,14 @@ grep -qF "even though the code change is committed" "$SKILLS_DIR/update-spec/SKI
   || fail "update-spec: no held-back rule for spec edits beside committed code"
 
 # Shared tracker file for review and brainstorm.
-T="$SKILLS_DIR/adversarial-review/trackers.md"
+T="shared/trackers.md"
 if [ -f "$T" ]; then
   for want in ".gitignore" "Resuming" "Paused at item <N>" "earliest unfinished brainstorm step" "Resuming <tracker file> at item <N>" "one line of the item's Finding" "nothing inserted" \
     "## Working directory" "## Tracker format" "## Replies" "## Resuming" "### N. [open|answered]"; do
     grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
   done
 else
-  fail "skills/adversarial-review/trackers.md missing"
+  fail "shared/trackers.md missing"
 fi
 
 # Reviewer prompts: severity grades, a fix check with an Out of scope section, no old re-review mode.
@@ -97,7 +97,7 @@ grep -qF "git diff [FIX_BASE] HEAD" "$SKILLS_DIR/adversarial-review/code-reviewe
 
 # Review: tracker, pause, fix check; no Review notes append or old consultation rule.
 R="$SKILLS_DIR/adversarial-review/SKILL.md"
-for want in ", or **pause**." "## Tracker format" "Depth: trackers.md" "Second pass" "if it has none"; do
+for want in ", or **pause**." "## Tracker format" 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md' "Second pass" "if it has none"; do
   grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
 done
 grep -rqF "Review notes" "$SKILLS_DIR" && fail "a skill still appends Review notes"
@@ -107,10 +107,10 @@ done
 
 # Brainstorm: tracker, pause and a pointer to the shared file that resolves.
 B="$SKILLS_DIR/brainstorm/SKILL.md"
-for want in ", or **pause**." "## Tracker format" "Depth: ../adversarial-review/trackers.md"; do
+for want in ", or **pause**." "## Tracker format" 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, researcher.md'; do
   grep -qF "$want" "$B" || fail "brainstorm SKILL.md: missing '$want'"
 done
-[ -f "$SKILLS_DIR/brainstorm/../adversarial-review/trackers.md" ] || fail "brainstorm: ../adversarial-review/trackers.md does not resolve"
+[ -f "shared/trackers.md" ] || fail "shared/trackers.md does not exist"
 
 # Finish branch: the review record comes from the trackers.
 F="$SKILLS_DIR/finish-branch/SKILL.md"
@@ -151,7 +151,7 @@ if grep -rqF ".claude/dietpowers" "$SKILLS_DIR" dev README.md AGENTS.md docs/tes
   fail "old .claude/dietpowers path still referenced"
   grep -rnF ".claude/dietpowers" "$SKILLS_DIR" dev README.md AGENTS.md docs/testing.md | sed 's/^/    /'
 fi
-grep -qF "\`.dietpowers/trackers/\`" "$SKILLS_DIR/adversarial-review/trackers.md" || fail "trackers.md: working directory is not .dietpowers/"
+grep -qF "\`.dietpowers/trackers/\`" "$T" || fail "trackers.md: working directory is not .dietpowers/"
 grep -qF ".dietpowers/.gitignore" dev/hooks/problem-log.md || fail "dev problem log: does not keep .dietpowers/ out of git"
 
 # finish-branch asks its integration question like every other question, not as a fenced block.
@@ -212,6 +212,16 @@ grep -E '^5\. ' "$R" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/making-recommendat
 grep -E '^[67]\. ' "$R" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' \
   && fail 'review SKILL.md: steps 6 or 7 also point to the shared file'
 grep -qF 'for a finding under `Out of scope`' "$R" && fail "review SKILL.md: step 7 still special-cases Out of scope findings"
+
+# Shared prompt elements: trackers.md lives in shared/, and every skill names it by the plugin-root path.
+if grep -rqF "adversarial-review/trackers.md" "$SKILLS_DIR"; then
+  fail "a skill still names adversarial-review/trackers.md"
+  grep -rnF "adversarial-review/trackers.md" "$SKILLS_DIR" | sed 's/^/    /'
+fi
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+  grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/trackers.md' "$f" || fail "$f: does not name the shared trackers.md"
+done
+grep -qF 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md' "$SKILLS_DIR/triage-open-items/SKILL.md" || fail "triage-open-items: Depth line not updated"
 
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
