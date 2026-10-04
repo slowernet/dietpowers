@@ -53,7 +53,7 @@ Global Constraints; References.
 
 **Behavior**
 - `shared/making-recommendations.md` contains exactly the file content in Global Constraints.
-- `skills/adversarial-review/SKILL.md` step 5's first line becomes "5. Decide which findings go to your partner. First read `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` and follow it; if it cannot be read, say so once and carry on." No other step contains the path. The `Depth:` line stays `Depth: trackers.md` (superseded by Task 2 and the code review: it names both shared files).
+- `skills/adversarial-review/SKILL.md` step 5's first line becomes "5. Decide which findings go to your partner. First read `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` and follow it; if it cannot be read, say so once and carry on." No other step contains the path. The `Depth:` line stays `Depth: trackers.md` (superseded: see Task 2's Behavior, which gives the line naming both shared files).
 - Step 7's sentence becomes exactly the wording in Global Constraints; the rest of step 7 is unchanged.
 - `check-skills.sh`:
   - adds: `shared/making-recommendations.md` exists and contains `Recommend the clearest correct option`;
@@ -91,7 +91,7 @@ None. Paths in prompt text only.
 
 **Behavior**
 - `shared/trackers.md` has exactly the old file's content.
-- Every reference in `skills/` reads `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`. `Depth:` lines: brainstorm `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, researcher.md`; triage-open-items and adversarial-review `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`.
+- Every reference in `skills/` reads `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`. `Depth:` lines: brainstorm `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, researcher.md`; triage-open-items `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`; adversarial-review `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` (the second file added in the code review).
 - `check-skills.sh`: `T="shared/trackers.md"`; line 154 checks `$T`; the `Depth:` checks expect the new lines; the resolve check tests `shared/trackers.md` exists; new: no file under `skills/` contains `adversarial-review/trackers.md`, and every `SKILL.md` contains `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md` (single-quoted in the script). The open-items check at line 168 still passes, since the sentence still names `.dietpowers/trackers/open-items.md`.
 - `AGENTS.md`: the skill-anatomy line's "a `Depth:` line pointing to them" becomes "a `Depth:` line pointing to them, including any shared file in `shared/`".
 - `README.md`, "How dietpowers differs": after the bullet "Reviews, brainstorms and triage can pause and resume", add: "- **Shared prompt text lives once.** Text several skills use, such as the tracker rules and the recommendation checks, is written once in `shared/` and read by each skill that needs it."
