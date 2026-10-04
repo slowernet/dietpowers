@@ -10,6 +10,7 @@
 - Every `SKILL.md` has the same parts: title; an optional short opening (why the step matters, how to ask questions, where later work goes, the commit approval rule); numbered steps, optionally grouped under headings and followed by short notes or a table; a terminal-state line naming the next skill or the skill to return to; and, where detail files exist, a `Depth:` line pointing to them.
 - Name other skills in full, as `dietpowers:<name>`. Bare names can collide with other commands, such as Claude Code's built-in `/review`.
 - Refer to files in a skill's own directory as `${CLAUDE_SKILL_DIR}/<file>`; Claude Code replaces it with the absolute path when the skill loads.
+- Text shared by several skills lives in `shared/` at the plugin root; refer to it as `${CLAUDE_PLUGIN_ROOT}/shared/<file>`.
 
 ## Testing
 

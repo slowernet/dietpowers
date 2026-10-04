@@ -38,7 +38,7 @@ Commits: approved
 
 ## Tasks
 
-### - [ ] Task 1: Shared file, step 5 pointer, step 7 simplification, tests and docs
+### - [x] Task 1: Shared file, step 5 pointer, step 7 simplification, tests and docs
 
 **Files**
 - Create `shared/making-recommendations.md`.

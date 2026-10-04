@@ -120,7 +120,8 @@ Every skill that asks you anything gained the same rule: one question at a time,
 - **`adversarial-review`** (new; replaces `requesting-code-review`)
   - Reviews a spec, plan or code with a matching prompt, in a fresh subagent on the same model that reads its own prompt file, and waits for its report. It reads the work from disk, so it does not need anything committed.
   - The reviewer grades each finding blocker, major or minor. Minor findings with one obvious fix are fixed with a one-line notice; every blocker and major, and any finding it wants to reject or fix more than one way, comes to you one at a time with a recommendation.
-  - A finding you defer is either added to the open-items list (**add to open items**) or left in the review tracker (**leave here**), as you choose; out-of-scope findings from the fix check get no recommendation between the two unless they are blockers.
+  - A finding you defer is either added to the open-items list (**add to open items**) or left in the review tracker (**leave here**), as you choose.
+  - Before offering options for a finding, reads `shared/making-recommendations.md`: offers only options that are correct across the system, says why a proposed fix is not offered, and recommends the clearest correct option.
   - Records every finding, the evidence, the question and your decision in a tracker, so you can reply `pause` and resume later.
   - Edits a spec or plan under review directly; code fixes start with a failing test; a fix that changes the approved spec goes through `update-spec`.
   - Once every finding is decided and fixed, runs one fix check that looks only at the fixes, then stops.

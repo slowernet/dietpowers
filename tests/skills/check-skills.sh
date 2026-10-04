@@ -193,14 +193,25 @@ grep -qF "recommend defer unless it is a blocker" "$R" && fail "review SKILL.md:
 # Code review fixes for open items: triage after replies on the feedback path; resume edges; README wording.
 grep -qF "Triage them now?" "$SKILLS_DIR/handle-feedback/SKILL.md" || fail "handle-feedback: no triage question after the replies"
 grep -qF "unless the \`dietpowers:handle-feedback\` skill invoked you" "$F" || fail "finish-branch: triage question not skipped on the feedback path"
-grep -qF "listing **add to open items** and **leave here** first" "$R" || fail "review SKILL.md: out-of-scope findings lose step 5's options"
 for want in "there is no paused triage" "failed filing"; do
   grep -qF "$want" "$T" || fail "trackers.md: missing '$want'"
 done
 grep -qF "in group order" "$SKILLS_DIR/triage-open-items/SKILL.md" || fail "triage-open-items: groups not written to the file"
 grep -qF "and open items" README.md && fail "README.md: 'open items' used for anything left open"
 
-grep -qF "for a blocker, recommend fixing and list fix first" "$R" || fail "review SKILL.md: out-of-scope blocker not recommended first"
+
+# Making recommendations: one shared file, read at the start of review step 5 only; no out-of-scope special rule.
+MR="shared/making-recommendations.md"
+if [ -f "$MR" ]; then
+  grep -qF "Recommend the clearest correct option" "$MR" || fail "$MR: missing the clarity bullet"
+else
+  fail "$MR missing"
+fi
+grep -E '^5\. ' "$R" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' \
+  || fail 'review SKILL.md: step 5 does not point to ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md'
+grep -E '^[67]\. ' "$R" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' \
+  && fail 'review SKILL.md: steps 6 or 7 also point to the shared file'
+grep -qF 'for a finding under `Out of scope`' "$R" && fail "review SKILL.md: step 7 still special-cases Out of scope findings"
 
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"

@@ -89,6 +89,8 @@ To test open items and triage:
 - At `finish-branch` with an open item, the triage question should come before the integration question.
 - On the PR-feedback path, `handle-feedback` should ask the triage question after posting its replies, and `finish-branch` should not ask it.
 
+To test making recommendations: in a review of a spec or plan where the reviewer's proposed fix for a finding would create a new problem, the review should read `shared/making-recommendations.md` before asking, say in one line why that fix is not offered, offer only correct options, and recommend the clearest, stating trade-offs where they matter.
+
 ## Reading behavioral results
 
 Each run is one sample, so a single pass is weak evidence. A low `--max-turns` (the multi-turn scripts use 2 and 3)
