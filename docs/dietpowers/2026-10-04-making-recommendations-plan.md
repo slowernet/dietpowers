@@ -73,3 +73,34 @@ Global Constraints; References.
 - Add the four assertions and remove the two old ones first; run the script and confirm it prints FAIL for the missing file, the missing pointer and the clause still present. Then make the edits and confirm it passes.
 
 Command: `bash tests/skills/check-skills.sh`
+
+### - [ ] Task 2: Move trackers.md to shared/ and adopt the convention
+
+> **Changed 2026-10-04:** task added with the spec change folding in the `trackers.md` move; see the note under the spec's Constraints.
+
+**Files**
+- Move `skills/adversarial-review/trackers.md` to `shared/trackers.md` (`git mv`).
+- Modify every `skills/*/SKILL.md` (11 files), `tests/skills/check-skills.sh`, `AGENTS.md`, `README.md`.
+
+**Interfaces**
+None. Paths in prompt text only.
+
+**Context**
+- References to replace: `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md` (10 skills' open-items sentence; brainstorm lines 17 and 23; triage-open-items lines 16 and 18) and `${CLAUDE_SKILL_DIR}/trackers.md` (adversarial-review lines 13, 17 and 19). `Depth:` lines: brainstorm `Depth: ../adversarial-review/trackers.md, researcher.md`; triage-open-items `Depth: ../adversarial-review/trackers.md`; adversarial-review `Depth: trackers.md`.
+- `check-skills.sh`: `T="$SKILLS_DIR/adversarial-review/trackers.md"` (line 78) and the literal path at line 154; `Depth:` checks at lines 100 and 110; the resolve check at line 113.
+
+**Behavior**
+- `shared/trackers.md` has exactly the old file's content.
+- Every reference in `skills/` reads `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`. `Depth:` lines: brainstorm `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, researcher.md`; triage-open-items and adversarial-review `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`.
+- `check-skills.sh`: `T="shared/trackers.md"`; line 154 checks `$T`; the `Depth:` checks expect the new lines; the resolve check tests `shared/trackers.md` exists; new: no file under `skills/` contains `adversarial-review/trackers.md`, and every `SKILL.md` contains `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md` (single-quoted in the script). The open-items check at line 168 still passes, since the sentence still names `.dietpowers/trackers/open-items.md`.
+- `AGENTS.md`: the skill-anatomy line's "a `Depth:` line pointing to them" becomes "a `Depth:` line pointing to them, including any shared file in `shared/`".
+- `README.md`, "How dietpowers differs": after the bullet "Reviews, brainstorms and triage can pause and resume", add: "- **Shared prompt text lives once.** Text several skills use, such as the tracker rules and the recommendation checks, is written once in `shared/` and read by each skill that needs it."
+
+**Tests**
+- "trackers.md at shared/": fails if the file is not moved.
+- "no old path": fails if any skill still names `adversarial-review/trackers.md`.
+- "every skill names the shared path": fails if a skill's sentence is missed.
+- "Depth lines": fails if a `Depth:` line keeps the old path.
+- Add the new and changed assertions first and run the script: it must FAIL for the missing `shared/trackers.md`, the old path in skills, and the Depth lines. Then move and edit, and confirm it passes.
+
+Command: `bash tests/skills/check-skills.sh`

@@ -1,10 +1,10 @@
-# Making recommendations
+# Making recommendations, and shared prompt elements
 
 Source: issue [#26](https://github.com/slowernet/dietpowers/issues/26) and the brainstorm and spec review recorded in `.dietpowers/trackers/2026-10-03-option-premortem-brainstorm.md` and `2026-10-04-making-recommendations-spec-review.md`.
 
 ## Goal
 
-When the adversarial review decides what to do about a finding, the options it offers should be correct across the whole system, and its recommendation should be the clearest of them. In the rep project's two dietpowers runs, 12 of 44 spec and plan review findings came from mechanism added by an earlier fix or design (plan fix #8 removed an ID and caused a blocker, "every command would fail"), and 16 came from relying on code or text without confirming the property used. A short set of checks in one shared file makes the review confirm what each option turns on, drop options that would create a new problem for a later fix to patch, and recommend the clearest correct option, before it asks the partner. The review's handling of out-of-scope findings is simplified at the same time: they are handled like any other finding, and review findings reach open items only on the partner's answer.
+When the adversarial review decides what to do about a finding, the options it offers should be correct across the whole system, and its recommendation should be the clearest of them. In the rep project's two dietpowers runs, 12 of 44 spec and plan review findings came from mechanism added by an earlier fix or design (plan fix #8 removed an ID and caused a blocker, "every command would fail"), and 16 came from relying on code or text without confirming the property used. A short set of checks in one shared file makes the review confirm what each option turns on, drop options that would create a new problem for a later fix to patch, and recommend the clearest correct option, before it asks the partner. The branch also adopts `shared/` as the one home for prompt text several skills use: `trackers.md` moves there from `skills/adversarial-review/`, and every skill refers to it as `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`. The review's handling of out-of-scope findings is simplified at the same time: they are handled like any other finding, and review findings reach open items only on the partner's answer.
 
 > **Changed 2026-10-04 (spec review):** the file puts correctness first and recommends by clarity, with no scaffolding for complexity; the check runs only before options are offered (step 5), not before each fix; step 7's special rule for out-of-scope findings is removed; review findings reach open items only on the partner's answer; the pointer says what to do if the file cannot be read. Approved by the partner in the spec review.
 
@@ -28,7 +28,10 @@ Later steps copy these values exactly.
 - Pointer sentence, placed at the start of `skills/adversarial-review/SKILL.md` step 5, after "Decide which findings go to your partner.": "First read `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` and follow it; if it cannot be read, say so once and carry on."
 - Step 7's clause on `Out of scope` findings is removed, and the sentence around it reads: "Check them as in step 4's second sentence, then handle them as in steps 5 and 6, except that a finding that matches an item in this tracker is marked `duplicate of N` and not asked unless it brings new evidence, in which case show the earlier decision with it." Out-of-scope findings are handled like any other, as in step 5.
 - **add to open items** and **leave here** remain ordinary options in step 5. Step 5's rule that review findings reach open items only through the **add to open items** answer stays.
-- No other skill changes.
+- `skills/adversarial-review/trackers.md` moves to `shared/trackers.md` with its content unchanged. Every reference to it in `skills/` becomes `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`: the open-items sentence in each skill, the tracker and resume lines in brainstorm, adversarial-review and triage-open-items, and their `Depth:` lines, which name `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md` in place of `trackers.md` or `../adversarial-review/trackers.md`.
+- No skill changes beyond these.
+
+  > **Changed 2026-10-04:** adds the move of `trackers.md` to `shared/` (from listed as out of scope). Why: AGENTS.md's new rule that shared text lives in `shared/` would be contradicted from the day this branch merges. Approved by the partner ("fold in as adoption of shared prompt elements - with the supporting documentation").
 
 ## Design
 
@@ -40,8 +43,11 @@ Later steps copy these values exactly.
 - **`tests/skills/check-skills.sh`**:
   - asserts that `shared/making-recommendations.md` exists and contains `Recommend the clearest correct option`;
   - asserts that the line of `skills/adversarial-review/SKILL.md` starting `5.` contains `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md`, and that no line starting `6.` does;
+  - points every `trackers.md` check at `shared/trackers.md`, updates the expected `Depth:` lines, and asserts that no file under `skills/` contains `adversarial-review/trackers.md` and that every `SKILL.md` contains `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`;
   - removes the two assertions for the out-of-scope rule (`listing **add to open items** and **leave here** first` and `for a blocker, recommend fixing and list fix first`) and asserts that ``for a finding under `Out of scope` `` is gone from the skill.
-- **`AGENTS.md`**: under "Working on the skills", one line: text shared by several skills lives in `shared/` at the plugin root and is referred to as `${CLAUDE_PLUGIN_ROOT}/shared/<file>`.
+- **`shared/trackers.md`**: moved from `skills/adversarial-review/trackers.md` with `git mv`, content unchanged; all references updated as in Constraints.
+- **`AGENTS.md`**: under "Working on the skills", one line: text shared by several skills lives in `shared/` at the plugin root and is referred to as `${CLAUDE_PLUGIN_ROOT}/shared/<file>`. The skill-anatomy line's `Depth:` description adds that it may name a shared file.
+- **`README.md`**: "How dietpowers differs" gains a bullet: prompt text several skills use (the tracker rules, the recommendation checks) is written once in `shared/` and read by each skill that needs it. The superpowers-slim bullet "Detail in separate files" is left as it is, since it describes that fork.
 - **`README.md`**: the `adversarial-review` entry under "What changed in each skill": the bullet on deferred findings drops its clause on out-of-scope findings, and a new bullet says that before offering options the review reads `shared/making-recommendations.md`, offers only correct options, and recommends the clearest.
 - **`docs/testing.md`**: the manual trial in Success criterion 2.
 
@@ -52,7 +58,7 @@ Later steps copy these values exactly.
 
 ## Success criteria
 
-1. `bash tests/skills/check-skills.sh` exits 0 and asserts the file, the pointer's place in step 5, its absence from step 6, and the removal of step 7's out-of-scope sentence.
+1. `bash tests/skills/check-skills.sh` exits 0 and asserts the file, the pointer's place in step 5, its absence from step 6, the removal of step 7's out-of-scope sentence, `shared/trackers.md` in place of the old path everywhere, and the new `Depth:` lines.
 2. Manual trial: in a review of a spec or plan where the reviewer's proposed fix for a finding would create a new problem, the review reads `shared/making-recommendations.md` before asking (a Read of that path appears before the question), says in one line why that fix is not offered, offers only correct options, and recommends the clearest, stating trade-offs where they matter.
 3. `docs/testing.md` describes trial 2.
 
@@ -69,6 +75,5 @@ Later steps copy these values exactly.
 ## Out of scope
 
 - Pointing brainstorm, write-plan, update-spec or triage-open-items at the shared file (queued as an open item).
-- Moving `trackers.md` to `shared/` (queued as an open item).
 
 > **Changed 2026-10-04 (fix check):** the resulting step 7 wording is given, and the goal and the note above say "review findings reach open items only on the partner's answer", which is narrower and accurate. Approved by the partner in the spec review.
