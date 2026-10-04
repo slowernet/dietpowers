@@ -10,17 +10,17 @@ The spec you write here is what the plan, the reviewers, and the code are all ch
 
 Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, recommended first, each with a short bold label in words (never numbers or letters) and a one-line reason. End with a line naming those labels in the same order, such as `Reply with **new PR**, **straight to main**, or **drop it**.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it. Before a stretch of work that takes more than a moment, such as dispatching a reviewer, writing a spec or plan, or fixing findings, say in one line what you are about to do; after your partner answers, say what comes next before starting it.
 
-When you find something worth doing later that this work does not include, add it as an item to `.dietpowers/trackers/open-items.md`, following `## Open items` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`, and say so in one line.
+When you find something worth doing later that this work does not include, add it as an item to `.dietpowers/trackers/open-items.md`, following `## Open items` in `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`, and say so in one line.
 
 Before your first commit of the spec or plan for this piece of work, check the plan's `Commits:` line or your partner's earlier answer. If neither settles it, ask once: "I'll work on branch `<name>`. May I commit the spec and plan to it as we go? Nothing is pushed or merged without asking. Reply with **yes** or **no**." Whatever the answer, move the work to that branch; never commit to `main` or `master`. If your partner declines, the spec and plan are held back: wherever a step says to commit them, leave them on disk; the `dietpowers:finish-branch` skill proposes those commits at the end. Code is always committed.
 
-Record the brainstorm in a tracker, following `## Working directory` and `## Tracker format` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`; replies to your questions follow its `## Replies`.
+Record the brainstorm in a tracker, following `## Working directory` and `## Tracker format` in `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`; replies to your questions follow its `## Replies`.
 
 For every question you ask in steps 3 and 5: record it as asked, and its answer, in the tracker; end it with `Reply with <options in bold>, or **pause**.`; ask it only if the answer would change the design, and make routine calls yourself, recording them as assumptions.
 
 When versions or APIs matter, prefer what the current documentation for the version in use recommends and avoid what it marks deprecated or insecure; check the project's existing dependencies and framework features before adding new ones.
 
-0. If your partner asked to resume, follow `## Resuming` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`, then carry on from the step it leads to.
+0. If your partner asked to resume, follow `## Resuming` in `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`, then carry on from the step it leads to.
 1. Read the project context, including files and history the request doesn't mention but the change may touch.
 2. Check scope. If the request spans several independent subsystems, split it: brainstorm only the first, and add each of the others as an open item, to get its own spec later.
 3. Before your first question, create the tracker (stage `brainstorm`; choose the topic now and reuse it for the spec filename). Ask about purpose: what the change is for, and for whom. If the request seems mistaken, or a simpler change reaches the same goal, say so before designing.
@@ -38,4 +38,4 @@ When versions or APIs matter, prefer what the current documentation for the vers
 
 Terminal state: invoke the `dietpowers:adversarial-review` skill on the spec. Invoke no other skill from here.
 
-Depth: ../adversarial-review/trackers.md, researcher.md
+Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, researcher.md

@@ -23,7 +23,7 @@ The script checks that:
   is under 1024 characters;
 - no `@`-link force-loads another skill (an `@` path makes Claude Code load that file at once);
 - no file under `skills/` references a renamed or deleted skill;
-- the text the flow depends on is present, and replaced text is gone: plain-text questions ending in `Reply with`, the commit rules for code and for the spec and plan, `trackers.md` and the pointers to it, the reviewers' severity lines and fix-check sections, the brainstorm research step and `researcher.md`, the open-items sentence in every skill and the `## Open items` format in `trackers.md`, and the README's descriptions of these.
+- the text the flow depends on is present, and replaced text is gone: plain-text questions ending in `Reply with`, the commit rules for code and for the spec and plan, `shared/trackers.md` and the pointers to it, `shared/making-recommendations.md` and the review's pointer to it, the reviewers' severity lines and fix-check sections, the brainstorm research step and `researcher.md`, the open-items sentence in every skill and the `## Open items` format in `trackers.md`, and the README's descriptions of these.
 
 It exits 0, or prints one `FAIL:` line per violation.
 
@@ -88,6 +88,8 @@ To test open items and triage:
 - After answers of **file new**, **keep** and **drop**, only the kept item should remain in the file, and the new issue should exist.
 - At `finish-branch` with an open item, the triage question should come before the integration question.
 - On the PR-feedback path, `handle-feedback` should ask the triage question after posting its replies, and `finish-branch` should not ask it.
+
+To test making recommendations: in a review of a spec or plan where the reviewer's proposed fix for a finding would create a new problem, the review should read `shared/making-recommendations.md` before asking, say in one line why that fix is not offered, offer only correct options, and recommend the clearest, stating trade-offs where they matter.
 
 ## Reading behavioral results
 

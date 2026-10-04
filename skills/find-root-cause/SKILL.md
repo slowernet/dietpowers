@@ -10,7 +10,7 @@ Fixes made before the cause is known tend to move a bug rather than remove it, a
 
 Ask your partner one question at a time, in plain text; do not use the AskUserQuestion tool, because some clients show only the tool's question and drop the text around it. Put what your partner needs to answer in the same message: the problem and why it matters, then the options, recommended first, each with a short bold label in words (never numbers or letters) and a one-line reason. End with a line naming those labels in the same order, such as `Reply with **new PR**, **straight to main**, or **drop it**.`, and make the question the last thing in the message, after any tool use. Your partner may answer with an option, their own alternative, a question or an aside. Keep messages short: lead with the decision, then only the detail needed to answer it. Before a stretch of work that takes more than a moment, such as dispatching a reviewer, writing a spec or plan, or fixing findings, say in one line what you are about to do; after your partner answers, say what comes next before starting it.
 
-When you find something worth doing later that this work does not include, add it as an item to `.dietpowers/trackers/open-items.md`, following `## Open items` in `${CLAUDE_SKILL_DIR}/../adversarial-review/trackers.md`, and say so in one line.
+When you find something worth doing later that this work does not include, add it as an item to `.dietpowers/trackers/open-items.md`, following `## Open items` in `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`, and say so in one line.
 
 Commit your work on the feature branch as you go: the spec and plan may be held back, code never is. If you are on `main`, `master` or the plan's `Base:` branch, first ask once: "I'll create branch `<name>` for this work. Reply with **yes** or **no**." If your partner declines, do no code work until a branch is agreed. Nothing is pushed or merged without asking.
 
@@ -46,4 +46,4 @@ If investigation shows the cause is genuinely environmental, timing-dependent, o
 
 Terminal state: if you are working within another dietpowers skill's steps (`dietpowers:execute-plan`, `dietpowers:adversarial-review`, `dietpowers:handle-feedback`, `dietpowers:prove-done`), or the plan for this branch still has unticked tasks, return to that skill and continue where it stopped. Otherwise, commit the change and its tests, then invoke the `dietpowers:adversarial-review` skill on the code.
 
-Depth: root-cause-tracing.md, guards-after-a-fix.md, condition-based-waiting.md. To find which test creates unwanted files, run `${CLAUDE_SKILL_DIR}/find-polluter.sh` from the project root.
+Depth: root-cause-tracing.md, guards-after-a-fix.md, ${CLAUDE_PLUGIN_ROOT}/shared/condition-based-waiting.md. To find which test creates unwanted files, run `${CLAUDE_SKILL_DIR}/find-polluter.sh` from the project root.

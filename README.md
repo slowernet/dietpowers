@@ -72,6 +72,7 @@ Ordered by how far each departs from what Superpowers users may expect.
 - **Research and context travel with the work.** The spec records the docs, library versions, API details and existing code it relies on, each with the specific fact used. The plan carries those facts once, in a References section, and each task names the references and files it needs. The executor reads both the plan and the spec. In superpowers-slim the plan had no link to the spec and the executor read only the plan, so research reached it only if the plan happened to repeat it.
 - **Questions come one at a time, in plain text,** with the problem, the options, a recommendation and a reason in one message, ending with a `Reply with` line. You can answer with an option, your own idea, a question or an aside.
 - **Reviews, brainstorms and triage can pause and resume.** Reply `pause` to any finding, design question or triage question; say "resume" later, even in a new session, and the flow picks up from a tracker file in `.dietpowers/trackers/`. That directory ignores itself in git, so nothing in it is ever committed.
+- **Shared prompt text lives once.** Text several skills use, such as the tracker rules and the recommendation checks, is written once in `shared/` and read by each skill that needs it.
 - **Later work has one queue.** Anything worth doing later, found at any point in the flow, goes to one open-items list instead of the spec's Out of scope section; a triage skill works through it with you against your backlog.
 - **Prompts tuned for Opus 5.5.** Skill and reviewer prompts were grounded against Anthropic's [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) guide. See [What changed in each skill](#what-changed-in-each-skill).
 
@@ -120,7 +121,8 @@ Every skill that asks you anything gained the same rule: one question at a time,
 - **`adversarial-review`** (new; replaces `requesting-code-review`)
   - Reviews a spec, plan or code with a matching prompt, in a fresh subagent on the same model that reads its own prompt file, and waits for its report. It reads the work from disk, so it does not need anything committed.
   - The reviewer grades each finding blocker, major or minor. Minor findings with one obvious fix are fixed with a one-line notice; every blocker and major, and any finding it wants to reject or fix more than one way, comes to you one at a time with a recommendation.
-  - A finding you defer is either added to the open-items list (**add to open items**) or left in the review tracker (**leave here**), as you choose; out-of-scope findings from the fix check get no recommendation between the two unless they are blockers.
+  - A finding you defer is either added to the open-items list (**add to open items**) or left in the review tracker (**leave here**), as you choose.
+  - Before offering options for a finding, reads `shared/making-recommendations.md`: offers only options that are correct across the system, says why a proposed fix is not offered, and recommends the clearest correct option.
   - Records every finding, the evidence, the question and your decision in a tracker, so you can reply `pause` and resume later.
   - Edits a spec or plan under review directly; code fixes start with a failing test; a fix that changes the approved spec goes through `update-spec`.
   - Once every finding is decided and fixed, runs one fix check that looks only at the fixes, then stops.
@@ -190,7 +192,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Returns to the skill whose steps it is working within, or to `execute-plan` while the plan has unticked tasks; otherwise commits and hands off to `adversarial-review` instead of `test-driven-development`.
   - `defense-in-depth.md` ("validate at EVERY layer") is replaced by `guards-after-a-fix.md`: validate at system boundaries, and add an internal guard only where the bug showed the boundary can be bypassed, with a test.
   - `root-cause-tracing.md` loses its diagrams, "NEVER" nodes and session anecdote (739 to 375 words).
-  - `condition-based-waiting.md` is trimmed, and its 666-word example file, written for one specific project, is gone.
+  - `condition-based-waiting.md` is trimmed, and its 666-word example file, written for one specific project, is gone. It now lives in `shared/`, since `tdd` uses it too.
   - `find-polluter.sh` stops with an error when the pollution exists before any test runs, instead of reporting "all tests clean"; runs test paths containing spaces as one file; is run from the project root by its full path; and no longer calls itself a bisection script.
 
 ### Sources
