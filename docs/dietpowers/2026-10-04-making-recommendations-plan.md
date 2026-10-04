@@ -58,7 +58,7 @@ Global Constraints; References.
 - `check-skills.sh`:
   - adds: `shared/making-recommendations.md` exists and contains `Recommend the clearest correct option`;
   - adds: the line of `$R` starting `5.` contains `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md`, and no line starting `6.` or `7.` does;
-  - in both of these, write the pattern in single quotes (`'${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md'`) so bash does not expand it; the script runs under `set -u`, and `CLAUDE_PLUGIN_ROOT` is unset in a shell;
+  - in the step 5 assertion, the steps 6 and 7 assertion, and any `fail` message that names the path, write the pattern in single quotes (`'${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md'`) so bash does not expand it; the script runs under `set -u`, and `CLAUDE_PLUGIN_ROOT` is unset in a shell;
   - removes the assertions at lines 196 and 203;
   - adds: `$R` does not contain ``for a finding under `Out of scope` ``.
 - `README.md` line 123 drops its clause after the semicolon, ending "...(**leave here**), as you choose." A new bullet follows it: "Before offering options for a finding, reads `shared/making-recommendations.md`: offers only options that are correct across the system, says why a proposed fix is not offered, and recommends the clearest correct option."
