@@ -29,7 +29,10 @@ Later steps copy these values exactly.
 - Step 7's clause on `Out of scope` findings is removed, and the sentence around it reads: "Check them as in step 4's second sentence, then handle them as in steps 5 and 6, except that a finding that matches an item in this tracker is marked `duplicate of N` and not asked unless it brings new evidence, in which case show the earlier decision with it." Out-of-scope findings are handled like any other, as in step 5.
 - **add to open items** and **leave here** remain ordinary options in step 5. Step 5's rule that review findings reach open items only through the **add to open items** answer stays.
 - `skills/adversarial-review/trackers.md` moves to `shared/trackers.md` with its content unchanged. Every reference to it in `skills/` becomes `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md`: the open-items sentence in each skill, the tracker and resume lines in brainstorm, adversarial-review and triage-open-items, and their `Depth:` lines, which name `${CLAUDE_PLUGIN_ROOT}/shared/trackers.md` in place of `trackers.md` or `../adversarial-review/trackers.md`.
+- `skills/find-root-cause/condition-based-waiting.md`, used by tdd and find-root-cause, moves to `shared/condition-based-waiting.md` unchanged. The `Depth:` lines of tdd and find-root-cause name `${CLAUDE_PLUGIN_ROOT}/shared/condition-based-waiting.md`; the sentence in `skills/tdd/writing-good-tests.md` names `../../shared/condition-based-waiting.md`, since `${CLAUDE_PLUGIN_ROOT}` is substituted only in a skill's own content, not in a detail file the model reads.
 - No skill changes beyond these.
+
+  > **Changed 2026-10-04:** adds the move of `condition-based-waiting.md` (from not covered). Why: it is shared by two skills, so the new AGENTS.md rule covers it. Approved by the partner.
 
   > **Changed 2026-10-04:** adds the move of `trackers.md` to `shared/` (from listed as out of scope). Why: AGENTS.md's new rule that shared text lives in `shared/` would be contradicted from the day this branch merges. Approved by the partner ("fold in as adoption of shared prompt elements - with the supporting documentation").
 

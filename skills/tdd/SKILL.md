@@ -28,4 +28,4 @@ For a bug: write a test that reproduces it, watch it fail, then fix it. The test
 
 Terminal state: if you are working within another dietpowers skill's steps (`dietpowers:execute-plan`, `dietpowers:adversarial-review`, `dietpowers:handle-feedback`, `dietpowers:prove-done`), or the plan for this branch still has unticked tasks, return to that skill and continue where it stopped. Otherwise, commit the change and its tests, then invoke the `dietpowers:adversarial-review` skill on the code.
 
-Depth: writing-good-tests.md, ../find-root-cause/condition-based-waiting.md
+Depth: writing-good-tests.md, ${CLAUDE_PLUGIN_ROOT}/shared/condition-based-waiting.md

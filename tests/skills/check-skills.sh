@@ -223,6 +223,14 @@ for f in "$SKILLS_DIR"/*/SKILL.md; do
 done
 grep -qF 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md' "$SKILLS_DIR/triage-open-items/SKILL.md" || fail "triage-open-items: Depth line not updated"
 
+# condition-based-waiting.md is shared by tdd and find-root-cause, so it lives in shared/ too.
+[ -f "shared/condition-based-waiting.md" ] || fail "shared/condition-based-waiting.md missing"
+grep -rqF "find-root-cause/condition-based-waiting.md" "$SKILLS_DIR" && fail "a skill still names find-root-cause/condition-based-waiting.md"
+for n in tdd find-root-cause; do
+  grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/condition-based-waiting.md' "$SKILLS_DIR/$n/SKILL.md" || fail "$n: Depth line does not name the shared condition-based-waiting.md"
+done
+grep -qF "../../shared/condition-based-waiting.md" "$SKILLS_DIR/tdd/writing-good-tests.md" || fail "writing-good-tests.md: pointer to the shared condition-based-waiting.md missing"
+
 [ "$FAIL" -eq 0 ] \
   && echo "PASS: all skills present, valid frontmatter, no @-links, no dangling references"
 exit "$FAIL"

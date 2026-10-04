@@ -63,7 +63,7 @@ vi.mock('MCPServerManager');
 
 ## Make tests deterministic and readable
 
-A test gives the same result on every run and in any order. Control time and randomness, keep off the real network, and have each test set up its own state. For waiting on asynchronous work, see `../find-root-cause/condition-based-waiting.md`.
+A test gives the same result on every run and in any order. Control time and randomness, keep off the real network, and have each test set up its own state. For waiting on asynchronous work, see `../../shared/condition-based-waiting.md`.
 
 Keep test bodies straight-line: no conditionals and no computed expectations, though a loop over a table of literal cases is fine. A little duplication is fine when it makes a test clearer to read. A failing test should show the expected and the actual value, so the cause is obvious without a debugger.
 

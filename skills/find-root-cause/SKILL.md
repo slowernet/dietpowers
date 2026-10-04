@@ -46,4 +46,4 @@ If investigation shows the cause is genuinely environmental, timing-dependent, o
 
 Terminal state: if you are working within another dietpowers skill's steps (`dietpowers:execute-plan`, `dietpowers:adversarial-review`, `dietpowers:handle-feedback`, `dietpowers:prove-done`), or the plan for this branch still has unticked tasks, return to that skill and continue where it stopped. Otherwise, commit the change and its tests, then invoke the `dietpowers:adversarial-review` skill on the code.
 
-Depth: root-cause-tracing.md, guards-after-a-fix.md, condition-based-waiting.md. To find which test creates unwanted files, run `${CLAUDE_SKILL_DIR}/find-polluter.sh` from the project root.
+Depth: root-cause-tracing.md, guards-after-a-fix.md, ${CLAUDE_PLUGIN_ROOT}/shared/condition-based-waiting.md. To find which test creates unwanted files, run `${CLAUDE_SKILL_DIR}/find-polluter.sh` from the project root.

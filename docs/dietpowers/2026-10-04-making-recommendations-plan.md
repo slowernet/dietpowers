@@ -104,3 +104,5 @@ None. Paths in prompt text only.
 - Add the new and changed assertions first and run the script: it must FAIL for the missing `shared/trackers.md`, the old path in skills, and the Depth lines. Then move and edit, and confirm it passes.
 
 Command: `bash tests/skills/check-skills.sh`
+
+Departure: Task 2 also moved `condition-based-waiting.md` to `shared/` (approved by the partner; spec Constraints updated with a Changed note). The detail file `skills/tdd/writing-good-tests.md` uses the relative path `../../shared/condition-based-waiting.md`, since `${CLAUDE_PLUGIN_ROOT}` is not substituted in files the model reads with the Read tool.
