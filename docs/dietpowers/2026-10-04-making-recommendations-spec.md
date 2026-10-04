@@ -4,9 +4,9 @@ Source: issue [#26](https://github.com/slowernet/dietpowers/issues/26) and the b
 
 ## Goal
 
-When the adversarial review decides what to do about a finding, the options it offers should be correct across the whole system, and its recommendation should be the clearest of them. In the rep project's two dietpowers runs, 12 of 44 spec and plan review findings came from mechanism added by an earlier fix or design (plan fix #8 removed an ID and caused a blocker, "every command would fail"), and 16 came from relying on code or text without confirming the property used. A short set of checks in one shared file makes the review confirm what each option turns on, drop options that would create a new problem for a later fix to patch, and recommend the clearest correct option, before it asks the partner. The review's handling of out-of-scope findings and open items is simplified at the same time: nothing about them is automatic or special-cased.
+When the adversarial review decides what to do about a finding, the options it offers should be correct across the whole system, and its recommendation should be the clearest of them. In the rep project's two dietpowers runs, 12 of 44 spec and plan review findings came from mechanism added by an earlier fix or design (plan fix #8 removed an ID and caused a blocker, "every command would fail"), and 16 came from relying on code or text without confirming the property used. A short set of checks in one shared file makes the review confirm what each option turns on, drop options that would create a new problem for a later fix to patch, and recommend the clearest correct option, before it asks the partner. The review's handling of out-of-scope findings is simplified at the same time: they are handled like any other finding, and review findings reach open items only on the partner's answer.
 
-> **Changed 2026-10-04 (spec review):** the file puts correctness first and recommends by clarity, with no scaffolding for complexity; the check runs only before options are offered (step 5), not before each fix; step 7's special rule for out-of-scope findings is removed; open items are queued only on the partner's answer; the pointer says what to do if the file cannot be read. Approved by the partner in the spec review.
+> **Changed 2026-10-04 (spec review):** the file puts correctness first and recommends by clarity, with no scaffolding for complexity; the check runs only before options are offered (step 5), not before each fix; step 7's special rule for out-of-scope findings is removed; review findings reach open items only on the partner's answer; the pointer says what to do if the file cannot be read. Approved by the partner in the spec review.
 
 ## Constraints
 
@@ -26,7 +26,7 @@ Later steps copy these values exactly.
   ```
 
 - Pointer sentence, placed at the start of `skills/adversarial-review/SKILL.md` step 5, after "Decide which findings go to your partner.": "First read `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` and follow it; if it cannot be read, say so once and carry on."
-- Step 7's sentence "for a finding under `Out of scope`, offer step 5's options, listing **add to open items** and **leave here** first without recommending either; for a blocker, recommend fixing and list fix first." is removed. Out-of-scope findings are handled like any other, as in step 5.
+- Step 7's clause on `Out of scope` findings is removed, and the sentence around it reads: "Check them as in step 4's second sentence, then handle them as in steps 5 and 6, except that a finding that matches an item in this tracker is marked `duplicate of N` and not asked unless it brings new evidence, in which case show the earlier decision with it." Out-of-scope findings are handled like any other, as in step 5.
 - **add to open items** and **leave here** remain ordinary options in step 5. Step 5's rule that review findings reach open items only through the **add to open items** answer stays.
 - No other skill changes.
 
@@ -70,3 +70,5 @@ Later steps copy these values exactly.
 
 - Pointing brainstorm, write-plan, update-spec or triage-open-items at the shared file (queued as an open item).
 - Moving `trackers.md` to `shared/` (queued as an open item).
+
+> **Changed 2026-10-04 (fix check):** the resulting step 7 wording is given, and the goal and the note above say "review findings reach open items only on the partner's answer", which is narrower and accurate. Approved by the partner in the spec review.
