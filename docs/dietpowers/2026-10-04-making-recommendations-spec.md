@@ -1,10 +1,12 @@
 # Making recommendations
 
-Source: issue [#26](https://github.com/slowernet/dietpowers/issues/26) and the brainstorm recorded in `.dietpowers/trackers/2026-10-03-option-premortem-brainstorm.md`.
+Source: issue [#26](https://github.com/slowernet/dietpowers/issues/26) and the brainstorm and spec review recorded in `.dietpowers/trackers/2026-10-03-option-premortem-brainstorm.md` and `2026-10-04-making-recommendations-spec-review.md`.
 
 ## Goal
 
-When the adversarial review decides what to do about a finding, and when it makes the fix, its recommendation should hold up. In the rep project's two dietpowers runs, 12 of 44 spec and plan review findings came from mechanism added by an earlier fix or design (plan fix #8 removed an ID and caused a blocker, "every command would fail"), and 16 came from relying on code or text without confirming the property used. A short set of checks, kept in one shared file, makes the review confirm what a recommendation turns on and recommend only correct options and, among those, the smallest, queueing any larger structural change as an open item, before it asks the partner and before it edits.
+When the adversarial review decides what to do about a finding, the options it offers should be correct across the whole system, and its recommendation should be the clearest of them. In the rep project's two dietpowers runs, 12 of 44 spec and plan review findings came from mechanism added by an earlier fix or design (plan fix #8 removed an ID and caused a blocker, "every command would fail"), and 16 came from relying on code or text without confirming the property used. A short set of checks in one shared file makes the review confirm what each option turns on, drop options that would create a new problem for a later fix to patch, and recommend the clearest correct option, before it asks the partner. The review's handling of out-of-scope findings and open items is simplified at the same time: nothing about them is automatic or special-cased.
+
+> **Changed 2026-10-04 (spec review):** the file puts correctness first and recommends by clarity, with no scaffolding for complexity; the check runs only before options are offered (step 5), not before each fix; step 7's special rule for out-of-scope findings is removed; open items are queued only on the partner's answer; the pointer says what to do if the file cannot be read. Approved by the partner in the spec review.
 
 ## Constraints
 
@@ -15,51 +17,54 @@ Later steps copy these values exactly.
   ```markdown
   # Making recommendations
 
-  Before you recommend an option, check it:
+  Before you offer options or recommend one, check them:
 
-  - Name the facts your recommendation turns on, and confirm each in the file or output that shows it.
-  - Settle a fact it turns on with a quick test, or a lookup when the fact lies outside the repository, or say it is unverified.
-  - Recommend only an option that is correct: it solves the actual problem, fits the spec and code as they stand, and creates no new problem for a later fix to patch.
-  - Among correct options, prefer the smallest. Count what each adds, such as new rules, states, files or hand-offs; this applies to your partner's alternatives and to review fixes too. When a larger, structural change might be worth making but would widen the scope, recommend the small change and add the larger one as an open item.
+  - Name the facts each option turns on, and confirm each in the file or output that shows it. Settle what you can with a quick test, or a lookup when the fact lies outside the repository; otherwise say it is unverified.
+  - Offer only options that are correct across the system: each solves the actual problem, fits the spec and code as they stand, and creates no new problem for a later fix to patch. If a proposed fix fails this, say in one line why it is not offered.
+  - Recommend the clearest correct option, using size only to break ties, and state the trade-offs between options where they matter.
   - Check any claim you write against what you have already recorded.
   ```
 
-- Pointer sentence: "read `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` and follow it".
-- `skills/adversarial-review/SKILL.md` gains the pointer in step 5, before it offers options for a finding, and in step 6, before it makes each fix.
+- Pointer sentence, placed at the start of `skills/adversarial-review/SKILL.md` step 5, after "Decide which findings go to your partner.": "First read `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` and follow it; if it cannot be read, say so once and carry on."
+- Step 7's sentence "for a finding under `Out of scope`, offer step 5's options, listing **add to open items** and **leave here** first without recommending either; for a blocker, recommend fixing and list fix first." is removed. Out-of-scope findings are handled like any other, as in step 5.
+- **add to open items** and **leave here** remain ordinary options in step 5. Step 5's rule that review findings reach open items only through the **add to open items** answer stays.
 - No other skill changes.
 
 ## Design
 
 - **`shared/making-recommendations.md`** (new): the content in Constraints. It sits outside `skills/`, so it is not a skill and loads only when a skill points to it.
 - **`skills/adversarial-review/SKILL.md`**:
-  - Step 5, in the bullet that asks the partner: before offering the options for a finding, read the shared file and follow it.
-  - Step 6: before making each fix, read the shared file and follow it, so a fix that adds a rule, state or hand-off is weighed against a smaller one.
-- **`tests/skills/check-skills.sh`**: asserts that `shared/making-recommendations.md` exists and contains "Name the facts your recommendation turns on", and that `skills/adversarial-review/SKILL.md` contains `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md` at least twice.
-- **README**: the adversarial-review entry gains one line saying the review checks each recommendation and fix against `shared/making-recommendations.md`.
+  - Step 5 begins with the pointer, so it covers both the judgement that a minor finding has one reasonable fix and the options put to the partner. Step 7 handles second-pass findings as in step 5, so the pointer covers them too.
+  - Step 7 loses its out-of-scope sentence.
+  - The `Depth:` line stays `Depth: trackers.md`, since the pointer names the shared file in full.
+- **`tests/skills/check-skills.sh`**:
+  - asserts that `shared/making-recommendations.md` exists and contains `Recommend the clearest correct option`;
+  - asserts that the line of `skills/adversarial-review/SKILL.md` starting `5.` contains `${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md`, and that no line starting `6.` does;
+  - removes the two assertions for the out-of-scope rule (`listing **add to open items** and **leave here** first` and `for a blocker, recommend fixing and list fix first`) and asserts that ``for a finding under `Out of scope` `` is gone from the skill.
+- **`AGENTS.md`**: under "Working on the skills", one line: text shared by several skills lives in `shared/` at the plugin root and is referred to as `${CLAUDE_PLUGIN_ROOT}/shared/<file>`.
+- **`README.md`**: the `adversarial-review` entry under "What changed in each skill": the bullet on deferred findings drops its clause on out-of-scope findings, and a new bullet says that before offering options the review reads `shared/making-recommendations.md`, offers only correct options, and recommends the clearest.
 - **`docs/testing.md`**: the manual trial in Success criterion 2.
 
 ## Inputs and failure behavior
 
-- **The shared file cannot be read** (for example, a plugin install missing it): the review says so in one line and carries on without the checks.
-- **A deciding fact cannot be settled** by a quick test or lookup: the recommendation says it is unverified, as the file instructs.
+- **The shared file cannot be read**: the review says so once and carries on without the checks, as the pointer sentence says.
+- **A deciding fact cannot be settled** by a quick test or lookup: the option says it is unverified, as the file instructs.
 
 ## Success criteria
 
-1. `bash tests/skills/check-skills.sh` exits 0 and asserts the file and both pointers.
-2. Manual trial: in a review of a spec or plan where a finding's obvious fix adds a new rule or state, the review reads `shared/making-recommendations.md` before asking (a Read of that path appears before the question), names the facts the recommended fix turns on with where each was confirmed, and recommends the fix that adds least, or says why not.
+1. `bash tests/skills/check-skills.sh` exits 0 and asserts the file, the pointer's place in step 5, its absence from step 6, and the removal of step 7's out-of-scope sentence.
+2. Manual trial: in a review of a spec or plan where the reviewer's proposed fix for a finding would create a new problem, the review reads `shared/making-recommendations.md` before asking (a Read of that path appears before the question), says in one line why that fix is not offered, offers only correct options, and recommends the clearest, stating trade-offs where they matter.
 3. `docs/testing.md` describes trial 2.
 
 ## Assumptions
 
-- `${CLAUDE_PLUGIN_ROOT}` is substituted in plugin skill Markdown; the docs name "resources shared between the plugin's skills" as its use ([skills docs](https://code.claude.com/docs/en/skills)). The `..` path rejection applies to `plugin.json` component paths, not skill bodies ([plugins reference](https://code.claude.com/docs/en/plugins-reference#path-rules)).
-- A pointed-to file is read reliably: in a probe of `triage-open-items` with the same pointer in its opening, the file was read in 3 of 3 runs, in the first tool call. The review flow was not probed.
-- The added time is small: in that probe the checks cost about 6 seconds once per run (first question 18 s to 24 s), and later questions took the same 6 to 8 seconds with or without them. The review flow's cost was not measured.
+- `${CLAUDE_PLUGIN_ROOT}` is substituted in plugin skill Markdown, and the docs name "resources shared between the plugin's skills" as its use ([skills docs](https://code.claude.com/docs/en/skills)). The `..` path rejection applies to `plugin.json` component paths, not skill bodies ([plugins reference](https://code.claude.com/docs/en/plugins-reference#path-rules)). The plugin is installed from the whole repository (marketplace `source: "./"`), so `shared/` ships.
+- Probe 4 (brainstorm tracker), with an earlier wording of the file and pointers in steps 5 and 6: the file was read in 3 of 3 review runs before the first question; time to the first question averaged 33 s without the file and 34 s with it, cost +3%; the second question averaged 13 s and 14 s. The final wording, and the pointer in step 5 only, have not been probed.
 
 ## References
 
 - Rep evidence, from `/Users/eliot/code/rep/.dietpowers/trackers/2026-09-30-meta-pixel-*.md` and `2026-10-01-jev-classification-*.md`: 44 spec and plan review findings, of which 16 seam blindness, 12 mechanism or fix-created, 5 unverified facts, 11 ordinary defects; fix-created example: Jev plan fix #8 caused blocker #9.
-- Probes in `/tmp/triage-probe` (2026-10-04), summarised in the brainstorm tracker.
-- `skills/adversarial-review/SKILL.md` steps 5 and 6.
+- `skills/adversarial-review/SKILL.md` steps 5 and 7.
 
 ## Out of scope
 
