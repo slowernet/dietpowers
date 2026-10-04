@@ -5,16 +5,16 @@
 ## Working on the skills
 
 - Skill text changes how the model behaves. An edit that reads well can still make behaviour worse, so test skill changes by running them, and do not rely on reading them.
-- Claude Code loads a `SKILL.md` in full when the skill is invoked. It loads other files in the skill's directory only when the model follows a pointer to them. Put detail in a separate file and point to it.
+- Claude Code loads a `SKILL.md` in full when the skill is invoked. It loads other files, in the skill's directory or in `shared/`, only when the model follows a pointer to them. Put detail in a separate file and point to it.
 - A skill's `description` says what the skill produces and when to use it, with the words a user would say. It must not summarise the steps: the model treats a summary as a shortcut and skips the body. No script checks this.
 - Every `SKILL.md` has the same parts: title; an optional short opening (why the step matters, how to ask questions, where later work goes, the commit approval rule); numbered steps, optionally grouped under headings and followed by short notes or a table; a terminal-state line naming the next skill or the skill to return to; and, where detail files exist, a `Depth:` line pointing to them, including any shared file in `shared/`.
 - Name other skills in full, as `dietpowers:<name>`. Bare names can collide with other commands, such as Claude Code's built-in `/review`.
 - Refer to files in a skill's own directory as `${CLAUDE_SKILL_DIR}/<file>`; Claude Code replaces it with the absolute path when the skill loads.
-- Text shared by several skills lives in `shared/` at the plugin root; refer to it as `${CLAUDE_PLUGIN_ROOT}/shared/<file>`.
+- Text shared by several skills lives in `shared/` at the plugin root; refer to it as `${CLAUDE_PLUGIN_ROOT}/shared/<file>`. Claude Code substitutes these variables only in a skill's `SKILL.md`; a detail file that the model reads with the Read tool gets no substitution, so refer to other files from it by a relative path, such as `../../shared/<file>`.
 
 ## Testing
 
-Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the only record of the mechanical rules (frontmatter keys and size, the ban on `@` links, references to renamed or deleted skills) and of the text the flow depends on (question endings, commit rules, the tracker file, reviewer severity and fix checks, the brainstorm research step, open items and triage, README wording), so read its failure output.
+Run `bash tests/skills/check-skills.sh` after any skill edit. The script is the only record of the mechanical rules (frontmatter keys and size, the ban on `@` links, references to renamed or deleted skills) and of the text the flow depends on (question endings, commit rules, the tracker file, reviewer severity and fix checks, the brainstorm research step, open items and triage, the shared files and the review's pointer to `making-recommendations.md`, README wording), so read its failure output.
 
 `docs/testing.md` explains the behavioral tests and how to read their results.
 

@@ -192,7 +192,7 @@ Every skill that asks you anything gained the same rule: one question at a time,
   - Returns to the skill whose steps it is working within, or to `execute-plan` while the plan has unticked tasks; otherwise commits and hands off to `adversarial-review` instead of `test-driven-development`.
   - `defense-in-depth.md` ("validate at EVERY layer") is replaced by `guards-after-a-fix.md`: validate at system boundaries, and add an internal guard only where the bug showed the boundary can be bypassed, with a test.
   - `root-cause-tracing.md` loses its diagrams, "NEVER" nodes and session anecdote (739 to 375 words).
-  - `condition-based-waiting.md` is trimmed, and its 666-word example file, written for one specific project, is gone.
+  - `condition-based-waiting.md` is trimmed, and its 666-word example file, written for one specific project, is gone. It now lives in `shared/`, since `tdd` uses it too.
   - `find-polluter.sh` stops with an error when the pollution exists before any test runs, instead of reporting "all tests clean"; runs test paths containing spaces as one file; is run from the project root by its full path; and no longer calls itself a bisection script.
 
 ### Sources
