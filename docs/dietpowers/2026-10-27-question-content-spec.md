@@ -24,12 +24,19 @@ Later steps copy these values exactly.
   - Justify an option by what another part of the system needs only when that part exists or its spec states the need.
   - In a sequence of questions, say where your partner is, such as "question 4 of 6". If the count grows, say why, for example that a fix check added findings.
   - Know the goal each decision serves. When you are unsure what a decision is for, or how exact, complete or correct the work must be, ask your partner about the goal before asking about the detail. Once it is settled, quote it in their words where it matters and decide routine questions against it yourself; ask again only when something comes up that it does not cover.
+
+  A question whose text a skill gives in quotes is asked as written. When you ask a recorded question again on resume, update only its position count.
   ```
 
 - Pointer sentence, appended to the question paragraph ("Ask your partner one question at a time, ...") in all 11 `skills/*/SKILL.md`, after its last sentence; the rest of the paragraph is unchanged: "Before your first question, read `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` and follow it; if it cannot be read, say so once and carry on."
 - `Depth:` line: every `SKILL.md` names `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` on its `Depth:` line, last in the list. A skill with no `Depth:` line (execute-plan, finish-branch, handle-feedback, prove-done, update-spec, write-plan) gets `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` as its last line.
-- New bullet in `shared/making-recommendations.md`, after the first bullet: "- For a review finding, say when it happens: the data or state it needs, whether it can happen today, and how often. Check with a quick query or file read when one is cheap; otherwise say it is unverified. If it cannot happen now, say so and offer deferring it as a full option."
+- New bullet in `shared/making-recommendations.md`, after the first bullet: "- For a review finding, say what triggers it (the data, state or usage it needs), whether that exists now where the work will run, and how often. Check with a quick read-only query or file read when one is cheap and needs no credentials or access your partner has not already given; otherwise say it is unverified. If the trigger does not exist now, say so and offer deferring it as a full option."
+
+  > **Changed 2026-10-27 (spec review):** the bullet names the trigger (data, state or usage; the code path is taken as given) and limits checks to read-only ones needing no new access, where the limit was only in Inputs and failure behavior (findings 1 and 5). Approved by the partner in the spec review.
 - Review tracker header field, added to `## Tracker format` in `shared/trackers.md` after `FIX_BASE:`: "- `Goal:` the goal the review serves, quoted from the spec's Goal section or from `REQUIREMENTS`, and how exact, complete or correct the work must be, in your partner's words where they gave them. Recorded at review step 5."
+- `shared/trackers.md` `## Resuming` step 5: "check it now, as in the first pass (a minor finding with one reasonable fix gets a notice; the rest are asked)" becomes "check it now, as in review step 5". The `Question:` field's "`notice only` for a minor finding fixed without asking" becomes "`notice only` for a minor finding fixed without asking, or a major deferred because it does not block the recorded goal".
+
+  > **Changed 2026-10-27 (spec review):** adds the two `shared/trackers.md` changes, so resume and the `Question:` field match the new step 5 (finding 3). Approved by the partner in the spec review.
 
 ## Design
 
@@ -38,44 +45,54 @@ Later steps copy these values exactly.
 - **`shared/making-recommendations.md`**: the new bullet from Constraints. Only `dietpowers:adversarial-review` reads this file, so the rule reaches review findings only.
 - **`skills/adversarial-review/SKILL.md`**:
   - Step 5, after the pointer to `making-recommendations.md`: "Then record the tracker's `Goal:` line. If the spec or `REQUIREMENTS` does not settle how exact, complete or correct the work must be, ask your partner once before any finding, and record the answer." This question is not a tracker item and does not offer `pause`.
-  - Step 5 gains a bullet after the minor-finding bullet: "A major finding that holds but plainly does not block the recorded goal, and that you would not otherwise ask about: mark it `deferred`, add it as an open item as the **add to open items** answer does, set its Question to `notice only`, and tell your partner in one line the finding and why it does not block the goal. Do not wait for a reply. If your partner objects, set it back to `open` and ask."
+  - Step 5 gains a bullet after the minor-finding bullet: "A major finding that holds but plainly does not block the recorded goal, and that you would not otherwise ask about: mark it `deferred`, add it as an open item as the **add to open items** answer does, set its Question to `notice only`, and tell your partner in one line the finding and why it does not block the goal. Do not wait for a reply. If your partner objects, remove the open item added for it, set the finding back to `open` with its Question recorded, and ask. A finding whose trigger does not exist now is not, for that reason alone, one that does not block the goal; ask it."
+
+    > **Changed 2026-10-27 (spec review):** an objection removes the open item (finding 2); a finding whose trigger does not exist now is asked, not deferred by notice (finding 5). Approved by the partner in the spec review.
   - The ask bullet's first clause becomes: "Every blocker, every major finding that blocks the recorded goal or whose bearing on it is unclear, and any finding you want to reject, downgrade, ..." (the rest unchanged).
   - The sentence "Review findings reach open items only through the **add to open items** answer" becomes "Review findings reach open items only through the **add to open items** answer or the non-blocking major bullet above".
   - "You may raise a grade on your own; lower one only by asking" is unchanged: deferring a major does not change its grade.
-  - Terminal state: "recommending it only when no blocker or major item is `deferred` either" becomes "recommending it only when no blocker or major item is `deferred` either, other than majors deferred because they do not block the recorded goal".
+  - Terminal state: "recommending it only when no blocker or major item is `deferred` either" becomes "recommending it only when no blocker or major item is `deferred` either, other than majors whose Question is `notice only`".
   - Step 7 handles second-pass findings as in step 5, so the new rules cover them with no change to step 7.
-- **`shared/trackers.md`**: the `Goal:` header field from Constraints.
+- **`shared/trackers.md`**: the `Goal:` header field, the resume rule and the `Question:` field from Constraints.
 - **`tests/skills/check-skills.sh`** asserts:
   - `shared/asking-questions.md` exists and contains `Know the goal each decision serves` and `question 4 of 6`;
   - every `SKILL.md` contains `read \`${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md\`` and has a `Depth:` line naming `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md`;
-  - `shared/making-recommendations.md` contains `say when it happens`;
+  - `shared/making-recommendations.md` contains `say what triggers it` and `read-only`;
   - the review's step 5 line contains `` `Goal:` `` and the review contains `plainly does not block the recorded goal`;
-  - `shared/trackers.md` contains `` `Goal:` ``;
+  - `shared/trackers.md` contains `` `Goal:` `` and `as in review step 5`, and no longer contains `as in the first pass`;
   - the existing `Depth:` assertion for adversarial-review is updated to the new line.
 - **`README.md`**:
   - in "What changed in each skill", the paragraph beginning "Every skill that asks you anything gained the same rule" gains: "Each also reads `shared/asking-questions.md` before its first question: questions stand alone, lead with the problem in everyday terms, give an example, use the names the code already uses, say how many remain, and ask about the goal before the detail when the goal is unclear.";
-  - the `adversarial-review` entry gains a bullet: "Records the goal the review serves in the tracker, asking once if the spec leaves unclear how exact the work must be; says when each finding happens and whether it can happen today; defers a major finding that does not block that goal with a one-line notice, and asks about the rest."
+  - the `adversarial-review` entry gains a bullet: "Records the goal the review serves in the tracker, asking once if the spec leaves unclear how exact the work must be; says what triggers each finding and whether that trigger exists now; defers a major finding that does not block that goal with a one-line notice, and asks about the rest."
 - **`docs/testing.md`**: a section describing the probe in Success criterion 2, how to run it and how to score it.
 
 ## Inputs and failure behavior
 
 - **`shared/asking-questions.md` cannot be read**: the skill says so once and carries on with the inline paragraph alone.
 - **The spec has no Goal section, and a code review has no `REQUIREMENTS`**: the review asks the partner for the goal once, as the goal rule says, and records the answer as `Goal:`.
-- **The partner objects to a non-blocking-major notice**: the item goes back to `open` and is asked, as step 5's new bullet says.
+- **The partner objects to a non-blocking-major notice**: the open item added for it is removed, and the finding goes back to `open` and is asked, as step 5's new bullet says.
 - **Resuming a review tracker written before this change, with no `Goal:` line**: the review records the line before asking the next question, asking once if needed. This is not treated as a missing field under `## Resuming` step 4.
-- **The check fact for "can it happen today" needs a query against a live database**: the review runs it only if it is read-only and quick; otherwise it says the answer is unverified.
+- **Checking whether a trigger exists now needs a query that writes, or credentials or access the partner has not given**: the review does not run it and says the answer is unverified, as the making-recommendations bullet says.
 
 ## Success criteria
 
 1. `bash tests/skills/check-skills.sh` exits 0 and makes the assertions listed under Design.
-2. Probe: a fixture repository with a spec and a spec review whose findings recreate rep cases: (a) a finding that cannot happen on the fixture's current data; (b) a major finding that does not block the spec's goal; (c) a reviewer finding worded with a label the spec does not use. The review runs three times on 0.1.0 and three times on the branch. In each branch run:
-   - a Read of `shared/asking-questions.md` appears before the first question;
-   - the tracker has a `Goal:` line before the first finding question;
-   - finding (a)'s question says it cannot happen today and offers deferring as a full option;
-   - finding (b) gets a one-line notice and no question, and is in `.dietpowers/trackers/open-items.md`;
-   - no question uses (c)'s label without saying what it refers to, and no question refers to "the draft", "this goal" or "item N" without quoting it;
-   - each question in the sequence says how many remain.
-   The 0.1.0 runs are scored on the same checklist and recorded for comparison. The result is reported per run, with any failed item named.
+2. Probe: a fixture repository with a spec, run against two copies of the plugin, 0.1.0 and the branch. In both copies, `skills/adversarial-review/spec-reviewer.md` is replaced by a prompt that returns the same fixed report, so both see the same findings and the normal first pass (steps 1 to 5) is tested:
+   - (a) a major finding whose trigger does not exist in the fixture's data;
+   - (b) a major finding that does not block the spec's goal and whose trigger exists;
+   - (c) a major finding that blocks the goal, worded with a label the spec does not use.
+
+   The review runs three times on each copy, with the model and effort level pinned. Each run is scored on these checks:
+   1. a Read of `shared/asking-questions.md` appears before the first question;
+   2. the tracker has a `Goal:` line before the first finding question;
+   3. finding (a)'s question says its trigger does not exist now and offers deferring as a full option;
+   4. finding (b) gets a one-line notice and no question, and is in `.dietpowers/trackers/open-items.md`;
+   5. no question uses (c)'s label without saying what it refers to, and no question refers to "the draft", "this goal" or "item N" without quoting it;
+   6. each question in the sequence says how many remain.
+
+   The criterion is met when every check passes in all 3 branch runs. A failed run is diagnosed and the skill text fixed before the probe runs again; a run is never repeated only to get a pass. The 0.1.0 runs are scored on the same checks and recorded for comparison; they are expected to fail checks 1, 2 and 4, which test rules 0.1.0 does not have.
+
+   > **Changed 2026-10-27 (spec review):** states the probe method (a fixed reviewer report in both copies), each finding's grade, and the pass bar (all checks in 3 of 3 branch runs) (findings 5, 6 and 7). Approved by the partner in the spec review.
 3. `docs/testing.md` describes the probe in criterion 2.
 
 ## Assumptions
