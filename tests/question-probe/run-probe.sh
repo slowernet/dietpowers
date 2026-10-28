@@ -168,8 +168,9 @@ def first(pred):
 
 first_q = first(lambda e: e[0] == "text" and "Reply with" in e[1])
 first_finding_q = first(lambda e: e[0] == "text" and "**pause**" in reply_line(e[1]))
-read_aq = first(lambda e: e[0] == "tool" and e[1] == "Read"
-                and str(e[2].get("file_path", "")).endswith("shared/asking-questions.md"))
+read_aq = first(lambda e: e[0] == "tool" and (
+    (e[1] == "Read" and str(e[2].get("file_path", "")).endswith("shared/asking-questions.md"))
+    or (e[1] == "Bash" and "asking-questions.md" in str(e[2].get("command", "")))))
 
 def writes_goal(e):
     if e[0] != "tool":
