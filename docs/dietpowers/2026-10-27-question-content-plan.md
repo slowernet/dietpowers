@@ -121,7 +121,7 @@ Tests (in `check-skills.sh`; run `bash tests/skills/check-skills.sh`, expect `PA
 - `trackers.md: Goal field and resume via step 5`: fails if the `Goal:` field or the missing-`Goal:` resume sentence is removed, or the old "as in the first pass" text returns.
 - Add the checks first and run the script to see them fail; record the output in the commit message.
 
-### - [ ] Task 3: Probe harness and fixture
+### - [x] Task 3: Probe harness and fixture
 
 Files:
 - Create `tests/question-probe/run-probe.sh` (imitate `tests/claude-code/measure-autotrigger.sh`).
@@ -154,7 +154,7 @@ Tests:
 - One smoke run, `bash tests/question-probe/run-probe.sh -n 1`, completes, writes `questions.md` with at least one question and a `score.txt` with all six check lines, and the run's review tracker marks all three findings as holding under Verified. This fails if the reply loop stops at the first question, the plugin copy is not loaded, or the fixture spec does not contain the bugs.
 - `bash tests/skills/check-skills.sh` still passes.
 
-Departure: `scripts/lint-shell.sh` could not run, because `shellcheck` is not installed; `bash -n` passes. The scoring is inline Python in `run-probe.sh`, as `tests/claude-code/analyze-token-usage.py` already uses Python. The smoke run was blocked by the session's permission check (it starts `claude` with `--dangerously-skip-permissions`) and has not run; the task stays unticked until it does.
+Departure: `scripts/lint-shell.sh` could not run, because `shellcheck` is not installed; `bash -n` passes. The scoring is inline Python in `run-probe.sh`, as `tests/claude-code/analyze-token-usage.py` already uses Python. The session's permission check blocks starting `claude` with `--dangerously-skip-permissions`, so the partner runs the probe in a terminal. The smoke run (2026-10-28) completed: all three findings held under Verified, and the scripted replies reached the final question. It showed two problems, both fixed in `bb20014`: check 1 counted only the Read tool, while the model read the file with `cat`; and the notice for a non-blocking major never fired in a spec review (see the spec's 2026-10-28 note).
 
 ### - [ ] Task 4: Run the probe and record the result
 
