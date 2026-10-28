@@ -159,7 +159,7 @@ Tests:
 
 Departure: `scripts/lint-shell.sh` could not run, because `shellcheck` is not installed; `bash -n` passes. The scoring is inline Python in `run-probe.sh`, as `tests/claude-code/analyze-token-usage.py` already uses Python. The session's permission check blocks starting `claude` with `--dangerously-skip-permissions`, so the partner runs the probe in a terminal. The smoke run (2026-10-28) completed: all three findings held under Verified, and the scripted replies reached the final question. It showed two problems, both fixed in `bb20014`: check 1 counted only the Read tool, while the model read the file with `cat`; and the notice for a non-blocking major never fired in a spec review (see the spec's 2026-10-28 note).
 
-### - [ ] Task 4: Run the probe and record the result
+### - [x] Task 4: Run the probe and record the result
 
 Files:
 - Create `docs/dietpowers/2026-10-27-question-content-probe-results.md`.
@@ -176,3 +176,5 @@ Behavior:
 4. The task is done when every check passes in all 3 branch runs, or, after two rounds of fixes, when the remaining failures are reported to the partner with the logs.
 
 Tests: the probe itself; the pass condition is criterion 2's bar. `bash tests/skills/check-skills.sh` passes after any skill text change.
+
+Departure: the partner ran the probe in a terminal (the session's permission check blocks it). Round 1 failed check 4 in 2 of 3 branch runs; two skill-text fixes through `dietpowers:update-spec` (`3aa1486`, `b39c40c`); round 2 passed every check in 3 of 3 runs. Results in `docs/dietpowers/2026-10-27-question-content-probe-results.md`.

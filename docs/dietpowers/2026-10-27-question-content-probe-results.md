@@ -35,3 +35,27 @@ Also seen, outside the checks:
 Result: the bar is not met. Check 4 failed in 2 of 3 branch runs.
 
 Questions from branch run 1, for reference: see the logs at `$TMPDIR/dietpowers-tests/1793198322-60748/question-probe/worktree/run-1/questions.md` (not kept in the repository).
+
+## Fixes after round 1
+
+- `3aa1486`: review step 5 gives both kinds of notice "before your first question" (spec note 2026-10-28, probe round 1).
+- `b39c40c`: `shared/asking-questions.md` adds "Tracker item numbers are your notes too: in any message, name the finding, such as "the refund finding", instead of its number."
+
+## Round 2, 2026-10-28
+
+Same model, effort and CLI as round 1. Branch at `b39c40c`. Branch runs only; 0.1.0 is unchanged, so round 1's 0.1.0 runs stand as the comparison. All six checks were read from `questions.md` as well as scored by the script.
+
+| Check | Branch 1 | Branch 2 | Branch 3 |
+|---|---|---|---|
+| 1 | pass | pass | pass |
+| 2 | pass | pass | pass |
+| 3 | pass | pass | pass |
+| 4 | pass | pass | pass |
+| 5 | pass | pass | pass |
+| 6 | pass ("Question 1 of 2") | pass ("Question 1 of 3"; the review added its own date finding as a question) | pass |
+
+Every run gave the log-timestamp notice in its first question message, for example (branch run 1): "**Not asking:** the spec logs each run with a local-time timestamp, but `data/README.md` says "All logs use UTC." The log line doesn't change the printed totals, so it doesn't block your goal. I've put it in `.dietpowers/trackers/open-items.md` for later."
+
+No message in any run used a tracker item number, "ledger" or "roll-up". Progress lines named findings instead, for example "Next I'll add the newline finding to open items, then ask about refunds."
+
+Result: the bar is met. Every check passes in all 3 branch runs.
