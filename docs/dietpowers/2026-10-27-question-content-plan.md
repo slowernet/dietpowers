@@ -87,7 +87,7 @@ Tests (all in `check-skills.sh`; run with `bash tests/skills/check-skills.sh`, e
 - `every Depth line names asking-questions.md`: fails if any skill's `Depth:` line drops the file or the line is missing.
 - Before editing the skills, add the checks and run the script once to see them fail (11 pointer and 11 `Depth:` failures and the missing file); record that output in the task's commit message.
 
-### - [ ] Task 2: Review rules: trigger, goal and notice-deferred majors
+### - [x] Task 2: Review rules: trigger, goal and notice-deferred majors
 
 Files:
 - Modify `shared/making-recommendations.md`.

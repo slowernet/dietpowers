@@ -111,7 +111,7 @@ grep -qF "git diff [FIX_BASE] HEAD" "$SKILLS_DIR/adversarial-review/code-reviewe
 
 # Review: tracker, pause, fix check; no Review notes append or old consultation rule.
 R="$SKILLS_DIR/adversarial-review/SKILL.md"
-for want in ", or **pause**." "## Tracker format" 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' "Second pass" "if it has none"; do
+for want in ", or **pause**." "## Tracker format" 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md, ${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md' "Second pass" "if it has none" "plainly does not block the recorded goal" 'does not offer `pause`'; do
   grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
 done
 grep -rqF "Review notes" "$SKILLS_DIR" && fail "a skill still appends Review notes"
@@ -223,6 +223,15 @@ else
 fi
 grep -E '^5\. ' "$R" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' \
   || fail 'review SKILL.md: step 5 does not point to ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md'
+for want in "say what triggers it" "read-only"; do
+  grep -qF "$want" "$MR" || fail "$MR: missing '$want'"
+done
+grep -E '^5\. ' "$R" | grep -qF '`Goal:`' || fail 'review SKILL.md: step 5 does not record the `Goal:` line'
+T="shared/trackers.md"
+for want in '`Goal:`' "as in review step 5" 'with no `Goal:` line is not missing a field'; do
+  grep -qF "$want" "$T" || fail "$T: missing '$want'"
+done
+grep -qF "as in the first pass" "$T" && fail "$T: resume still says 'as in the first pass'"
 grep -E '^[67]\. ' "$R" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' \
   && fail 'review SKILL.md: steps 6 or 7 also point to the shared file'
 grep -qF 'for a finding under `Out of scope`' "$R" && fail "review SKILL.md: step 7 still special-cases Out of scope findings"
