@@ -18,6 +18,8 @@ CASES = [
      ("tool", "Bash", {"command": f"python3 - <<'EOF'\np='{T}'\ns=s.replace('- Goal:\\n', '- Goal: \\\"The totals must be correct\\\"')\nEOF"}), True),
     ("Bash grep read", ("tool", "Bash", {"command": f'grep -n "Goal: correct" {T}'}), False),
     ("Bash sed print read", ("tool", "Bash", {"command": f'sed -n "/Goal: correct/p" {T}'}), False),
+    ("Bash one-line python write, placeholder then incorrect",
+     ("tool", "Bash", {"command": f"python3 -c \"open('{T}','w').write('- Goal: (set at step 5)\\n## Verified\\n1. holds: totals are incorrect for CRLF files\\n')\""}), False),
     ("Write with a placeholder", ("tool", "Write", {"file_path": T, "content": "- Goal: (recorded at step 5)"}), False),
     ("Write with an empty Goal", ("tool", "Write", {"file_path": T, "content": "- Goal:\n- Second pass: pending"}), False),
     ("Write outside the trackers", ("tool", "Write", {"file_path": "notes.md", "content": GOAL}), False),

@@ -23,7 +23,7 @@ def writes_goal(e):
     else:
         return False
     # The fixture's Goal says the totals "must be correct"; a placeholder does not.
-    return re.search(r"Goal:[ \t]*(?!\\n)[^\n]*correct", body) is not None
+    return re.search(r"Goal:[ \t]*(?!\\n)(?:(?!\\n)[^\n])*correct", body) is not None
 
 
 def main(run_dir, turns):
