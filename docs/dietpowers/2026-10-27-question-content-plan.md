@@ -23,12 +23,15 @@ Copied verbatim from the spec.
   - Lead with the problem in everyday terms: what breaks, for whom, and when. Names of files, classes and methods come after. Then give each option with its risk.
   - Give one concrete example, from your partner's own code or data where you can.
   - Use the names the code, spec and files already use, and the precise technical term for the thing at the centre of the question: say "strings" and "symbols", not "two forms". Do not invent labels.
+  - A name you made up while working, or one from a document your partner has not read, such as a reviewer's report or a test fixture, is not shared vocabulary. Before you use it in a message, say what the thing is in plain words, with an example.
   - Justify an option by what another part of the system needs only when that part exists or its spec states the need.
   - In a sequence of questions, say where your partner is, such as "question 4 of 6". If the count grows, say why, for example that a fix check added findings.
   - Know the goal each decision serves. When you are unsure what a decision is for, or how exact, complete or correct the work must be, ask your partner about the goal before asking about the detail. Once it is settled, quote it in their words where it matters and decide routine questions against it yourself; ask again only when something comes up that it does not cover.
 
   A question whose text a skill gives in quotes is asked as written. When you ask a recorded question again on resume, update only its position count.
   ```
+
+  > **Changed 2026-10-28:** see the note under the spec's Constraints (shorthand rule added).
 
 - Pointer sentence, appended to the question paragraph ("Ask your partner one question at a time, ...") in all 11 `skills/*/SKILL.md`, after its last sentence; the rest of the paragraph is unchanged: "Before your first question, read `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` and follow it; if it cannot be read, say so once and carry on."
 - `Depth:` line: every `SKILL.md` names `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` on its `Depth:` line, last in the list. A skill with no `Depth:` line (execute-plan, finish-branch, handle-feedback, prove-done, update-spec, write-plan) gets `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` as its last line.
@@ -75,11 +78,11 @@ Behavior:
 1. `shared/asking-questions.md` holds exactly the content in Global Constraints.
 2. In each `SKILL.md`, the question paragraph keeps its text and ends with a space and the pointer sentence exactly as in Global Constraints.
 3. Each `SKILL.md` has one `Depth:` line naming `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` last, as in Global Constraints and the References list. The six skills without one gain `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` as their last line, after a blank line.
-4. `check-skills.sh` gains a block, placed after the question-format checks at lines 56-66, that fails when: `shared/asking-questions.md` is missing, or lacks `Know the goal each decision serves` or `question 4 of 6`; any `SKILL.md` lacks the string ``read `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` ``; any `SKILL.md` has no line starting `Depth:` that contains `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md`.
-5. `README.md` line 106: the paragraph gains, after its first sentence, the sentence from the spec's Design: "Each also reads `shared/asking-questions.md` before its first question: questions stand alone, lead with the problem in everyday terms, give an example, use the names the code already uses, say how many remain, and ask about the goal before the detail when the goal is unclear."
+4. `check-skills.sh` gains a block, placed after the question-format checks at lines 56-66, that fails when: `shared/asking-questions.md` is missing, or lacks `Know the goal each decision serves`, `question 4 of 6` or `is not shared vocabulary`; any `SKILL.md` lacks the string ``read `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` ``; any `SKILL.md` has no line starting `Depth:` that contains `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md`.
+5. `README.md` line 106: the paragraph gains, after its first sentence, the sentence from the spec's Design: "Each also reads `shared/asking-questions.md` before its first question: questions stand alone, lead with the problem in everyday terms, give an example, use the names the code already uses, explain any name your partner has not seen before using it, say how many remain, and ask about the goal before the detail when the goal is unclear."
 
 Tests (all in `check-skills.sh`; run with `bash tests/skills/check-skills.sh`, expect `PASS` and exit 0):
-- `asking-questions.md exists with its rules`: fails if the file is deleted or the goal bullet or position example is removed.
+- `asking-questions.md exists with its rules`: fails if the file is deleted or the goal bullet, position example or shorthand rule is removed.
 - `every SKILL.md points to asking-questions.md`: fails if the pointer sentence is removed from any one skill.
 - `every Depth line names asking-questions.md`: fails if any skill's `Depth:` line drops the file or the line is missing.
 - Before editing the skills, add the checks and run the script once to see them fail (11 pointer and 11 `Depth:` failures and the missing file); record that output in the task's commit message.

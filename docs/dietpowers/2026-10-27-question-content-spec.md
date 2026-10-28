@@ -21,12 +21,15 @@ Later steps copy these values exactly.
   - Lead with the problem in everyday terms: what breaks, for whom, and when. Names of files, classes and methods come after. Then give each option with its risk.
   - Give one concrete example, from your partner's own code or data where you can.
   - Use the names the code, spec and files already use, and the precise technical term for the thing at the centre of the question: say "strings" and "symbols", not "two forms". Do not invent labels.
+  - A name you made up while working, or one from a document your partner has not read, such as a reviewer's report or a test fixture, is not shared vocabulary. Before you use it in a message, say what the thing is in plain words, with an example.
   - Justify an option by what another part of the system needs only when that part exists or its spec states the need.
   - In a sequence of questions, say where your partner is, such as "question 4 of 6". If the count grows, say why, for example that a fix check added findings.
   - Know the goal each decision serves. When you are unsure what a decision is for, or how exact, complete or correct the work must be, ask your partner about the goal before asking about the detail. Once it is settled, quote it in their words where it matters and decide routine questions against it yourself; ask again only when something comes up that it does not cover.
 
   A question whose text a skill gives in quotes is asked as written. When you ask a recorded question again on resume, update only its position count.
   ```
+
+  > **Changed 2026-10-28:** the shared file gains a rule that a name made up while working, or taken from a document the partner has not read, is explained in plain words with an example before it is used in a message (from no such rule). Why: in this branch's own review the agent put fixture and reviewer terms ("refunds", "the two readings") into questions without explaining them, and the partner asked for the guard to be in scope. Approved by the partner on 2026-10-28 ("yes thank you").
 
 - Pointer sentence, appended to the question paragraph ("Ask your partner one question at a time, ...") in all 11 `skills/*/SKILL.md`, after its last sentence; the rest of the paragraph is unchanged: "Before your first question, read `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` and follow it; if it cannot be read, say so once and carry on."
 - `Depth:` line: every `SKILL.md` names `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` on its `Depth:` line, last in the list. A skill with no `Depth:` line (execute-plan, finish-branch, handle-feedback, prove-done, update-spec, write-plan) gets `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` as its last line.
@@ -57,14 +60,15 @@ Later steps copy these values exactly.
   - Step 7 handles second-pass findings as in step 5, so the new rules cover them with no change to step 7.
 - **`shared/trackers.md`**: the `Goal:` header field, the resume rule and the `Question:` field from Constraints.
 - **`tests/skills/check-skills.sh`** asserts:
-  - `shared/asking-questions.md` exists and contains `Know the goal each decision serves` and `question 4 of 6`;
+  - `shared/asking-questions.md` exists and contains `Know the goal each decision serves`, `question 4 of 6` and `is not shared vocabulary`;
   - every `SKILL.md` contains `read \`${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md\`` and has a `Depth:` line naming `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md`;
   - `shared/making-recommendations.md` contains `say what triggers it` and `read-only`;
   - the review's step 5 line contains `` `Goal:` `` and the review contains `plainly does not block the recorded goal`;
   - `shared/trackers.md` contains `` `Goal:` `` and `as in review step 5`, and no longer contains `as in the first pass`;
   - the existing `Depth:` assertion for adversarial-review is updated to the new line.
 - **`README.md`**:
-  - in "What changed in each skill", the paragraph beginning "Every skill that asks you anything gained the same rule" gains: "Each also reads `shared/asking-questions.md` before its first question: questions stand alone, lead with the problem in everyday terms, give an example, use the names the code already uses, say how many remain, and ask about the goal before the detail when the goal is unclear.";
+  - in "What changed in each skill", the paragraph beginning "Every skill that asks you anything gained the same rule" gains: "Each also reads `shared/asking-questions.md` before its first question: questions stand alone, lead with the problem in everyday terms, give an example, use the names the code already uses, explain any name your partner has not seen before using it, say how many remain, and ask about the goal before the detail when the goal is unclear.";
+  > **Changed 2026-10-28:** check and README sentence follow the shorthand rule; see the note under Constraints.
   - the `adversarial-review` entry gains a bullet: "Records the goal the review serves in the tracker, asking once if the spec leaves unclear how exact the work must be; says what triggers each finding and whether that trigger exists now; defers a major finding that does not block that goal with a one-line notice, and asks about the rest."
 - **`docs/testing.md`**: a section describing the probe in Success criterion 2, how to run it and how to score it.
 
