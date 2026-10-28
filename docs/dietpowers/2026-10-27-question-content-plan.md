@@ -62,7 +62,7 @@ Copied verbatim from the spec.
 
 ## Tasks
 
-### - [ ] Task 1: Shared question rules, read by all skills
+### - [x] Task 1: Shared question rules, read by all skills
 
 Files:
 - Create `shared/asking-questions.md` (imitate `shared/making-recommendations.md`: title, one opening line, bullets).

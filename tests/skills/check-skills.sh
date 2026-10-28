@@ -65,6 +65,20 @@ done
 grep -rqF "Which option?" "$SKILLS_DIR" && fail "a menu still ends with 'Which option?'"
 grep -rqE "Reply with (yes|continue|pull request)[ ,]" "$SKILLS_DIR" && fail "a fixed question ending is not bolded"
 
+# Asking questions: one shared file of content rules, read by every skill before its first question.
+AQ="shared/asking-questions.md"
+if [ -f "$AQ" ]; then
+  for want in "Know the goal each decision serves" "question 4 of 6" "is not shared vocabulary"; do
+    grep -qF "$want" "$AQ" || fail "$AQ: missing '$want'"
+  done
+else
+  fail "$AQ missing"
+fi
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+  grep -qF 'read `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md`' "$f" || fail "$f: no pointer to $AQ"
+  grep -E '^Depth:' "$f" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md' || fail "$f: Depth line does not name $AQ"
+done
+
 # Code steps always commit; only the spec and plan may be held back.
 for n in execute-plan tdd find-root-cause handle-feedback prove-done; do
   grep -qF "if commits are approved" "$SKILLS_DIR/$n/SKILL.md" && fail "$n: code step still commits conditionally"
