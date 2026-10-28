@@ -23,7 +23,7 @@ Copied verbatim from the spec.
   - Lead with the problem in everyday terms: what breaks, for whom, and when. Names of files, classes and methods come after. Then give each option with its risk.
   - Give one concrete example, from your partner's own code or data where you can.
   - Use the names the code, spec and files already use, and the precise technical term for the thing at the centre of the question: say "strings" and "symbols", not "two forms". Do not invent labels.
-  - A name you made up while working, or one from a document your partner has not read, such as a reviewer's report or a test fixture, is not shared vocabulary. Before you use it in a message, say what the thing is in plain words, with an example.
+  - A name you made up while working, or one from a document your partner has not read, such as a reviewer's report or a test fixture, is not shared vocabulary. Before you use it in a message, say what the thing is in plain words, with an example. Tracker item numbers are your notes too: in any message, name the finding, such as "the refund finding", instead of its number.
   - Justify an option by what another part of the system needs only when that part exists or its spec states the need.
   - In a sequence of questions, say where your partner is, such as "question 4 of 6". If the count grows, say why, for example that a fix check added findings.
   - Know the goal each decision serves. When you are unsure what a decision is for, or how exact, complete or correct the work must be, ask your partner about the goal before asking about the detail. Once it is settled, quote it in their words where it matters and decide routine questions against it yourself; ask again only when something comes up that it does not cover.
@@ -32,6 +32,7 @@ Copied verbatim from the spec.
   ```
 
   > **Changed 2026-10-28:** see the note under the spec's Constraints (shorthand rule added).
+  > **Changed 2026-10-28 (probe round 1):** see the spec's Constraints (tracker item numbers).
 
 - Pointer sentence, appended to the question paragraph ("Ask your partner one question at a time, ...") in all 11 `skills/*/SKILL.md`, after its last sentence; the rest of the paragraph is unchanged: "Before your first question, read `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` and follow it; if it cannot be read, say so once and carry on."
 - `Depth:` line: every `SKILL.md` names `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` on its `Depth:` line, last in the list. A skill with no `Depth:` line (execute-plan, finish-branch, handle-feedback, prove-done, update-spec, write-plan) gets `Depth: ${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md` as its last line.

@@ -68,7 +68,7 @@ grep -rqE "Reply with (yes|continue|pull request)[ ,]" "$SKILLS_DIR" && fail "a 
 # Asking questions: one shared file of content rules, read by every skill before its first question.
 AQ="shared/asking-questions.md"
 if [ -f "$AQ" ]; then
-  for want in "Know the goal each decision serves" "question 4 of 6" "is not shared vocabulary"; do
+  for want in "Know the goal each decision serves" "question 4 of 6" "is not shared vocabulary" "Tracker item numbers are your notes too"; do
     grep -qF "$want" "$AQ" || fail "$AQ: missing '$want'"
   done
 else
