@@ -1,0 +1,37 @@
+# Question probe results
+
+The probe in `tests/question-probe/` (see `docs/testing.md`, "Question probe") runs a spec review of a made-up store-totals spec, with a fixed reviewer report of three planted bugs, and answers each question from a script. The bar (spec Success criterion 2): every check passes in all 3 branch runs.
+
+The checks:
+
+1. The shared rules file `shared/asking-questions.md` is read before the first question.
+2. The tracker's `Goal:` line is written before the first finding question.
+3. The refund bug (no refund rows exist yet, but the file format allows them) is asked, says the trigger does not exist now and why it could arise, and offers deferring.
+4. The log-timestamp bug (local time where `data/README.md` requires UTC; no effect on totals) gets a one-line notice, no question, and lands in `.dietpowers/trackers/open-items.md`.
+5. No question uses the reviewer's label "ledger roll-up" without explaining it, or refers to "the draft", "this goal" or "item N" without quoting it.
+6. Each question says how many remain.
+
+## Round 1, 2026-10-28
+
+Model `claude-opus-5-5`, effort `high`, Claude Code 2.1.308. Branch at `20805ea`; 0.1.0 is `5ffdda8`. Run by the partner in a terminal, because this session's permission check blocks starting `claude` with `--dangerously-skip-permissions`.
+
+The script scored check 2 as failed in all branch runs. That was a scoring bug: all three runs wrote the `Goal:` line before the first finding question, through Python inside a Bash command, and the script's pattern rejected the backslash before the quoted goal. The pattern is fixed; the table shows the corrected result. Checks 3 to 6 were scored by reading each run's `questions.md`.
+
+| Check | Branch 1 | Branch 2 | Branch 3 | 0.1.0 1 | 0.1.0 2 | 0.1.0 3 |
+|---|---|---|---|---|---|---|
+| 1 | pass | pass | pass | fail (no such file) | fail | fail |
+| 2 | pass | pass | pass | fail (no `Goal:` line) | fail | fail |
+| 3 | pass | pass | pass | fail: does not say no refunds exist yet | fail: same | fail: same |
+| 4 | pass | **fail**: deferred with no notice; first mentioned in the end report | **fail**: same | fail: asked as a question | fail: asked | fail: asked |
+| 5 | pass | pass | pass | pass | pass | pass |
+| 6 | pass | pass | pass | fail: "Item 1:" with no count | pass ("Item 1 of 3") | pass |
+
+Also seen, outside the checks:
+
+- All three branch runs, and the 0.1.0 runs, wrote progress lines that use tracker item numbers without saying which finding they mean, for example "Recording item 3 as deferred and adding it to open items as item 2" (branch run 2) and "Next I'll add the open item and ask about item 1" (branch run 1, where tracker item 1 was asked as question 2). Check 5 covers only questions, so these pass it.
+- In all six runs the review also raised a fourth problem of its own: the spec's Design never filters rows by `date`.
+- Branch run 1 raised the newline bug from major to blocker on its own, because it hits today's data; step 5 allows raising a grade.
+
+Result: the bar is not met. Check 4 failed in 2 of 3 branch runs.
+
+Questions from branch run 1, for reference: see the logs at `$TMPDIR/dietpowers-tests/1793198322-60748/question-probe/worktree/run-1/questions.md` (not kept in the repository).

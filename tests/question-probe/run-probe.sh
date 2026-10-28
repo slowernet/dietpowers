@@ -186,7 +186,7 @@ def writes_goal(e):
             return False
     else:
         return False
-    return re.search(r"Goal:[ \t]*[^\s\\]", body) is not None
+    return re.search(r"Goal:[ \t]*(?!\\n)\S", body) is not None
 
 goal_w = first(writes_goal)
 
