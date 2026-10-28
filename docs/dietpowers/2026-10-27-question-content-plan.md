@@ -152,6 +152,8 @@ Tests:
 - One smoke run, `bash tests/question-probe/run-probe.sh -n 1`, completes, writes `questions.md` with at least one question and a `score.txt` with all six check lines, and the run's review tracker marks all three findings as holding under Verified. This fails if the reply loop stops at the first question, the plugin copy is not loaded, or the fixture spec does not contain the bugs.
 - `bash tests/skills/check-skills.sh` still passes.
 
+Departure: `scripts/lint-shell.sh` could not run, because `shellcheck` is not installed; `bash -n` passes. The scoring is inline Python in `run-probe.sh`, as `tests/claude-code/analyze-token-usage.py` already uses Python. The smoke run was blocked by the session's permission check (it starts `claude` with `--dangerously-skip-permissions`) and has not run; the task stays unticked until it does.
+
 ### - [ ] Task 4: Run the probe and record the result
 
 Files:

@@ -76,6 +76,25 @@ start implementing immediately").
 The other prompts in `prompts/` can be run one at a time with `run-test.sh <skill> <prompt-file>`.
 `run-multiturn-test.sh` and `run-extended-multiturn-test.sh` carry their own prompts.
 
+### Question probe
+
+```bash
+bash tests/question-probe/run-probe.sh -n 3              # this checkout
+bash tests/question-probe/run-probe.sh -n 3 -r 5ffdda8   # 0.1.0, for comparison
+```
+
+The probe tests how the review asks its questions, the rules in `shared/asking-questions.md` and review step 5. It copies `tests/question-probe/fixture/` into a fresh git repository: a short spec for a command that prints each store's daily sales total, and the sales files it reads. It builds a copy of the plugin, from this checkout or from a git ref with `-r`, and replaces that copy's `spec-reviewer.md` with `tests/question-probe/fixed-report.md`, so every run gets the same three findings:
+
+- refunds are added to a store's total instead of subtracted; no sales file has a refund row yet, but `data/README.md` allows them, so the review should ask, say the trigger does not exist now and why it could arise, and offer deferring;
+- log lines use local time where `data/README.md` requires UTC; this does not affect the totals, so the review should defer it with a one-line notice;
+- the "ledger roll-up" drops the last row of a file with no trailing newline; the spec never says "ledger", so a question should not use that name without saying what it means.
+
+The partner's replies are scripted: a question whose `Reply with` line offers `**pause**` gets `add to open items`; the first other question that mentions the goal gets the spec's Goal section followed by "as written"; the script stops at the continue, revise or stop question, or after 8 replies. `-m` and `-e` pin the model and effort level (defaults `claude-opus-5-5` and `high`).
+
+Each run writes, under `${TMPDIR:-/tmp}/dietpowers-tests/`, the stream logs, a copy of the run's trackers, `questions.md` (every message the review sent, in order, with the scripted replies) and `score.txt`. Checks 1 and 2 (the shared file read before the first question; the `Goal:` line written before the first finding question) and the open-items half of check 4 are scored automatically. Checks 3, 5 and 6 (the refund question; no unexplained "ledger roll-up" and no unquoted "the draft", "this goal" or "item N"; each question saying how many remain) and the notice half of check 4 are scored by reading `questions.md`.
+
+The bar: every check passes in all 3 runs on the branch. 0.1.0 is expected to fail checks 1, 2 and 4, which test rules it does not have. A failed run is diagnosed and the skill text fixed before the probe runs again; never rerun only to get a pass. Like the other suites, run it outside any command sandbox.
+
 ## Manual trials
 
 To test resuming a paused review, brainstorm or triage, pause in one session, then say `resume` in a new session, so the skill has to work from the tracker file alone. Over ACP there is no `/clear`; open a new session instead. Afterwards, `git check-ignore -v .dietpowers/trackers/<tracker>` should name `.dietpowers/.gitignore`.
