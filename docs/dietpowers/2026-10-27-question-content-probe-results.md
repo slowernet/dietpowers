@@ -43,7 +43,7 @@ Questions from branch run 1, for reference: see the logs at `$TMPDIR/dietpowers-
 
 ## Round 2, 2026-10-28
 
-Same model, effort and CLI as round 1. Branch at `b39c40c`. Branch runs only; 0.1.0 is unchanged, so round 1's 0.1.0 runs stand as the comparison. All six checks were read from `questions.md` as well as scored by the script.
+Same model, effort and CLI as round 1. Branch at `b39c40c`. Branch runs only; 0.1.0 is unchanged, so round 1's 0.1.0 runs stand as the comparison. Checks 3 to 6 were read from `questions.md`. Checks 1 and 2 were scored by the script; check 2 cannot be seen in `questions.md`, so the code review (2026-10-28) checked it in the stream logs: in all three runs the first tracker write before the first question recorded the quoted goal. The code review also tightened the script's check 2, which had counted commands that only read the tracker; rescoring rounds 1 and 2 with the tightened script gives the same results.
 
 | Check | Branch 1 | Branch 2 | Branch 3 |
 |---|---|---|---|
