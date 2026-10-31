@@ -24,6 +24,7 @@ Review tracker header:
 - `Branch:`
 - The values passed to the first reviewer: the prompt file, and whichever of `SPEC_FILE_PATH`, `PLAN_FILE_PATH`, `SPEC_AND_PLAN_PATHS`, `REQUIREMENTS` (verbatim) and `BASE_SHA` apply. The second pass reuses them.
 - `FIX_BASE:` for a code review, once recorded.
+- `Goal:` the goal the review serves, quoted from the spec's Goal section or from `REQUIREMENTS`, and how exact, complete or correct the work must be, in your partner's words where they gave them. Recorded at review step 5.
 - `Second pass:` one of `pending`, `done (N findings)`, `not run (<reason>)`.
 
 Brainstorm tracker header: `Stage: brainstorm`, the request, `Branch:`, `Research:`, left empty until the research step runs and then `skipped, <reason>` if it is skipped, and `Spec:`, left empty until the spec file is saved. A brainstorm tracker has no `Second pass:` line.
@@ -33,7 +34,7 @@ Each review item:
 - Heading: `### N. [status] <title> (<severity>, review <1|2>)`. Severity is `blocker`, `major` or `minor`.
 - **Finding:** the failure scenario and the proposed fix, in enough detail to decide on without the reviewer's report.
 - **Verified:** the file and line, or the calculation, that shows whether it holds. An item with no Verified line has not been checked yet.
-- **Question:** the question exactly as asked, kept while the item is `open`; `notice only` for a minor finding fixed without asking.
+- **Question:** the question exactly as asked, kept while the item is `open`; `notice only` for a minor finding fixed without asking, or a major deferred because it does not block the recorded goal.
 - **Decision:** the choice and its reason, dated.
 - **Fix:** what changed, and the commit, or `uncommitted`.
 
@@ -100,8 +101,8 @@ Resume only when your partner asks.
 1. A review tracker is unfinished while it has an `open` or `fix` item, or `Second pass: pending`. A brainstorm tracker is unfinished while its `Spec:` line is empty.
 2. Look only at your own stages: brainstorm resumes `brainstorm` trackers; review resumes `spec-review`, `plan-review` and `code-review` trackers; triage resumes `.dietpowers/trackers/open-items.md`, as described after step 7.
 3. Take the most recently modified unfinished tracker whose `Branch:` is the current branch. Say which one, and list any other unfinished ones on this branch, before the lead-in in step 5. If there is none on this branch, say so, change nothing, and give the number of unfinished trackers on other branches.
-4. If the tracker cannot be read or is missing a field, say which, and ask whether to continue with what is readable or leave the tracker.
-5. Find the first `open` item. In a review tracker, an item with no Verified line was never checked: check it now, as in the first pass (a minor finding with one reasonable fix gets a notice; the rest are asked). Otherwise, say `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.` exactly, with nothing inserted, then give one line of the item's Finding and any text the item points to, and ask its recorded Question verbatim.
+4. If the tracker cannot be read or is missing a field, say which, and ask whether to continue with what is readable or leave the tracker. A review tracker with no `Goal:` line is not missing a field: record the line as in review step 5 before asking the next question.
+5. Find the first `open` item. In a review tracker, an item with no Verified line was never checked: check it now, as in review step 5. Otherwise, say `Resuming <tracker file> at item <N>. If anything changed while you were away, say so.` exactly, with nothing inserted, then give one line of the item's Finding and any text the item points to, and ask its recorded Question verbatim.
 6. If the reply describes a change to the design, route it through the `dietpowers:update-spec` skill (in a brainstorm, fold it into the design instead), and set back to `open` any earlier item it affects.
 7. Then carry on. In a review: the remaining `open` items, then the `fix` items, then the second pass if it is still `pending`. In a brainstorm: the remaining `open` items; with none open, resume at the earliest unfinished brainstorm step, judged from the tracker: the purpose questions (brainstorm step 3); then research (step 4), not yet run while `Research:` is empty and there is no research proposal item; then the remaining design questions (step 5); then the approaches, the design, its approval, and the spec.
 

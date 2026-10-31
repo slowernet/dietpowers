@@ -65,6 +65,20 @@ done
 grep -rqF "Which option?" "$SKILLS_DIR" && fail "a menu still ends with 'Which option?'"
 grep -rqE "Reply with (yes|continue|pull request)[ ,]" "$SKILLS_DIR" && fail "a fixed question ending is not bolded"
 
+# Asking questions: one shared file of content rules, read by every skill before its first question.
+AQ="shared/asking-questions.md"
+if [ -f "$AQ" ]; then
+  for want in "Know the goal each decision serves" "question 4 of 6" "is not shared vocabulary" "Tracker item numbers are your notes too"; do
+    grep -qF "$want" "$AQ" || fail "$AQ: missing '$want'"
+  done
+else
+  fail "$AQ missing"
+fi
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+  grep -qF 'read `${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md`' "$f" || fail "$f: no pointer to $AQ"
+  grep -E '^Depth:' "$f" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md' || fail "$f: Depth line does not name $AQ"
+done
+
 # Code steps always commit; only the spec and plan may be held back.
 for n in execute-plan tdd find-root-cause handle-feedback prove-done; do
   grep -qF "if commits are approved" "$SKILLS_DIR/$n/SKILL.md" && fail "$n: code step still commits conditionally"
@@ -97,7 +111,7 @@ grep -qF "git diff [FIX_BASE] HEAD" "$SKILLS_DIR/adversarial-review/code-reviewe
 
 # Review: tracker, pause, fix check; no Review notes append or old consultation rule.
 R="$SKILLS_DIR/adversarial-review/SKILL.md"
-for want in ", or **pause**." "## Tracker format" 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' "Second pass" "if it has none"; do
+for want in ", or **pause**." "## Tracker format" 'Depth: ${CLAUDE_PLUGIN_ROOT}/shared/trackers.md, ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md, ${CLAUDE_PLUGIN_ROOT}/shared/asking-questions.md' "Second pass" "if it has none" "plainly does not block the recorded goal" 'does not offer `pause`' "since deferring it changes nothing" "before your first finding question in that pass, or before the report if no finding is asked, tell your partner in one line the finding"; do
   grep -qF "$want" "$R" || fail "review SKILL.md: missing '$want'"
 done
 grep -rqF "Review notes" "$SKILLS_DIR" && fail "a skill still appends Review notes"
@@ -209,6 +223,15 @@ else
 fi
 grep -E '^5\. ' "$R" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' \
   || fail 'review SKILL.md: step 5 does not point to ${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md'
+for want in "say what triggers it" "read-only"; do
+  grep -qF "$want" "$MR" || fail "$MR: missing '$want'"
+done
+grep -E '^5\. ' "$R" | grep -qF '`Goal:`' || fail 'review SKILL.md: step 5 does not record the `Goal:` line'
+T="shared/trackers.md"
+for want in '`Goal:`' "as in review step 5" 'with no `Goal:` line is not missing a field'; do
+  grep -qF "$want" "$T" || fail "$T: missing '$want'"
+done
+grep -qF "as in the first pass" "$T" && fail "$T: resume still says 'as in the first pass'"
 grep -E '^[67]\. ' "$R" | grep -qF '${CLAUDE_PLUGIN_ROOT}/shared/making-recommendations.md' \
   && fail 'review SKILL.md: steps 6 or 7 also point to the shared file'
 grep -qF 'for a finding under `Out of scope`' "$R" && fail "review SKILL.md: step 7 still special-cases Out of scope findings"
