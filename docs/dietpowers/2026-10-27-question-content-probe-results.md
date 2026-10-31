@@ -59,3 +59,20 @@ Every run gave the log-timestamp notice in its first question message, for examp
 No message in any run used a tracker item number, "ledger" or "roll-up". Progress lines named findings instead, for example "Next I'll add the newline finding to open items, then ask about refunds."
 
 Result: the bar is met. Every check passes in all 3 branch runs.
+
+## Round 3, 2026-10-31
+
+Run for `dietpowers:prove-done`, because `ebadc35` changed the notice wording after round 2 (from "before your first question" to "before your first finding question in that pass, or before the report if no finding is asked"). Branch at `f4f84f4`. Model `claude-opus-5-5`, effort `high`, Claude Code 2.1.309. Checks 1 and 2 scored by `score.py`; checks 3 to 6 read from `questions.md`.
+
+| Check | Branch 1 | Branch 2 | Branch 3 |
+|---|---|---|---|
+| 1 | pass | pass | pass |
+| 2 | pass | pass | pass |
+| 3 | pass | pass | pass |
+| 4 | pass | pass | pass |
+| 5 | pass | pass | pass |
+| 6 | pass | pass | pass |
+
+Each run gave the log-timestamp notice in its first question message, before "Question 1 of 2", for example (branch run 3): "**Noted, no reply needed:** the log line uses a local-time timestamp, but `data/README.md` says "All logs use UTC." I've added this to open items rather than asking, because the log doesn't change the printed totals." Open-item numbers appeared only next to the finding's name, such as "The missing-last-row finding is now open item #2".
+
+Result: the bar is met on the current text. Every check passes in all 3 branch runs.
